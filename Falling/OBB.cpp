@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OBB.h"
 
-OBB::OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, float aire) : parent(parent), aire(aire)
+OBB::OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, float aire, int id) : parent(parent), aire(aire), obbid(id) 
 {
 	pts[0] = Vector2D(a);
 	pts[1] = Vector2D(b);
@@ -22,15 +22,17 @@ bool OBB::intersects(OBB *o)
 
 bool OBB::intersects2axis(OBB *o)
 {
+	//return true;
 	for(int i = 0; i < 2; i++)
 	{
-		float dot = o->pts[0] * axis[i];
+		Vector2D ax = parent->toRotated(axis[i]);
+		float dot = parent->toLocal(o->parent->toGlobal(o->pts[0])) * ax;
 		float dotMin = dot;
 		float dotMax = dot;
 
-		for(int j = 1; j < 3; j++)
+		for(int j = 1; j < 4; j++)
 		{
-			dot = o->pts[j] * axis[i];
+			dot = parent->toLocal(o->parent->toGlobal(o->pts[j])) * ax;
 			if(dot > dotMax)
 				dotMax = dot;
 			else if(dot < dotMin)
@@ -40,6 +42,16 @@ bool OBB::intersects2axis(OBB *o)
 			return false;
 	}
 	return true;
+}
+
+bool OBB::intersectsPlane(InfinitePlane *p)
+{
+	for(int i = 0; i < 4; i++)
+	{
+		if(p->isInSolidHalfSpace(parent->toGlobal(Point2D(pts[i]))))
+			return true;
+	}
+	return false;
 }
 
 Point2D OBB::getCenter() const

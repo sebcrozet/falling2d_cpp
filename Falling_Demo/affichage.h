@@ -2,7 +2,9 @@
 #include <vector>
 #include "Falling.h"
 #include "DistanceSolver.h"
-#include "Disk.h"
+#include "Disk.h"	 
+#include "PairManager.h"
+#include "CollisionArbiter.h"
 #include <ctime>
 #include <cstdlib>
 
@@ -10,13 +12,14 @@ typedef struct pObject pObject;
 struct pObject
 {
 public:
+   Vector2D u;
    Polygon2D * p;
    Disk * d;
    Point2D * pts;
    int nb, support, r, g, b;
    bool isdisk;
 
-   pObject(Point2D * pts,int n,bool iscircle, Point2D center = Point2D()); 
+   pObject(Point2D * pts,int n,bool iscircle, CollisionArbiter &coll, Point2D center = Point2D()); 
 };
 
 void initSDL();

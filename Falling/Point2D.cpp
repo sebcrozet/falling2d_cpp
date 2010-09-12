@@ -3,6 +3,8 @@
 
 Point2D::Point2D(float x, float y):x(x),y(y)
 { }
+Point2D::Point2D(Vector2D &v):x(v.getX()), y(v.getY())
+{ }
 bool Point2D::isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3)
 { return (isLeftTo(p , p2) >= 0.0f) && (isLeftTo(p2 , p3) >= 0.0f) && (isLeftTo(p3 , p) >= 0.0f); }
 bool Point2D::isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3)		   

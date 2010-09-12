@@ -3,12 +3,50 @@
 
 #include "stdafx.h"
 #include "affichage.h"
+#include "stdlib.h"
+
+CollisionArbiter ca;
+
+void testPairsManager()
+{
+	PairManager pm;
+	srand(time(0));
+	std::vector<Pair> ps;
+	printf("test0"); 	
+	// add random pairs
+	for(int i = 0; i < 1009; i++)
+		ps.push_back(*pm.addPair(rand(), rand()));
+	for(int i = 0; i < 1009; i++)
+	{
+		Pair * fp = pm.findPair(ps[i].id1, ps[i].id2);
+		if(fp->id1 != ps[i].id1 || fp->id2 != ps[i].id2)
+			printf("test"); 	
+	}				 
+	for(int i = 0; i < 1009; i++)
+	{
+		pm.removePair(ps[i].id1, ps[i].id2);
+		Pair * fp = pm.findPair(ps[i].id1, ps[i].id2);
+		if(fp != 0)
+			printf("test111"); 	
+		for(int a = i + 1; a < 1009; a++)
+		{
+			Pair * fp = pm.findPair(ps[a].id1, ps[a].id2);
+			if(fp == 0 || ps[a].id1 != ps[a].id1 || fp->id2 != ps[a].id2)
+				printf("test"); 	
+		}	
+	}
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	testPairsManager();
 	initSDL();
 	return 0;
 }
+
+
+
+
 
 void initSDL()
 {			 
@@ -43,7 +81,7 @@ void initSDL()
 					pts = new Point2D[n];
 					for(int i=0; i<n; i++)
 					pts[i] = vpts[i];
-					ps.push_back(new pObject(pts,n,false));
+					ps.push_back(new pObject(pts,n,false, ca));
 					vpts.clear();					  
 					update(screen, ps,depth,depth2,sp);
 				}
@@ -91,7 +129,7 @@ void initSDL()
 				}
 				if(slidemode)
 				{				   
-					ps.push_back(new pObject(0,100,true, Point2D(e.button.x,e.button.y)));
+					ps.push_back(new pObject(0,100,true,ca, Point2D(e.button.x,e.button.y)));
 					update(screen, ps,depth, depth2,sp);
 				} 
 				break;
@@ -99,7 +137,6 @@ void initSDL()
 				if(trace && !slidemode )
 				{
 					vpts.push_back(Point2D(e.motion.x,e.motion.y));	
-					update(screen, ps,depth, depth2,sp);
 				}
 				sp = Vector2D(e.motion.x,e.motion.y);  
 				//update(screen,ps,depth,depth2,sp);
@@ -114,7 +151,7 @@ void initSDL()
 						pts = new Point2D[n];
 						for(int i=0; i<n; i++)
 							pts[i] = vpts[i];
-						ps.push_back(new pObject(pts,n,false));
+						ps.push_back(new pObject(pts,n,false, ca));
 						vpts.clear();					  
 						update(screen, ps,depth, depth2,sp);
 					}
@@ -163,6 +200,75 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 		pob = ps[po];
 		if(!pob->isdisk)
 		{
+			Polygon2D *p = pob->p;
+			int n;
+			int i;
+			int j;
+			Vector2D u;
+			float ux, uy;
+
+			   
+			n = pob->nb;
+			i = 0;
+			j = n - 1;
+			u = pob->u;
+			ux = u.getX();
+			uy = u.getY();
+			while(i<n)
+			{
+				lineRGBA(screen, pob->pts[i].getX() + ux, pob->pts[i].getY() + uy, pob->pts[j].getX() + ux, pob->pts[j].getY() + uy, pob->r + 100,pob->g + 100, pob->b + 100,255);
+				j = i;
+				i++;
+			}
+			//*/
+			
+			for(int nsn=0;nsn<p->nbrSubShapes && nsn<depth;nsn++)
+			{
+				ImplicitPolygon2D * ip = p->subShapes[nsn];
+				n = ip->nbrPts;
+				i = 0;
+				j = n - 1;
+				u = pob->u;
+				ux = u.getX(); uy = u.getY();
+				while(i<n)
+				{
+					lineRGBA(screen,ip->pts[i].getX() + ux, ip->pts[i].getY() + uy, ip->pts[j].getX() + ux, ip->pts[j].getY() + uy, pob->r + 50,pob->g + 50, pob->b + 50,255);
+					j = i;
+					i++;
+				} 
+				if(depth2)
+				{
+					lineRGBA(screen, ux + ip->getOBB()->pts[0].getX(), uy + ip->getOBB()->pts[0].getY(), ux + ip->getOBB()->pts[1].getX(), uy + ip->getOBB()->pts[1].getY(),0,0,0,125);   
+					lineRGBA(screen, ux + ip->getOBB()->pts[1].getX(), uy + ip->getOBB()->pts[1].getY(), ux + ip->getOBB()->pts[2].getX(), uy + ip->getOBB()->pts[2].getY(),0,0,0,125);
+					lineRGBA(screen, ux + ip->getOBB()->pts[2].getX(), uy + ip->getOBB()->pts[2].getY(), ux + ip->getOBB()->pts[3].getX(), uy + ip->getOBB()->pts[3].getY(),0,0,0,125);
+					lineRGBA(screen, ux + ip->getOBB()->pts[3].getX(), uy + ip->getOBB()->pts[3].getY(), ux + ip->getOBB()->pts[0].getX(), uy + ip->getOBB()->pts[0].getY(),0,0,0,125);  		
+				}
+			}
+
+			
+		}
+		else
+		{
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->r,pob->g, pob->b, 255);
+		}
+	}
+	std::vector<Collision *> cols;
+	ca.solve(cols);
+	for(int i=0; i<cols.size();i++)
+	{
+		for(int j = 0; j<cols[i]->c.size(); j++)
+		{
+			lineRGBA(screen, cols[i]->c[j].ptA.getX(), cols[i]->c[j].ptA.getY(), cols[i]->c[j].ptB.getX(), cols[i]->c[j].ptB.getY(), 0,0, 0,255);
+
+		}
+	}
+	SDL_Flip(screen);
+}
+
+
+
+/*		
+
 			Polygon2D *p;
 			int n;
 			int i;
@@ -175,7 +281,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			n = p->nbrPts;
 			i = 0;
 			j = n - 1;
-			u = p->t.getU();
+			u = pob->u;
 			ux = u.getX();
 			uy = u.getY();
 			while(i<n)
@@ -227,15 +333,15 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				lineRGBA(screen, ux + ip->obb.pts[2].getX(), uy + ip->obb.pts[2].getY(), ux + ip->obb.pts[3].getX(), uy + ip->obb.pts[3].getY(),0,0,0,125);
 				lineRGBA(screen, ux + ip->obb.pts[3].getX(), uy + ip->obb.pts[3].getY(), ux + ip->obb.pts[0].getX(), uy + ip->obb.pts[0].getY(),0,0,0,125);
 
-			}//*/
+			}
 			Point2D pp, pp0;				 
-			u = p->t.getU();
+			u = pob->u;
 			ux = u.getX(); uy = u.getY();
 			pob->support = p->chull->getSupportPoint(sp - u,&pp);
 			circleRGBA(screen,pp.getX(), pp.getY(), 3 , 255,0, 0,255);	   
 			pp0 = pp;
 			pp =p->chull->toGlobal(p->chull->pts[p->chull->naiveClimb(0,p->chull->nbrPts-1,sp - u)]);
-			exploreOBBtree(screen,p->otree, u,depth,0);																				  
+			exploreOBBtree(screen,p->getOtree(), u,depth,0);																				  
 			//lineRGBA(screen, ux + p->chull->obb.pts[0].getX(), uy + p->chull->obb.pts[0].getY(), ux + p->chull->obb.pts[1].getX(), uy + p->chull->obb.pts[1].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);   
 			//lineRGBA(screen, ux + p->chull->obb.pts[1].getX(), uy + p->chull->obb.pts[1].getY(), ux + p->chull->obb.pts[2].getX(), uy + p->chull->obb.pts[2].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);
 			//lineRGBA(screen, ux + p->chull->obb.pts[2].getX(), uy + p->chull->obb.pts[2].getY(), ux + p->chull->obb.pts[3].getX(), uy + p->chull->obb.pts[3].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);
@@ -251,7 +357,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			n = p->chull->nbrPts;
 			i = 0;
 			j = n - 1;
-			u = p->t.getU();
+			u = pob->u;
 			ux = u.getX(); uy = u.getY();
 			while(i<n)
 			{
@@ -260,29 +366,23 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				i++;
 			}
 
-			   
-			n = pob->nb;
-			i = 0;
-			j = n - 1;
-			u = p->t.getU();
-			ux = u.getX();
-			uy = u.getY();
-			while(i<n)
-			{
-				lineRGBA(screen, pob->pts[i].getX() + ux, pob->pts[i].getY() + uy, pob->pts[j].getX() + ux, pob->pts[j].getY() + uy, pob->r + 100,pob->g + 100, pob->b + 100,255);
-				j = i;
-				i++;
-			}
-			//*/
-			
-		}
-		else
-		{
-			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->r,pob->g, pob->b, 255);
 
-		}
-		
-		for(int pocl = po + 1 ; pocl<ps.size();pocl++)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for(int pocl = po + 1 ; pocl<ps.size();pocl++)
 		{
 			pObject *pob2 = ps[pocl];
 			ImplicitShape *s1,*s2;
@@ -304,6 +404,4 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				lineRGBA(screen, 10,10,10+ abs(sizep),10, 0,0, 0,255);  
 			}
 		}
-	}
-	SDL_Flip(screen);
-}
+//*/

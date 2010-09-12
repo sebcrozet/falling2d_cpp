@@ -208,6 +208,14 @@
 				</FileConfiguration>
 			</File>
 			<Filter
+				Name="GenericStructures"
+				>
+				<File
+					RelativePath=".\DoubleLinkedList.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="Primitives"
 				>
 				<File
@@ -227,6 +235,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\InfinitePlane.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PixelPerfectShape.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Polygon2D.cpp"
 					>
 				</File>
@@ -239,7 +255,11 @@
 				Name="CollisionDetector"
 				>
 				<File
-					RelativePath=".\DistanceSolver.cpp"
+					RelativePath=".\CollisionDetector.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PairManager.cpp"
 					>
 				</File>
 				<Filter
@@ -247,18 +267,6 @@
 					>
 					<File
 						RelativePath=".\AABB.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\AABB_disk.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\AABB_polygon.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ConvexHull.cpp"
 						>
 					</File>
 					<File
@@ -275,6 +283,38 @@
 					>
 					<File
 						RelativePath=".\GeometryHelper.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SAP"
+					>
+					<File
+						RelativePath=".\SAPsolver.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Solvers"
+					>
+					<File
+						RelativePath=".\CollisionArbiter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DiskDiskSolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\DistanceSolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\GenericSolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\PlaneShapeSolver.cpp"
 						>
 					</File>
 				</Filter>
@@ -297,6 +337,14 @@
 				RelativePath=".\targetver.h"
 				>
 			</File>
+			<Filter
+				Name="GenericStructures"
+				>
+				<File
+					RelativePath=".\DoubleLinkedList.h"
+					>
+				</File>
+			</Filter>
 			<Filter
 				Name="Primitives"
 				>
@@ -321,6 +369,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\InfinitePlane.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PixelPerfectShape.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Polygon2D.h"
 					>
 				</File>
@@ -333,15 +389,11 @@
 				Name="CollisionDetector"
 				>
 				<File
-					RelativePath=".\BoxPrunning.h"
+					RelativePath=".\CollisionDetector.h"
 					>
 				</File>
 				<File
-					RelativePath=".\CircularDoubleLinkedList.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DistanceSolver.h"
+					RelativePath=".\PairManager.h"
 					>
 				</File>
 				<Filter
@@ -352,19 +404,7 @@
 						>
 					</File>
 					<File
-						RelativePath=".\AABB_disk.h"
-						>
-					</File>
-					<File
-						RelativePath=".\AABB_polygon.h"
-						>
-					</File>
-					<File
 						RelativePath=".\BoundingVolumes.h"
-						>
-					</File>
-					<File
-						RelativePath=".\ConvexHull.h"
 						>
 					</File>
 					<File
@@ -381,6 +421,38 @@
 					>
 					<File
 						RelativePath=".\GeometryHelper.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SAP"
+					>
+					<File
+						RelativePath=".\SAPsolver.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Solvers"
+					>
+					<File
+						RelativePath=".\CollisionArbiter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DiskDiskSolver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\DistanceSolver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\GenericSolver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\PlaneShapeSolver.h"
 						>
 					</File>
 				</Filter>

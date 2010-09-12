@@ -4,25 +4,40 @@
 #include <vector>
 
 #pragma region Polygon2D
-Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n) : nbrSubShapes(0)
-{
+Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n, bool fixed) : nbrSubShapes(0), ixm(0), ixM(0), iym(0), iyM(0)
+{ 
+	fixedobj = fixed;
 	t = GeometryHelper::Transformation2D(tr);
 	int nchull;
 	Point2D *chullpts = 0;
 	nbrPts = simplify(p, n, &points, 25);
 	nchull = Polygon2D::buildConvexHull(points, nbrPts, &chullpts);	 
-	chull = new ImplicitPolygon2D(chullpts, nchull, *this);
-	aabb = new AABB_polygon(chull);
+	chull = new ImplicitPolygon2D(chullpts, nchull, this, 0);
 	if(nchull != nbrPts) // le polygone n'était pas déjà convexe, il faut faire une tesselation
 		tesselate();
 	buildOBBtree();
+}
+
+void Polygon2D::updateAABB()
+{
+	Vector2D vx(1,0);
+	Vector2D vy(0,1);
+	Point2D pt;
+	ixM = chull->getSupportPoint(vx,&pt,ixM);
+	aabb_xM = pt.getX();
+	ixm = chull->getSupportPoint(vx.reflexion(),&pt,ixm);
+	aabb_xm = pt.getX();
+	iyM = chull->getSupportPoint(vy,&pt,iyM);
+	aabb_yM = pt.getY();
+	iym = chull->getSupportPoint(vy.reflexion(),&pt,iym);
+	aabb_ym = pt.getY();
 }
 
 void Polygon2D::tesselate()
 {
 	std::vector<int> ipts, lastPoly;
 	std::vector<ImplicitPolygon2D *> polys;
-	for(int i = 0; i < nbrPts; i ++)
+	for(int i = 0; i < nbrPts; i++)
 		ipts.push_back(i);
 	int id = 0, size = nbrPts, CWid = nbrPts - 1, CCWid = 0;
 	bool CWpropagation = false;
@@ -112,7 +127,7 @@ void Polygon2D::tesselate()
 					}
 				}
 				size -= nb - 2;
-				polys.push_back(new ImplicitPolygon2D(respts, nb, *this));
+				polys.push_back(new ImplicitPolygon2D(respts, nb, this, (int)polys.size() + 1));
 				lastPoly.clear();
 				id = 0;
 				CWid = size - 1;
@@ -157,7 +172,7 @@ void Polygon2D::tesselate()
 			delete subShapes[i];
 		delete subShapes;
 	}
-	nbrSubShapes = polys.size();			 
+	nbrSubShapes = (int)polys.size();			 
 	subShapes = new ImplicitPolygon2D*[nbrSubShapes];
 	for(int i = 0; i < nbrSubShapes; i++)
 		subShapes[i] = polys[i];
@@ -187,7 +202,7 @@ void Polygon2D::buildOBBtree()
 		}
 		if(rightset.size()==0)
 		{
-			int ls = (leftset.size()) / 2;
+			int ls = ((int)leftset.size()) / 2;
 			while(leftset.size() != ls)
 			{
 				rightset.push_back(leftset[leftset.size()-1]);
@@ -196,28 +211,30 @@ void Polygon2D::buildOBBtree()
 		}
 		else if(leftset.size() == 0)
 		{	 
-			int ls = (rightset.size()) / 2;
-			while(rightset.size() != ls)
+			int ls = ((int)rightset.size()) / 2;
+			while((int)rightset.size() != ls)
 			{
-				leftset.push_back(rightset[rightset.size()-1]);
+				leftset.push_back(rightset[(int)rightset.size()-1]);
 				rightset.pop_back();
 			}
 		}
 		// rego	
-		if(rightset.size()!=0)
-			buildOBBtree(&(otree->r), rightset);
+		int id = 0;
+		if((int)rightset.size()!=0)
+			buildOBBtree(&(otree->r), rightset, id);
 		else
 			otree->r = 0;
-		if(leftset.size()!=0)
-			buildOBBtree(&(otree->l), leftset);
+		if((int)leftset.size()!=0)
+			buildOBBtree(&(otree->l), leftset, id);
 		else
 			otree->l = 0;
 	}
 }
 
-void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polyset)
+void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polyset, int &id)
 {		
-	int s = polyset.size();
+	id++;
+	int s = (int)polyset.size();
 	if(s == 1)
 	{
 		*o = new OBBtree(0,0, polyset[0]->getOBB());
@@ -251,13 +268,13 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		}	
 		studiedpt = rp;
 	} while(studiedpt.getX() != miny.getX() || studiedpt.getY() != miny.getY());
-	int chn = chpts.size();
+	int chn = (int)chpts.size();
 	Point2D *ch = new Point2D[chn];
 	for(int i = 0; i < chn; i++)
 		ch[i] = chpts[i];
 	chpts.clear();
 	// build obb	
-	*o = new OBBtree(0, 0, ImplicitPolygon2D::buildOBB(ch, chn, chull));
+	*o = new OBBtree(0, 0, ImplicitPolygon2D::buildOBB(ch, chn, chull, -1));
 	OBBtree *oo = *o;
 
 	// divide space		  
@@ -277,7 +294,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	}
 	if(rightset.size()==0)
 	{
-		int ls = (leftset.size()) / 2;
+		int ls = ((int)leftset.size()) / 2;
 		while(leftset.size() != ls)
 		{
 			rightset.push_back(leftset[leftset.size()-1]);
@@ -286,7 +303,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	}
 	else if(leftset.size() == 0)
 	{	 
-		int ls = (rightset.size()) / 2;
+		int ls = ((int)rightset.size()) / 2;
 		while(rightset.size() != ls)
 		{
 			leftset.push_back(rightset[rightset.size()-1]);
@@ -296,9 +313,9 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	// rego	
 	polyset.clear();
 	if(rightset.size()!=0)
-		buildOBBtree(&(oo->r), rightset);
+		buildOBBtree(&(oo->r), rightset, id);
 	if(leftset.size()!=0)
-		buildOBBtree(&(oo->l), leftset);
+		buildOBBtree(&(oo->l), leftset, id);
 }
 
 
@@ -439,14 +456,32 @@ Point2D Polygon2D::getCentroid(Point2D *in, int n,float aire)
 #pragma endregion
 
 #pragma region ImplicitPolygon2D
-ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D &parent) 
-	: nbrPts(n), parent(parent) 
+ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, int id) 
+	: nbrPts(n) 
 {
+	parent = p; 
 	margin = 0.04f;
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
-	obb = ImplicitPolygon2D::buildOBB(pts, n, this);
+	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);
+	sqradius = _getBoundingSphereSqRadius();
 }
+
+float ImplicitPolygon2D::_getBoundingSphereSqRadius()
+{
+	float res = 0;
+	for(int i = 0; i<nbrPts; i++)
+	{
+		Vector2D v(center, pts[i]);
+		float vv = v * v;
+		if(vv > res)
+			res = vv;
+	}
+	return res;
+}
+
+float ImplicitPolygon2D::getBoundingSphereSqRadius()
+{ return sqradius; }
 
 Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 {	   	
@@ -668,7 +703,7 @@ int ImplicitPolygon2D::getSupportPoint(Vector2D &od, Point2D *res, int o)
 // OBB using O(n) rotative calipers     //
 // algorithm.                           //
 //////////////////////////////////////////
-OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *parent)
+OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *parent, int id)
 {		
 	int t_p[4];   
 	float t_teta[4];
@@ -756,6 +791,6 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 		float dotp	= abs(repY * dl);
  		origin = pts[obbl] + (repY * dotp);
 	}
-	return new OBB(origin, origin - repY * obblon, origin - repY * obblon + repX * obblar, origin + repX * obblar, parent, minAire);
+	return new OBB(origin, origin - repY * obblon, origin - repY * obblon + repX * obblar, origin + repX * obblar, parent, minAire, id);
 }	
 #pragma endregion

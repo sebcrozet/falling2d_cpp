@@ -1,48 +1,48 @@
 #ifndef AABBs
 #include "Primitives.h"
-#include "Shapes.h"
 
-class AABB;
+class Shape;
+struct AABB;
 class EndPoint
 {
 private:	   
-	ImplicitShape *parent;
-	bool isMax;
+	int parentid; // parentid & 0x00000001 == ismax ; parentid >> 1 == parent's id
 	float value;
 public:
 	EndPoint();
-	EndPoint(float v, bool isMax, ImplicitShape *parent);
+	EndPoint(float v, bool isMax, int parentid);
 
 	inline float getValue() const;
 	inline bool isMaxValue() const;
-	inline ImplicitShape *getParent() const;
+	inline int getParent() const;
 	inline void setValue(float v);
-	inline void operator=(EndPoint &ep);
+	inline void operator=(const EndPoint &ep); 
 };
 
-inline ImplicitShape *EndPoint::getParent() const
-{ return parent; }
+inline int EndPoint::getParent() const
+{ return parentid >> 1; }
 inline float EndPoint::getValue() const
 { return value; }
 inline bool EndPoint::isMaxValue() const
-{ return isMax; }
+{ return parentid & 1; }
 inline void EndPoint::setValue(float v)
 { value = v; }
-inline void EndPoint::operator =(EndPoint &ep)
+inline void EndPoint::operator =(const EndPoint &ep)
 {
-	isMax = ep.isMax;
 	value = ep.value;
-	parent = ep.parent;
+	parentid = ep.parentid;
 }
 
 				   
-class AABB
+struct AABB
 {
-protected:
-	EndPoint xmin, xmax, ymin, ymax;
+	// [0] -> x // [1] -> y
+	int mins[2];
+	int maxs[2];
+	Shape *parent;
 	AABB();
-public:	
-	virtual void update() = 0;
+
+	void update();
 };
 #define AABBs
 #endif

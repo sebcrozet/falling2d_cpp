@@ -1,9 +1,11 @@
+#ifndef _GJKSOLVER_H
 #include "Shapes.h"
 #include "queue"
-
+#include "CollisionDetector.h"
+#define GJK_DESTROYLIMIT 100 // 10 * 10
 
 class EPAsolver;
-class GJKsolver
+class GJKsolver : public CollisionDetector
 {
 	friend EPAsolver;
 private:
@@ -19,15 +21,22 @@ private:
 	int simplexSize;
 	
 	bool ISAsolve();
-	float solve(float* bparam);
+	float solveDist(float* bparam);
 	void updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentricParam);
 	void gjk_buildMarginedSimplexWithOrigin();
+
+	bool _solve(std::vector<SubCollision> &res);
+	inline void swapPts(Vector2D &a, Vector2D &b);
 public:
 	GJKsolver(ImplicitShape &a,ImplicitShape &b);
 	float getSeparatingDistance();
 	float getClosestPoints(Point2D *pA, Point2D *pB);
 	float getPenDepth(Point2D *pA, Point2D *pB);
+	bool canDestroy();
 };
+
+inline void GJKsolver::swapPts(Vector2D &a, Vector2D &b)
+{ Vector2D c = a; a = b; b = c; }
 
 class SimplexSeg
 {
@@ -45,7 +54,14 @@ public:
 	bool operator<(SimplexSeg &s2);			   
 	Vector2D getSupportVect();
 	void getABpoints(Point2D *a,Point2D *b);
+	inline Point2D getC1();
+	inline Point2D getC2();
 };
+
+inline Point2D SimplexSeg::getC1()
+{ return ptC1; }
+inline Point2D SimplexSeg::getC2()
+{ return ptC2; }
 
 struct simplexSeg_less : std::binary_function<SimplexSeg *, SimplexSeg *,bool>
 {
@@ -62,8 +78,10 @@ public:
 	EPAsolver(GJKsolver &simplex);
 	Vector2D getPenetrationDepth(Point2D *pA, Point2D *pB);
 };
-#define EPSILON_ FLT_EPSILON * 100
+#define EPSILON_ FLT_EPSILON * 1000
 #define EPSILON_1 (1 + EPSILON_)  * (1 + EPSILON_)
 
 inline float SimplexSeg::getdist() const
 { return dist; }
+#define _GJKSOLVER_H
+#endif

@@ -1,7 +1,8 @@
 #ifndef VECTOR
-#define EPSILON	 0.00000000001f
-struct Point2D;
+#include <float.h>
+#define EPSILON	 FLT_EPSILON
 typedef struct Vector2D Vector2D;
+struct Point2D;
 struct Vector2D
 {
 private:
@@ -126,5 +127,6 @@ inline Vector2D Vector2D::operator -(const Vector2D &v)
 { return Vector2D(x-v.x,y-v.y,z-v.z); }	  
 inline Vector2D Vector2D::operator ^(const Vector2D &v)
 { return Vector2D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }
+
 #define VECTOR
 #endif

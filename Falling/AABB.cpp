@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "AABB.h"
 
-AABB::AABB()
+AABB::AABB() : parent(0)
 { }
 
-EndPoint::EndPoint() : parent(0)
+void AABB::update()
+{	
+}
+
+EndPoint::EndPoint() : parentid(-1), value(0)
 { }
 
-EndPoint::EndPoint(float v, bool isMax, ImplicitShape *parent) : parent(parent), isMax(isMax), value(v)
-{ }
+EndPoint::EndPoint(float v, bool isMax, int parent) : value(v)
+{ parentid = (parent << 1) | (isMax & 1); }

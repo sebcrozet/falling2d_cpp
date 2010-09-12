@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DistanceSolver.h"
+#include <stdlib.h>
 
 #pragma region GJKsolver
 GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSize(1)
@@ -9,10 +10,27 @@ GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSi
 	sqmsum = msum * msum;
 }
 
+bool GJKsolver::canDestroy()
+{
+	Vector2D v = A.getCenter() - B.getCenter();
+	return (v * v > A.getBoundingSphereSqRadius() + B.getBoundingSphereSqRadius() + sqmsum + GJK_DESTROYLIMIT);
+}
+
+bool GJKsolver::_solve(std::vector<SubCollision> &res)
+{
+	Point2D pa, pb;
+	if(getPenDepth(&pa, &pb) != 0)
+	{
+		res.push_back(SubCollision(pa, pb));
+		return false;
+	}
+	return canDestroy();
+}
+
 float GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
 {
 	float bparam;
-	float dist = solve(&bparam);
+	float dist = solveDist(&bparam);
 	if(dist != -1)
 	{
 		if(dist != 0)
@@ -42,6 +60,7 @@ float GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
 	return dist;
 }
 
+
 void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentricParam)
 {
 	if(simplexSize == 1)
@@ -68,7 +87,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 				{
 					*barycentricParam = 0;
 					p = ptsC[1];
-					ptsC[0] = ptsC[1];	
+					swapPts(ptsC[0], ptsC[1]);	
 					ptsA[0] = ptsA[1];	
 					ptsB[0] = ptsB[1];						
 				}
@@ -105,7 +124,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 				{   
 					*barycentricParam = 0;
 					p = ptsC[1];
-					ptsC[0] = ptsC[1];	
+					swapPts(ptsC[0], ptsC[1]);	
 					ptsA[0] = ptsA[1];	
 					ptsB[0] = ptsB[1];
 					simplexSize = 2;	
@@ -127,7 +146,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 						{				  
 							*barycentricParam = 0;
 							p = ptsC[2];
-							ptsC[0] = ptsC[2];	
+							swapPts(ptsC[0], ptsC[2]);	
 							ptsA[0] = ptsA[2];	
 							ptsB[0] = ptsB[2];
 							simplexSize = 2;	
@@ -139,7 +158,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 							{	
 								*barycentricParam = d2 / (d2 - d6);
 								p = ptsC[0] + ac * (*barycentricParam);	  
-								ptsC[1] = ptsC[2];	
+								swapPts(ptsC[1], ptsC[2]);	
 								ptsA[1] = ptsA[2];	
 								ptsB[1] = ptsB[2];
 							}
@@ -151,12 +170,9 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 								{	   
 									*barycentricParam = d2 / (d2 - d6);
 									p = ptsC[0] + (ptsC[2] - ptsC[1]) * (*barycentricParam);	  
-									ptsC[0] = ptsC[1];	
-									ptsA[0] = ptsA[1];	
-									ptsB[0] = ptsB[1];	 
-									ptsC[1] = ptsC[2];	
-									ptsA[1] = ptsA[2];	
-									ptsB[1] = ptsB[2];
+									swapPts(ptsC[0], ptsC[2]);	
+									ptsA[0] = ptsA[2];	
+									ptsB[0] = ptsB[2];
 								}
 								else
 									simplexSize = 4;
@@ -176,8 +192,9 @@ void GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 	{
 		for(int i = 0; i < 3; i++)
 		{
-			A.addMargin(dirs[i], &ptsA[i]);
-			B.addMargin(dirs[i].reflexion(), &ptsB[i]);
+			Vector2D ddir = dirs[i].direction();
+			A.addMargin(ddir, &ptsA[i]);
+			B.addMargin(ddir.reflexion(), &ptsB[i]);
 			ptsC[i] = Vector2D(ptsA[i] - ptsB[i]);
 		}
 		if(Point2D().isInUnorientedTriangle(Point2D(ptsC[0].getX(),ptsC[0].getY()), Point2D(ptsC[1].getX(),ptsC[1].getY()), Point2D(ptsC[2].getX(),ptsC[2].getY())))
@@ -193,8 +210,9 @@ void GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 		Vector2D cPoint;
 		Point2D cp1, cp2;
 		int optid1, optid2;
-		optid1 = A.getMarginedSupportPoint(p.reflexion(), &cp1);
-		optid2 = B.getMarginedSupportPoint(p, &cp2);
+		Vector2D np = p.direction();
+		optid1 = A.getMarginedSupportPoint(np.reflexion(), &cp1);
+		optid2 = B.getMarginedSupportPoint(np, &cp2);
 		cPoint = Vector2D(cp1 - cp2);
 		int id = simplexSize-1;
 		ptsA[id] = cp1;
@@ -214,16 +232,19 @@ void GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 }
 
 
-float GJKsolver::solve(float* bparam)
+float GJKsolver::solveDist(float* bparam)
 {
 	bool notMax = true;		
 	float barycentricParam = 0;
-	Vector2D p = satlastdir;
+	Vector2D p(1,0);// = satlastdir;
+	int iter = 0;
 	float vv = FLT_MAX;
 	float res = 0;
 	simplexSize = 1;
+	int fullSimplexSize = 0; // will often be = simplexSize. Will be != at the beginning (here) or when simplex reduction is 3 -> 1 (when origin is in a triangle's point voronoy region) 
 	do
 	{
+		iter++;
 		Vector2D cPoint;
 		Point2D cp1, cp2;
 		int optid1, optid2;
@@ -232,16 +253,8 @@ float GJKsolver::solve(float* bparam)
 		cPoint = Vector2D(cp1 - cp2);
 		float dotp = p*cPoint;
 		satlastdir = p;
-		if(dotp > 0 && dotp * dotp > sqmsum * vv)	// no itersection
-		{
-			// no intersection
-			notMax = false;
-			simplexSize--;
-			res = 0;
-			break;
-		}
 		bool stop = false;
-		for(int i = simplexSize-2; i>=0;i--)
+		for(int i = fullSimplexSize-1; i>=0;i--)
 		{
 			if(ptsC[i].equals(cPoint))
 			{
@@ -249,13 +262,22 @@ float GJKsolver::solve(float* bparam)
 				break;
 			}
 		}
-		if(stop || vv - dotp < EPSILON_ * EPSILON_ * vv)
+		if(stop || (dotp > 0 && dotp * dotp > sqmsum * vv))	// no itersection
+		{
+			// no intersection
+			notMax = false;
+			simplexSize--;
+			res = 0;
+			break;
+		}
+		if(vv - dotp < EPSILON_ * EPSILON_ * vv)
 		{
 			// intersects in margin
 			notMax = false;
 			res = msum - sqrt(vv);
 			break;
 		}
+		fullSimplexSize = simplexSize;
 		int id = simplexSize-1;
 		ptsA[id] = cp1;
 		ptsB[id] = cp2;
@@ -274,7 +296,8 @@ float GJKsolver::solve(float* bparam)
 			break;
 		}	
 	} while(notMax);
-
+	printf("%i",iter);
+	printf("\n");
 	*bparam = barycentricParam;
 	return res;
 }
@@ -451,20 +474,24 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 	{	
 		SimplexSeg * sg;
 		float stopHull = FLT_MAX;
+		Point2D lastpc1, lastpc2;
 		do
 		{
 			sg = sd.top();
 			sd.pop();
-			SimplexSeg *sgg = sd.top();
-			sgg->getdist();
+			float dst = sg->getdist();
 			p = sg->getSupportVect();
 			Point2D pa, pb, pc;
-			gsolv.A.getMarginedSupportPoint(p, &pa);							 
-			gsolv.B.getMarginedSupportPoint(p.reflexion(), &pb);
+			Vector2D np = p.direction();
+			gsolv.A.getMarginedSupportPoint(np, &pa);							 
+			gsolv.B.getMarginedSupportPoint(np.reflexion(), &pb);
 			pc = pa - pb;
+			if(pc.equals(lastpc1) || pc.equals(lastpc2))
+				break; // EPA wont converge due to imprecision (will always return the same support point). So exit with current approximation!
+			lastpc1 = lastpc2;
+			lastpc2 = pc;
 			Vector2D ab(pc);
 			float dot = (ab * p);
-			float dst = sg->getdist();
 			stopHull = min(stopHull, dot * dot / dst);
 			if(stopHull <= EPSILON_1 * dst)
 				break;

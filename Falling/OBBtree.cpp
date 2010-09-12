@@ -26,7 +26,7 @@ void OBBtree::traverseTree(OBBtree *a, OBBtree *b, std::vector<OBBIntersection*>
 		{
 			if(a->isLeaf() && b->isLeaf())
 				res.push_back(new OBBIntersection(a->o, b->o));
-			else if(b->isLeaf() || a->o->getAire() > b->o->getAire())
+			else if(b->isLeaf() || (!a->isLeaf() && a->o->getAire() > b->o->getAire()))
 			{
 				s.push(a->r);
 				s.push(b);
@@ -43,8 +43,8 @@ void OBBtree::traverseTree(OBBtree *a, OBBtree *b, std::vector<OBBIntersection*>
 		}
 		if(s.empty())
 			break;
-		a = s.top(); s.pop();
 		b = s.top(); s.pop();
+		a = s.top(); s.pop();
 	}
 }
 

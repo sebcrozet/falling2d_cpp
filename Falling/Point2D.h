@@ -9,6 +9,7 @@ private:
 
 public:
 	Point2D(float x = 0,float y = 0);
+	Point2D(Vector2D &v);
 
 	inline float getX() const;
 	inline void setX(float x);

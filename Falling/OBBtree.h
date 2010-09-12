@@ -3,8 +3,6 @@
 #include <vector>
 #include <stack>
 
-
-
 struct OBBIntersection
 {
 	OBB* o1;
