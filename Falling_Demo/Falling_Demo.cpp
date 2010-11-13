@@ -39,7 +39,7 @@ void testPairsManager()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	testPairsManager();
+	//testPairsManager();
 	initSDL();
 	return 0;
 }
@@ -208,7 +208,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			float ux, uy;
 
 			   
-			n = pob->nb;
+			n = pob->p->nbrPts;
 			i = 0;
 			j = n - 1;
 			u = pob->u;
@@ -216,10 +216,16 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			uy = u.getY();
 			while(i<n)
 			{
-				lineRGBA(screen, pob->pts[i].getX() + ux, pob->pts[i].getY() + uy, pob->pts[j].getX() + ux, pob->pts[j].getY() + uy, pob->r + 100,pob->g + 100, pob->b + 100,255);
+				Point2D ipt = (pob->p->toGlobal(pob->p->points[i]));
+				Point2D jpt = (pob->p->toGlobal(pob->p->points[j]));
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->r + 100,pob->g + 100, pob->b + 100,255);
 				j = i;
 				i++;
 			}
+			lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_ym, pob->p->aabb_xm, pob->p->aabb_yM, pob->r + 100,pob->g + 100, pob->b + 100,255);
+			lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_ym, pob->p->aabb_xM, pob->p->aabb_ym, pob->r + 100,pob->g + 100, pob->b + 100,255);
+			lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_yM, pob->p->aabb_xM, pob->p->aabb_yM, pob->r + 100,pob->g + 100, pob->b + 100,255);
+			lineRGBA(screen, pob->p->aabb_xM, pob->p->aabb_yM, pob->p->aabb_xM, pob->p->aabb_ym, pob->r + 100,pob->g + 100, pob->b + 100,255);
 			//*/
 			
 			for(int nsn=0;nsn<p->nbrSubShapes && nsn<depth;nsn++)
@@ -231,17 +237,20 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				u = pob->u;
 				ux = u.getX(); uy = u.getY();
 				while(i<n)
-				{
-					lineRGBA(screen,ip->pts[i].getX() + ux, ip->pts[i].getY() + uy, ip->pts[j].getX() + ux, ip->pts[j].getY() + uy, pob->r + 50,pob->g + 50, pob->b + 50,255);
+				{		
+					Point2D ipt = (ip->toGlobal(ip->pts[i]));
+					Point2D jpt = (ip->toGlobal(ip->pts[j]));
+					lineRGBA(screen,ipt.getX(), ipt.getY(), jpt.getX(), jpt.getY(), pob->r + 50,pob->g + 50, pob->b + 50,255);
 					j = i;
 					i++;
 				} 
 				if(depth2)
 				{
-					lineRGBA(screen, ux + ip->getOBB()->pts[0].getX(), uy + ip->getOBB()->pts[0].getY(), ux + ip->getOBB()->pts[1].getX(), uy + ip->getOBB()->pts[1].getY(),0,0,0,125);   
-					lineRGBA(screen, ux + ip->getOBB()->pts[1].getX(), uy + ip->getOBB()->pts[1].getY(), ux + ip->getOBB()->pts[2].getX(), uy + ip->getOBB()->pts[2].getY(),0,0,0,125);
-					lineRGBA(screen, ux + ip->getOBB()->pts[2].getX(), uy + ip->getOBB()->pts[2].getY(), ux + ip->getOBB()->pts[3].getX(), uy + ip->getOBB()->pts[3].getY(),0,0,0,125);
-					lineRGBA(screen, ux + ip->getOBB()->pts[3].getX(), uy + ip->getOBB()->pts[3].getY(), ux + ip->getOBB()->pts[0].getX(), uy + ip->getOBB()->pts[0].getY(),0,0,0,125);  		
+					exploreOBBtree(screen,pob->p->getOtree(),pob->u,depth2,10);
+					lineRGBA(screen, ip->toGlobal(ip->getOBB()->pts[0]).getX(), ip->toGlobal(ip->getOBB()->pts[0]).getY(), ip->toGlobal(ip->getOBB()->pts[1]).getX(), ip->toGlobal(ip->getOBB()->pts[1]).getY(),0,0,0,125);   
+					lineRGBA(screen, ip->toGlobal(ip->getOBB()->pts[1]).getX(), ip->toGlobal(ip->getOBB()->pts[1]).getY(), ip->toGlobal(ip->getOBB()->pts[2]).getX(), ip->toGlobal(ip->getOBB()->pts[2]).getY(),0,0,0,125);
+					lineRGBA(screen, ip->toGlobal(ip->getOBB()->pts[2]).getX(), ip->toGlobal(ip->getOBB()->pts[2]).getY(), ip->toGlobal(ip->getOBB()->pts[3]).getX(), ip->toGlobal(ip->getOBB()->pts[3]).getY(),0,0,0,125);
+					lineRGBA(screen, ip->toGlobal(ip->getOBB()->pts[3]).getX(), ip->toGlobal(ip->getOBB()->pts[3]).getY(), ip->toGlobal(ip->getOBB()->pts[0]).getX(), ip->toGlobal(ip->getOBB()->pts[0]).getY(),0,0,0,125);  		
 				}
 			}
 

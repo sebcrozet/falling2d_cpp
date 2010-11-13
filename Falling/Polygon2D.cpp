@@ -7,7 +7,7 @@
 Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n, bool fixed) : nbrSubShapes(0), ixm(0), ixM(0), iym(0), iyM(0)
 { 
 	fixedobj = fixed;
-	t = GeometryHelper::Transformation2D(tr);
+	t = GeometryHelper::Transformation2D(Vector2D(),0);
 	int nchull;
 	Point2D *chullpts = 0;
 	nbrPts = simplify(p, n, &points, 25);
@@ -16,6 +16,8 @@ Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n, boo
 	if(nchull != nbrPts) // le polygone n'était pas déjà convexe, il faut faire une tesselation
 		tesselate();
 	buildOBBtree();
+	t.setTeta(tr.getTeta());
+	t.setU(tr.getU());
 }
 
 void Polygon2D::updateAABB()

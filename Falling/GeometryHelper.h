@@ -29,10 +29,13 @@ namespace GeometryHelper
 
 	   inline Vector2D rotate(Vector2D &x);	 
 	   inline Point2D rotate(Point2D &x);  
-	   inline Vector2D rotateinv(Vector2D &x);	
+	   inline Vector2D rotateinv(Vector2D &x);	 
+	   inline Point2D rotateinv(Point2D &x);	
 
 	   inline Vector2D translate(Vector2D &x);	 
-	   inline Point2D translate(Point2D &x);
+	   inline Point2D translate(Point2D &x); 
+	   inline Vector2D translateinv(Vector2D &x);	 
+	   inline Point2D translateinv(Point2D &x);
    };
 }
 inline void GeometryHelper::Transformation2D::setTeta(float t)
@@ -52,6 +55,10 @@ inline Vector2D GeometryHelper::Transformation2D::translate(Vector2D &x)
 { return x + u; }
 inline Point2D GeometryHelper::Transformation2D::translate(Point2D &x)
 { return x + u; }	   
+inline Vector2D GeometryHelper::Transformation2D::translateinv(Vector2D &x)
+{ return x - u; }
+inline Point2D GeometryHelper::Transformation2D::translateinv(Point2D &x)
+{ return x - u; }	
 inline Vector2D GeometryHelper::Transformation2D::rotate(Vector2D &x)
 {
 	float X = x.getX(), Y = x.getY();
@@ -66,6 +73,11 @@ inline Vector2D GeometryHelper::Transformation2D::rotateinv(Vector2D &x)
 {
 	float X = x.getX(), Y = x.getY();
 	return Vector2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
+}							   
+inline Point2D GeometryHelper::Transformation2D::rotateinv(Point2D &x)
+{
+	float X = x.getX(), Y = x.getY();
+	return Point2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 inline Vector2D GeometryHelper::Transformation2D::transform(Vector2D &x)
 {
@@ -79,13 +91,13 @@ inline Point2D GeometryHelper::Transformation2D::transform(Point2D &x)
 }   
 inline Vector2D GeometryHelper::Transformation2D::transforminv(Vector2D &x)
 {
-	float X = x.getX(), Y = x.getY();
-	return Vector2D(X * coteta - Y * siteta - u.getX(), Y * coteta + X * siteta  - u.getY());
+	float X = x.getX() - u.getX(), Y = x.getY() - u.getY();
+	return Vector2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 inline Point2D GeometryHelper::Transformation2D::transforminv(Point2D &x)
 { 
-	float X = x.getX(), Y = x.getY();
-	return Point2D(X * coteta - Y * siteta - u.getX(), Y * coteta + X * siteta  - u.getY());
+	float X = x.getX() - u.getX(), Y = x.getY()  - u.getY();
+	return Point2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 #define GHELP
 #endif

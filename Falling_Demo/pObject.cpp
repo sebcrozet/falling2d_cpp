@@ -10,7 +10,7 @@ pObject::pObject(Point2D *pts,int n,bool iscircle, CollisionArbiter &ca, Point2D
 		u = Vector2D(Polygon2D::getCentroid(pts,n));
 		for(int i=0; i<n; i++)
 			pts[i] -= u;
-		p = new Polygon2D(pts,GeometryHelper::Transformation2D(u,0),n, false);
+		p = new Polygon2D(pts,GeometryHelper::Transformation2D(u,1.57f),n, false);
 		ca.addObject(p);
 	}
 	else

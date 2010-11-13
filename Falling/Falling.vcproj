@@ -314,6 +314,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\PixelPerfectSolver.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\PlaneShapeSolver.cpp"
 						>
 					</File>
@@ -449,6 +453,10 @@
 					</File>
 					<File
 						RelativePath=".\GenericSolver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\PixelPerfectSolver.h"
 						>
 					</File>
 					<File

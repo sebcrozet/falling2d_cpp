@@ -1,3 +1,4 @@
+#define DEBUGMOD
 #ifndef SHAPE
 #include "GeometryHelper.h"
 #include "AABB.h"
@@ -7,7 +8,11 @@ class Shape
 {
 private:
 	int aabbid;
-protected:	
+#ifdef DEBUGMOD
+public:
+#else
+protected:
+#endif
 	OBBtree *otree;
 	GeometryHelper::Transformation2D t;	
 	float aabb_xm, aabb_xM, aabb_ym, aabb_yM;
@@ -26,11 +31,18 @@ public:
 	inline bool AABBvsAABB(float xm, float xM, float ym, float yM);
 	inline bool isFixed();
 	inline Vector2D toRotatedInv(Vector2D &v);
-	inline Vector2D toRotated(Vector2D &v);
+	inline Vector2D toRotated(Vector2D &v);	 
+	inline Point2D toRotatedInv(Point2D &v);
+	inline Point2D toRotated(Point2D &v);
 	inline Vector2D toGlobal(Vector2D &v);
 	inline Point2D toGlobal(Point2D &v);
 	inline Vector2D toLocal(Vector2D &p);
 	inline Point2D toLocal(Point2D &p);
+	inline Vector2D toTranslated(Vector2D &p);
+	inline Point2D toTranslatedInv(Point2D &p);	 
+	inline Vector2D toTranslatedInv(Vector2D &p);
+	inline Point2D toTranslated(Point2D &p);
+	inline Point2D *getLocalPoint() const;
 };   
 inline bool Shape::isFixed()
 { return fixedobj; }
@@ -59,7 +71,18 @@ inline Vector2D Shape::toRotatedInv(Vector2D &v)
 { return t.rotateinv(v); }	  
 inline Vector2D Shape::toRotated(Vector2D &v)
 { return t.rotate(v); }
-
+inline Point2D Shape::toRotatedInv(Point2D &v)
+{ return t.rotateinv(v); }	  
+inline Point2D Shape::toRotated(Point2D &v)
+{ return t.rotate(v); }		
+inline Point2D Shape::toTranslatedInv(Point2D &v)
+{ return t.translateinv(v); }	  
+inline Point2D Shape::toTranslated(Point2D &v)
+{ return t.translate(v); }	 
+inline Vector2D Shape::toTranslated(Vector2D &v)
+{ return t.translate(v); }	  
+inline Vector2D Shape::toTranslatedInv(Vector2D &v)
+{ return t.translateinv(v); }
 
 
 class ImplicitShape
@@ -82,7 +105,11 @@ public:
 	inline Vector2D toGlobal(Vector2D &v);
 	inline Point2D toGlobal(Point2D &v);
 	inline Vector2D toLocal(Vector2D &p);
-	inline Point2D toLocal(Point2D &p);
+	inline Point2D toLocal(Point2D &p);	
+	inline Vector2D toTranslated(Vector2D &p);
+	inline Point2D toTranslatedInv(Point2D &p);	 
+	inline Vector2D toTranslatedInv(Vector2D &p);
+	inline Point2D toTranslated(Point2D &p);
 };
 inline float ImplicitShape::getMargin()
 { return margin; }
@@ -98,7 +125,15 @@ inline Vector2D ImplicitShape::toLocal(Vector2D &v)
 inline Vector2D ImplicitShape::toRotatedInv(Vector2D &v)
 { return parent->toRotatedInv(v); }
 inline Vector2D ImplicitShape::toRotated(Vector2D &v)
-{ return parent->toRotated(v); }
+{ return parent->toRotated(v); }	
+inline Point2D ImplicitShape::toTranslatedInv(Point2D &v)
+{ return parent->toTranslatedInv(v); }	  
+inline Point2D ImplicitShape::toTranslated(Point2D &v)
+{ return parent->toTranslated(v); }	 
+inline Vector2D ImplicitShape::toTranslated(Vector2D &v)
+{ return parent->toTranslated(v); }	  
+inline Vector2D ImplicitShape::toTranslatedInv(Vector2D &v)
+{ return parent->toTranslatedInv(v); }	   
 #define SHAPE
 #endif
 

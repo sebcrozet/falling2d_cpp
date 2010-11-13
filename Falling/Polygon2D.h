@@ -37,11 +37,12 @@ public:
 	float getSurface();
 	void updateAABB();
 
-	inline Point2D toGlobal(Point2D &p);
+	/*inline Point2D toGlobal(Point2D &p);
 	inline Vector2D toGlobal(Vector2D &p);
 	inline Vector2D toLocal(Vector2D &p);
 	inline Point2D toLocal(Point2D &p);
 	inline Vector2D toRotatedInv(Vector2D &p);
+	*/
 	inline Vector2D getCentroid();
 	inline int getShapeTypeID();
 

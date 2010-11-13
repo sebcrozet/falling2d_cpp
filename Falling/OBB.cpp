@@ -22,17 +22,16 @@ bool OBB::intersects(OBB *o)
 
 bool OBB::intersects2axis(OBB *o)
 {
-	//return true;
 	for(int i = 0; i < 2; i++)
 	{
 		Vector2D ax = parent->toRotated(axis[i]);
-		float dot = parent->toLocal(o->parent->toGlobal(o->pts[0])) * ax;
+		float dot = parent->toTranslatedInv(o->parent->toGlobal(o->pts[0])) * ax;
 		float dotMin = dot;
 		float dotMax = dot;
 
 		for(int j = 1; j < 4; j++)
 		{
-			dot = parent->toLocal(o->parent->toGlobal(o->pts[j])) * ax;
+			dot = parent->toTranslatedInv(o->parent->toGlobal(o->pts[j])) * ax;
 			if(dot > dotMax)
 				dotMax = dot;
 			else if(dot < dotMin)

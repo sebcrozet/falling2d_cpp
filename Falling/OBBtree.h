@@ -7,7 +7,6 @@ struct OBBIntersection
 {
 	OBB* o1;
 	OBB* o2;
-
 	OBBIntersection(OBB* o1, OBB* o2);
 };
 
