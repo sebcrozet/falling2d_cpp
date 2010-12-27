@@ -262,6 +262,10 @@
 					RelativePath=".\PairManager.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\SubCollision.cpp"
+					>
+				</File>
 				<Filter
 					Name="BoundingVolumes"
 					>
@@ -323,6 +327,22 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="CollisionSolver"
+				>
+				<File
+					RelativePath=".\ContactGenerator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ImpulseSolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PenetrationSolver.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Fichiers d&apos;en-tête"
@@ -331,6 +351,10 @@
 			>
 			<File
 				RelativePath=".\Falling.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RigidBody.h"
 				>
 			</File>
 			<File
@@ -400,6 +424,10 @@
 					RelativePath=".\PairManager.h"
 					>
 				</File>
+				<File
+					RelativePath=".\SubCollision.h"
+					>
+				</File>
 				<Filter
 					Name="BoundingVolumes"
 					>
@@ -464,6 +492,22 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="CollisionSolver"
+				>
+				<File
+					RelativePath=".\ContactGenerator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ImpulseSolver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PenetrationSolver.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

@@ -5,7 +5,7 @@
 #include "affichage.h"
 #include "stdlib.h"
 
-CollisionArbiter ca;
+World ca;
 
 void testPairsManager()
 {
@@ -195,11 +195,16 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 	SDL_FillRect(screen,&screen->clip_rect,0xffffffff);
 	for(int po = 0 ; po < ps.size();po++)
 	{
-	
 		pObject *pob;
 		pob = ps[po];
 		if(!pob->isdisk)
-		{
+		{		   
+			if(false)//po==ps.size()-1)
+			{
+			    pob->p->translate(Vector2D(5,5*sinf(po)));
+				pob->p->rotate(1);
+				ca.notifyObjectMoved(pob->p);
+			}
 			Polygon2D *p = pob->p;
 			int n;
 			int i;
@@ -262,7 +267,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 		}
 	}
 	std::vector<Collision *> cols;
-	ca.solve(cols);
+	cols = ca.solve(0.016f);
 	for(int i=0; i<cols.size();i++)
 	{
 		for(int j = 0; j<cols[i]->c.size(); j++)
@@ -273,144 +278,3 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 	}
 	SDL_Flip(screen);
 }
-
-
-
-/*		
-
-			Polygon2D *p;
-			int n;
-			int i;
-			int j;
-			Vector2D u;
-			float ux, uy;
-			  
-			p = pob->p;
-			
-			n = p->nbrPts;
-			i = 0;
-			j = n - 1;
-			u = pob->u;
-			ux = u.getX();
-			uy = u.getY();
-			while(i<n)
-			{
-				lineRGBA(screen, p->points[i].getX() + ux, p->points[i].getY() + uy, p->points[j].getX() + ux, p->points[j].getY() + uy, pob->r,pob->g, pob->b,255);
-				j = i;
-				i++;
-			}
-			/* 
-			for(int nsn=0;nsn<p->nbrSubShapes && nsn<depth;nsn++)
-			{
-				ImplicitPolygon2D * ip = p->subShapes[nsn];
-				n = ip->nbrPts;
-				i = 0;
-				j = n - 1;
-				u = p->t.getU();
-				ux = u.getX(); uy = u.getY();
-				while(i<n)
-				{
-					lineRGBA(screen,ip->pts[i].getX() + ux, ip->pts[i].getY() + uy, ip->pts[j].getX() + ux, ip->pts[j].getY() + uy, pob->r + 50,pob->g + 50, pob->b + 50,255);
-					j = i;
-					i++;
-				}   		
-				lineRGBA(screen, ux + ip->obb.pts[0].getX(), uy + ip->obb.pts[0].getY(), ux + ip->obb.pts[1].getX(), uy + ip->obb.pts[1].getY(),0,0,0,125);   
-				lineRGBA(screen, ux + ip->obb.pts[1].getX(), uy + ip->obb.pts[1].getY(), ux + ip->obb.pts[2].getX(), uy + ip->obb.pts[2].getY(),0,0,0,125);
-				lineRGBA(screen, ux + ip->obb.pts[2].getX(), uy + ip->obb.pts[2].getY(), ux + ip->obb.pts[3].getX(), uy + ip->obb.pts[3].getY(),0,0,0,125);
-				lineRGBA(screen, ux + ip->obb.pts[3].getX(), uy + ip->obb.pts[3].getY(), ux + ip->obb.pts[0].getX(), uy + ip->obb.pts[0].getY(),0,0,0,125);
-
-			}
-
-
-			
-			for(int nsn=0;nsn<p->nbrSubShapes2 && nsn<depth2;nsn++)
-			{
-				ImplicitPolygon2D * ip = p->subShapes2[nsn];
-				n = ip->nbrPts;
-				i = 0;
-				j = n - 1;
-				u = p->t.getU();
-				ux = u.getX(); uy = u.getY();
-				while(i<n)
-				{
-					lineRGBA(screen,ip->pts[i].getX() + ux, ip->pts[i].getY() + uy, ip->pts[j].getX() + ux, ip->pts[j].getY() + uy, pob->r + 50,pob->g + 50, pob->b + 50,255);
-					j = i;
-					i++;
-				}	
-				lineRGBA(screen, ux + ip->obb.pts[0].getX(), uy + ip->obb.pts[0].getY(), ux + ip->obb.pts[1].getX(), uy + ip->obb.pts[1].getY(),0,0,0,125);   
-				lineRGBA(screen, ux + ip->obb.pts[1].getX(), uy + ip->obb.pts[1].getY(), ux + ip->obb.pts[2].getX(), uy + ip->obb.pts[2].getY(),0,0,0,125);
-				lineRGBA(screen, ux + ip->obb.pts[2].getX(), uy + ip->obb.pts[2].getY(), ux + ip->obb.pts[3].getX(), uy + ip->obb.pts[3].getY(),0,0,0,125);
-				lineRGBA(screen, ux + ip->obb.pts[3].getX(), uy + ip->obb.pts[3].getY(), ux + ip->obb.pts[0].getX(), uy + ip->obb.pts[0].getY(),0,0,0,125);
-
-			}
-			Point2D pp, pp0;				 
-			u = pob->u;
-			ux = u.getX(); uy = u.getY();
-			pob->support = p->chull->getSupportPoint(sp - u,&pp);
-			circleRGBA(screen,pp.getX(), pp.getY(), 3 , 255,0, 0,255);	   
-			pp0 = pp;
-			pp =p->chull->toGlobal(p->chull->pts[p->chull->naiveClimb(0,p->chull->nbrPts-1,sp - u)]);
-			exploreOBBtree(screen,p->getOtree(), u,depth,0);																				  
-			//lineRGBA(screen, ux + p->chull->obb.pts[0].getX(), uy + p->chull->obb.pts[0].getY(), ux + p->chull->obb.pts[1].getX(), uy + p->chull->obb.pts[1].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);   
-			//lineRGBA(screen, ux + p->chull->obb.pts[1].getX(), uy + p->chull->obb.pts[1].getY(), ux + p->chull->obb.pts[2].getX(), uy + p->chull->obb.pts[2].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);
-			//lineRGBA(screen, ux + p->chull->obb.pts[2].getX(), uy + p->chull->obb.pts[2].getY(), ux + p->chull->obb.pts[3].getX(), uy + p->chull->obb.pts[3].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);
-			//lineRGBA(screen, ux + p->chull->obb.pts[3].getX(), uy + p->chull->obb.pts[3].getY(), ux + p->chull->obb.pts[0].getX(), uy + p->chull->obb.pts[0].getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);
-			//circleRGBA(screen,pp.getX(), pp.getY(), 3 , 0,0,0,255);
-			float d1 =	Vector2D(pp).dot(sp-u), d2 = Vector2D(pp0).dot(sp-u);
-
-			bool b = d1 != d2;
-			//Vector2D aaa = p->chull->toLocal(sp);
-			//u = p->chull->toGlobal(Vector2D(p->chull->rightTgtPt(Point2D(aaa.getX(), aaa.getY())))); 
-			//ux = u.getX(); uy = u.getY();
-			lineRGBA(screen, ux , uy, sp.getX(), sp.getY(), pob->r + 50,pob->g + 50, pob->b + 50,125);
-			n = p->chull->nbrPts;
-			i = 0;
-			j = n - 1;
-			u = pob->u;
-			ux = u.getX(); uy = u.getY();
-			while(i<n)
-			{
-				lineRGBA(screen, p->chull->pts[i].getX() + ux, p->chull->pts[i].getY() + uy, p->chull->pts[j].getX() + ux, p->chull->pts[j].getY() + uy, pob->r + 50,pob->g + 50, pob->b + 50,255);
-				j = i;
-				i++;
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-for(int pocl = po + 1 ; pocl<ps.size();pocl++)
-		{
-			pObject *pob2 = ps[pocl];
-			ImplicitShape *s1,*s2;
-			if(!pob->isdisk)
-				s1 = pob->p->chull;
-			else
-				s1 = pob->d;
-			if(!pob2->isdisk)
-				s2 = pob2->p->chull;
-			else
-				s2 = pob2->d;
-			GJKsolver ss(*s1, *s2);
-			Point2D pcl1, pcl2;
-			// float sizep=ss.getClosestPoints(&pcl1, &pcl2);
-			float sizep=ss.getPenDepth(&pcl1, &pcl2);
-			if(sizep>0)
-			{
-				lineRGBA(screen, pcl1.getX(), pcl1.getY(), pcl2.getX(), pcl2.getY(), 0,0, 0,255);  
-				lineRGBA(screen, 10,10,10+ abs(sizep),10, 0,0, 0,255);  
-			}
-		}
-//*/

@@ -2,7 +2,7 @@
 #include "Shapes.h"
 #include "queue"
 #include "CollisionDetector.h"
-#define GJK_DESTROYLIMIT 100 // 10 * 10
+#define GJK_DESTROYLIMIT 400 // 20 * 20
 
 class EPAsolver;
 class GJKsolver : public CollisionDetector

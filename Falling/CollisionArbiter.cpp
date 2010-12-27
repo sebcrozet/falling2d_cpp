@@ -106,13 +106,13 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
 	{
 		((Collision *)p[i].e)->c.clear();
 		if(((Collision*)p[i].e)->cd->solve(((Collision *)p[i].e)->c))
-			todel.push(&p[i]);
+			;//todel.push(&p[i]);
 		else
 			res.push_back((Collision*)p[i].e);
 	}
-	while(!todel.empty())
+	/*while(!todel.empty())
 	{
 		sap.removePair(todel.top());
 		todel.pop();
-	}
+	}*/
 }

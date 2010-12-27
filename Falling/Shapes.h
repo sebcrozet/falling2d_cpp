@@ -3,6 +3,7 @@
 #include "GeometryHelper.h"
 #include "AABB.h"
 
+class RigidBody;
 struct OBBtree;
 class Shape
 {
@@ -13,6 +14,7 @@ public:
 #else
 protected:
 #endif
+	RigidBody *parentBody;
 	OBBtree *otree;
 	GeometryHelper::Transformation2D t;	
 	float aabb_xm, aabb_xM, aabb_ym, aabb_yM;
@@ -24,7 +26,12 @@ public:
 	virtual int getShapeTypeID() = 0;
 	virtual void updateAABB() = 0;
 
+	inline RigidBody *getParent();
+
 	void updateAABB(EndPoint *xm, EndPoint *xM, EndPoint *ym, EndPoint *yM);
+	inline void rotate(float dteta);
+	inline void translate(Vector2D du);
+
 	inline OBBtree *getOtree();
 	inline int getAABBid();
 	inline void setAABBid(int id);
@@ -43,9 +50,26 @@ public:
 	inline Vector2D toTranslatedInv(Vector2D &p);
 	inline Point2D toTranslated(Point2D &p);
 	inline Point2D *getLocalPoint() const;
+	inline Vector2D getPos();
+	inline void setPos(Vector2D &p);
+	inline float getTeta();
+	inline void setTeta(float nteta);
 };   
+inline RigidBody *Shape::getParent()
+{ return parentBody; }
+
+inline Vector2D Shape::getPos()
+{ return t.getU(); }
+inline float Shape::getTeta()
+{ return t.getTeta(); }
+inline void Shape::setTeta(float nteta)
+{ t.setTeta(nteta); }
+inline void Shape::setPos(Vector2D &p)
+{ t.setU(p); }
+
 inline bool Shape::isFixed()
 { return fixedobj; }
+
 inline OBBtree *Shape::getOtree()
 { return otree; }
 inline int Shape::getAABBid()
@@ -58,6 +82,11 @@ inline bool Shape::AABBvsAABB(float xm, float xM, float ym, float yM)
 	if(yM < aabb_ym || ym > aabb_yM) return false;
 	return true;
 }
+
+inline void Shape::rotate(float dteta)
+{ t.addTeta(dteta);	}
+inline void Shape::translate(Vector2D du)
+{ t.addU(du); }
 
 inline Point2D Shape::toGlobal(Point2D &v)
 { return t.transform(v); }

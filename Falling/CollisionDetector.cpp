@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "CollisionDetector.h"
+#include "PenetrationSolver.h"
 
-
-SubCollision::SubCollision(Point2D &a, Point2D &b) : ptA(a), ptB(b)
-{ }
 
 CollisionDetector::CollisionDetector() : isInactive(false)
 { }

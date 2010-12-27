@@ -30,6 +30,8 @@ public:
 	inline Point2D operator-(const Point2D &p);	
 	inline Point2D operator+(Vector2D &v);
 	inline Point2D operator-(Vector2D &v);
+
+	static inline Point2D getMiddle(const Point2D &pa,const Point2D &pb);
 };
 
 
@@ -68,5 +70,7 @@ inline void Point2D::operator +=(Vector2D &v)
 { x+=v.getX(); y+=v.getY(); }
 inline void Point2D::operator -=(Vector2D &v)
 { x-=v.getX(); y-=v.getY(); }
+inline Point2D Point2D::getMiddle(const Point2D &pa, const Point2D &pb)
+{ return Point2D((pa.x+pb.x)/2.0f,(pa.y+pb.y)/2.0f); }
 #define POINT
 #endif

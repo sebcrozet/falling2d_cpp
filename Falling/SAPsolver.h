@@ -21,6 +21,8 @@ private:
 	void updateAddedBoxCollisionPairs(AABB &);
 	void updateEndPointMax(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, int xyid);
 	void updateEndPointMin(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, bool sens, int xyid);
+
+	void removePair(Pair *);
 public:
 	SAPsolver(void (*cb_addobj)(Pair *, Shape *, Shape *), bool (*cb_removeobj)(Pair *), void (*cb_deleteobj)(Pair &));
 	~SAPsolver();
@@ -28,7 +30,6 @@ public:
 	void removeObject(Shape *s);
 	void notifyBoxMoved(Shape *s);
 	Pair *solve(int *nbres);
-	void removePair(Pair *);
 };
 #define _SAPSOLVER_H
 #endif

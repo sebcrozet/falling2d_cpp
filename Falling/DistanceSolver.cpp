@@ -236,7 +236,7 @@ float GJKsolver::solveDist(float* bparam)
 {
 	bool notMax = true;		
 	float barycentricParam = 0;
-	Vector2D p(1,0);// = satlastdir;
+	Vector2D p = satlastdir;
 	int iter = 0;
 	float vv = FLT_MAX;
 	float res = 0;

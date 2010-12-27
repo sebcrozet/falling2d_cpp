@@ -1,6 +1,6 @@
 #include "affichage.h"
 
-pObject::pObject(Point2D *pts,int n,bool iscircle, CollisionArbiter &ca, Point2D center)  : pts(pts), support(0)
+pObject::pObject(Point2D *pts,int n,bool iscircle, World &w, Point2D center)  : pts(pts), support(0)
 {
 	isdisk = iscircle;
 	
@@ -11,14 +11,14 @@ pObject::pObject(Point2D *pts,int n,bool iscircle, CollisionArbiter &ca, Point2D
 		for(int i=0; i<n; i++)
 			pts[i] -= u;
 		p = new Polygon2D(pts,GeometryHelper::Transformation2D(u,1.57f),n, false);
-		ca.addObject(p);
+		w.addObject(p);
 	}
 	else
 	{
 		
 		nb = rand() % 250 + 10;
 		d = new Disk(center, nb, false);
-		ca.addObject(d);
+		w.addObject(d);
 	}	  
 	srand(time(0));
 	r = rand()%156; 

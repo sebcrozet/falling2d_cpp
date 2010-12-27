@@ -4,7 +4,6 @@
 #include "DistanceSolver.h"
 #include "Disk.h"	 
 #include "PairManager.h"
-#include "CollisionArbiter.h"
 #include <ctime>
 #include <cstdlib>
 
@@ -19,7 +18,7 @@ public:
    int nb, support, r, g, b;
    bool isdisk;
 
-   pObject(Point2D * pts,int n,bool iscircle, CollisionArbiter &coll, Point2D center = Point2D()); 
+   pObject(Point2D * pts,int n,bool iscircle, World &coll, Point2D center = Point2D()); 
 };
 
 void initSDL();

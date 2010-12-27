@@ -113,7 +113,7 @@ void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, float xm,
 					{
 						// stop collision
 						Pair* rp = pm.findPair(en.getParent(), e.getParent());
-						if(cb_removeobj(rp))
+						if(rp && cb_removeobj(rp))
 							pm.removePair(rp);
 					}
 				}
@@ -151,7 +151,7 @@ void SAPsolver::updateEndPointMin(std::vector<EndPoint> &list,int *im, float xm,
 				{
 					// stop collision
 					Pair* rp = pm.findPair(en.getParent(), e.getParent());
-					if(cb_removeobj(rp))
+					if(rp && cb_removeobj(rp))
 						pm.removePair(rp);
 				}
 			}

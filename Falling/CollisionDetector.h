@@ -1,15 +1,8 @@
 #ifndef _COLLISIONDETECTORS
 #include "Shapes.h"
 #include "SAPsolver.h"
+#include "SubCollision.h"
 #include <vector>
-
-
-struct SubCollision
-{
-	Point2D ptA, ptB; // penetration contact points. Penetration vector given by: vp = vector(ptA, ptB)
-
-	SubCollision(Point2D &a, Point2D &b);
-};
 
 class CollisionDetector
 {

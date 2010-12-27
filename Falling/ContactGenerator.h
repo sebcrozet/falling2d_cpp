@@ -1,0 +1,28 @@
+#include "CollisionArbiter.h"
+#include "RigidBody.h"
+#include <vector>
+
+struct Contact
+{
+	Shape *s1;
+	Shape *s2;
+	float penetration;
+	Point2D absoluteContactPoint;
+	Vector2D normal, tangeant;
+	Vector2D closingVelocity;
+	float totalInertia;
+
+	inline Vector2D toLocal(Vector2D &v);
+	inline Vector2D toGlobal(Vector2D &v);
+};
+Vector2D Contact::toLocal(Vector2D &v)
+{ return Vector2D(v.dot(normal),v.dot(tangeant)); }
+Vector2D Contact::toGlobal(Vector2D &v)
+{ return Vector2D(v.getX()*normal.getX()+v.getY()*tangeant.getX(),v.getX()*normal.getY()+tangeant.getX()); }
+
+class ContactGenerator
+{
+private:
+public:
+	static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts);
+};
