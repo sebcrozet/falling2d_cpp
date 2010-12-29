@@ -14,6 +14,7 @@ public:
    Vector2D u;
    Polygon2D * p;
    Disk * d;
+   RigidBody *rb;
    Point2D * pts;
    int nb, support, r, g, b;
    bool isdisk;

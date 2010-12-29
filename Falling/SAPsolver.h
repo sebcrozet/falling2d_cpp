@@ -29,6 +29,7 @@ public:
 	void addObject(Shape *s);
 	void removeObject(Shape *s);
 	void notifyBoxMoved(Shape *s);
+	void verifyMovedObjects();
 	Pair *solve(int *nbres);
 };
 #define _SAPSOLVER_H

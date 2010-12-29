@@ -1,3 +1,4 @@
+#ifndef CGEN
 #include "CollisionArbiter.h"
 #include "RigidBody.h"
 #include <vector>
@@ -10,19 +11,24 @@ struct Contact
 	Point2D absoluteContactPoint;
 	Vector2D normal, tangeant;
 	Vector2D closingVelocity;
+	float desiredVelocityChange;
 	float totalInertia;
+	float dvel;
 
 	inline Vector2D toLocal(Vector2D &v);
 	inline Vector2D toGlobal(Vector2D &v);
+	void updateVelChange(float dt);
 };
 Vector2D Contact::toLocal(Vector2D &v)
 { return Vector2D(v.dot(normal),v.dot(tangeant)); }
 Vector2D Contact::toGlobal(Vector2D &v)
-{ return Vector2D(v.getX()*normal.getX()+v.getY()*tangeant.getX(),v.getX()*normal.getY()+tangeant.getX()); }
+{ return Vector2D(v.getX()*normal.getX()+v.getY()*tangeant.getX(),v.getX()*normal.getY()+v.getY()*tangeant.getY()); }
 
 class ContactGenerator
 {
 private:
 public:
-	static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts);
+	static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,float dt);
 };
+#define CGEN
+#endif

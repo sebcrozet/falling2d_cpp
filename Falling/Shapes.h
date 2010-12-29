@@ -19,6 +19,7 @@ protected:
 	GeometryHelper::Transformation2D t;	
 	float aabb_xm, aabb_xM, aabb_ym, aabb_yM;
 	bool fixedobj;
+	bool moved;
 
 public:
 	virtual float getSurface() = 0;
@@ -27,6 +28,7 @@ public:
 	virtual void updateAABB() = 0;
 
 	inline RigidBody *getParent();
+	inline void setParent(RigidBody *r);
 
 	void updateAABB(EndPoint *xm, EndPoint *xM, EndPoint *ym, EndPoint *yM);
 	inline void rotate(float dteta);
@@ -54,18 +56,32 @@ public:
 	inline void setPos(Vector2D &p);
 	inline float getTeta();
 	inline void setTeta(float nteta);
+	inline bool getMoved();
+	inline void setMoved(bool m);
 };   
 inline RigidBody *Shape::getParent()
 { return parentBody; }
+inline void Shape::setParent(RigidBody *p)
+{ parentBody = p; }
 
 inline Vector2D Shape::getPos()
 { return t.getU(); }
 inline float Shape::getTeta()
 { return t.getTeta(); }
 inline void Shape::setTeta(float nteta)
-{ t.setTeta(nteta); }
+{ 
+	setMoved(true);
+	t.setTeta(nteta); 
+}
 inline void Shape::setPos(Vector2D &p)
-{ t.setU(p); }
+{
+	setMoved(true);
+	t.setU(p); 
+}
+inline bool Shape::getMoved()
+{ return moved; }
+inline void Shape::setMoved(bool m)
+{ moved = m; }
 
 inline bool Shape::isFixed()
 { return fixedobj; }
@@ -84,9 +100,15 @@ inline bool Shape::AABBvsAABB(float xm, float xM, float ym, float yM)
 }
 
 inline void Shape::rotate(float dteta)
-{ t.addTeta(dteta);	}
+{ 
+	setMoved(true);
+	t.addTeta(dteta);	
+}
 inline void Shape::translate(Vector2D du)
-{ t.addU(du); }
+{ 
+	setMoved(true);
+	t.addU(du); 
+}
 
 inline Point2D Shape::toGlobal(Point2D &v)
 { return t.transform(v); }
@@ -121,7 +143,7 @@ protected:
 	Shape *parent;
 public:
 	inline float getMargin();
-	virtual float getBoundingSphereSqRadius() = 0;
+	virtual float getBoundingSphereRadius() = 0;
 	virtual Vector2D getCenter() = 0;
 	virtual int getSupportPoint(Vector2D &d, Point2D *res) = 0;
 	virtual int getSupportPoint(Vector2D &d, Point2D *res, int optimisationId) = 0;  // utile pour tous ou seulement les polygones?	 

@@ -188,6 +188,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RigidBody.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -340,6 +344,10 @@
 				</File>
 				<File
 					RelativePath=".\PenetrationSolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\VitessSolver.cpp"
 					>
 				</File>
 			</Filter>
@@ -506,6 +514,10 @@
 				</File>
 				<File
 					RelativePath=".\PenetrationSolver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\VitessSolver.h"
 					>
 				</File>
 			</Filter>

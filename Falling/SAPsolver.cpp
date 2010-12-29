@@ -199,6 +199,7 @@ void SAPsolver::updateEndPointMin(std::vector<EndPoint> &list,int *im, float xm,
 
 Pair *SAPsolver::solve(int *nbres)
 {
+	verifyMovedObjects();
 	int n = updateids.size();
 	for(int i = 0; i < n; i++)
 	{
@@ -214,6 +215,19 @@ void SAPsolver::notifyBoxMoved(Shape *s)
 { 
 	updateids.push_back(s->getAABBid()); 
 	s->updateAABB();
+}
+
+void SAPsolver::verifyMovedObjects()
+{
+	for(int i=0;i<aabbs.size();i++)
+	{
+		Shape *s = aabbs[i].parent;
+		if(s->getMoved())
+		{
+			notifyBoxMoved(s);
+			s->setMoved(false);
+		}
+	}
 }
 
 void SAPsolver::addObject(Shape *s)

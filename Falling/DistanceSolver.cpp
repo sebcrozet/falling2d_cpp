@@ -3,9 +3,11 @@
 #include <stdlib.h>
 
 #pragma region GJKsolver
-GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSize(1)
+GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSize(0)
 {
 	satlastdir = b.getCenter() - a.getCenter();
+	simplexSize = 1;
+	dirs[0] = satlastdir;
 	msum = a.getMargin() + b.getMargin();
 	sqmsum = msum * msum;
 }
@@ -13,7 +15,10 @@ GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSi
 bool GJKsolver::canDestroy()
 {
 	Vector2D v = A.getCenter() - B.getCenter();
-	return (v * v > A.getBoundingSphereSqRadius() + B.getBoundingSphereSqRadius() + sqmsum + GJK_DESTROYLIMIT);
+	float rr = A.getBoundingSphereRadius() + B.getBoundingSphereRadius() + msum + (float)GJK_DESTROYLIMIT;
+	rr = rr*rr;
+	float vv = v*v;
+	return (v*v > rr);
 }
 
 bool GJKsolver::_solve(std::vector<SubCollision> &res)
@@ -49,6 +54,7 @@ float GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
 				*pA += ab * A.getMargin();
 				*pB += ab * (-B.getMargin());
 			}
+			printf("%f\n",bparam);
 		}
 	}
 	else
@@ -88,6 +94,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 					*barycentricParam = 0;
 					p = ptsC[1];
 					swapPts(ptsC[0], ptsC[1]);	
+					swapPts(dirs[0], dirs[1]);	
 					ptsA[0] = ptsA[1];	
 					ptsB[0] = ptsB[1];						
 				}
@@ -124,7 +131,8 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 				{   
 					*barycentricParam = 0;
 					p = ptsC[1];
-					swapPts(ptsC[0], ptsC[1]);	
+					swapPts(ptsC[0], ptsC[1]);  
+					swapPts(dirs[0], dirs[1]);		
 					ptsA[0] = ptsA[1];	
 					ptsB[0] = ptsB[1];
 					simplexSize = 2;	
@@ -146,7 +154,8 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 						{				  
 							*barycentricParam = 0;
 							p = ptsC[2];
-							swapPts(ptsC[0], ptsC[2]);	
+							swapPts(ptsC[0], ptsC[2]);	  
+							swapPts(dirs[0], dirs[2]);	
 							ptsA[0] = ptsA[2];	
 							ptsB[0] = ptsB[2];
 							simplexSize = 2;	
@@ -159,6 +168,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 								*barycentricParam = d2 / (d2 - d6);
 								p = ptsC[0] + ac * (*barycentricParam);	  
 								swapPts(ptsC[1], ptsC[2]);	
+								swapPts(dirs[1], dirs[2]);
 								ptsA[1] = ptsA[2];	
 								ptsB[1] = ptsB[2];
 							}
@@ -168,11 +178,14 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 								float va = d3 * d6 - d5 * d4;
 								if(va<=0 && (d4-d3)>=0 && (d5-d6)>=0)
 								{	   
-									*barycentricParam = d2 / (d2 - d6);
-									p = ptsC[0] + (ptsC[2] - ptsC[1]) * (*barycentricParam);	  
-									swapPts(ptsC[0], ptsC[2]);	
+									//*barycentricParam = d2 / (d2 - d6);
+									*barycentricParam = (d4-d3) / ((d4-d3) + (d5 - d6));
+									p = ptsC[1] + (ptsC[2] - ptsC[1]) * (*barycentricParam);	  
+									swapPts(ptsC[0], ptsC[2]);	  
+									swapPts(dirs[0], dirs[2]);	
 									ptsA[0] = ptsA[2];	
 									ptsB[0] = ptsB[2];
+
 								}
 								else
 									simplexSize = 4;
@@ -231,6 +244,47 @@ void GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 	} while(notIn);
 }
 
+void GJKsolver::recomputeSimplex()
+{
+	//recompute last simplex datas
+	for(int i = 0; i < simplexSize;i++)
+	{
+		Point2D cp1, cp2;
+		optidsA[i] = A.getSupportPoint(dirs[i].reflexion(), &cp1);
+		optidsB[i] = B.getSupportPoint(dirs[i], &cp2);
+		ptsC[i] = Vector2D(cp1 - cp2);
+		ptsA[i] = cp1;
+		ptsB[i] = cp2;
+	}
+	//adjust datas
+	if(simplexSize == 2)
+	{
+		if(optidsA[0] == optidsA[1] && optidsB[0] == optidsB[1])
+			simplexSize = 1; 
+	}
+	else if(simplexSize == 3)
+	{
+		if(optidsA[0] == optidsA[1] && optidsB[0] == optidsB[1])
+		{
+			if(optidsA[0] == optidsA[2] && optidsB[0] == optidsB[2])
+				simplexSize = 1; 
+			else
+			{
+				optidsA[1] = optidsA[2];
+				optidsB[1] = optidsB[2];
+				ptsC[1] = ptsC[2];
+				ptsA[1] = ptsA[2];
+				ptsB[1] = ptsB[2];
+				simplexSize = 2; 
+			}
+		}
+		else if(optidsA[0] == optidsA[2] && optidsB[0] == optidsB[2])
+			simplexSize = 2; 
+		else if(optidsA[1] == optidsA[2] && optidsB[1] == optidsB[2])
+			simplexSize = 2; 
+		//else simplex valid 
+	}
+}
 
 float GJKsolver::solveDist(float* bparam)
 {
@@ -240,11 +294,22 @@ float GJKsolver::solveDist(float* bparam)
 	int iter = 0;
 	float vv = FLT_MAX;
 	float res = 0;
-	simplexSize = 1;
-	int fullSimplexSize = 0; // will often be = simplexSize. Will be != at the beginning (here) or when simplex reduction is 3 -> 1 (when origin is in a triangle's point voronoy region) 
+	//simplexSize = 1;
+	int fullSimplexSize = simplexSize; // will often be = simplexSize. Will be != at the beginning (here) or when simplex reduction is 3 -> 1 (when origin is in a triangle's point voronoy region) 
+	recomputeSimplex();
 	do
 	{
 		iter++;
+		p.setX(0); p.setY(0);					  
+		updateClosestFeatureSimplexDatas(p, &barycentricParam);
+		vv = p * p;
+		if(vv < FLT_EPSILON)	// origin included in the simplex
+		{
+			notMax = false;
+			simplexSize--;
+			res = -1;
+			break;
+		}	
 		Vector2D cPoint;
 		Point2D cp1, cp2;
 		int optid1, optid2;
@@ -275,6 +340,7 @@ float GJKsolver::solveDist(float* bparam)
 			// intersects in margin
 			notMax = false;
 			res = msum - sqrt(vv);
+			simplexSize--;
 			break;
 		}
 		fullSimplexSize = simplexSize;
@@ -285,16 +351,6 @@ float GJKsolver::solveDist(float* bparam)
 		optidsA[id] = optid1;
 		optidsB[id] = optid2;
 		dirs[id] = p;
-		p.setX(0); p.setY(0);					  
-		updateClosestFeatureSimplexDatas(p, &barycentricParam);
-		vv = p * p;
-		if(vv < FLT_EPSILON)	// origin included in the simplex
-		{
-			notMax = false;
-			simplexSize--;
-			res = -1;
-			break;
-		}	
 	} while(notMax);
 	printf("%i",iter);
 	printf("\n");
@@ -328,8 +384,9 @@ SimplexSeg::SimplexSeg(Point2D &pA1, Point2D &pB1, Point2D &pC1, Point2D &pA2, P
 			ptB2 = pB2;
 			ptC2 = pC2;						
 			bCoord = dist / p;
-			dist = ao * ao - dist * bCoord;
+			//ao * ao - dist * bCoord;
 			v = (ab * bCoord) - ao;
+			dist = v * v;
 		}
 	}
 }
@@ -504,7 +561,9 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 				sd.push(sg2);
 			else
 				delete sg2;
-		}while(true);
+		}while(!sd.empty());
+		if(sd.empty())
+			printf("fail");
 		sg->getABpoints(pA, pB);
 	}
 	// free memory

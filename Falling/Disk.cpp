@@ -22,8 +22,8 @@ void Disk::updateAABB()
 	aabb_yM = radius + p.getY();
 }
 
-float Disk::getBoundingSphereSqRadius() 
-{ return radius * radius; }
+float Disk::getBoundingSphereRadius() 
+{ return radius; }
 
 float Disk::getSurface()
 { return (float)M_PI * radius * radius; }

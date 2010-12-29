@@ -62,7 +62,7 @@ private:
 	Point2D *pts, center;
 	int nbrPts;
 	OBB *obb;
-	float sqradius;
+	float radius;
 
 	int naiveClimb(int ibase, int imax,Vector2D &v);
 	float _getBoundingSphereSqRadius();
@@ -72,7 +72,7 @@ public:
 	Point2D rightTgtPt(Point2D &ref);
 	int getSupportPoint(Vector2D &d, Point2D * res);
 	int getSupportPoint(Vector2D &d, Point2D * res, int o);	 
-	float getBoundingSphereSqRadius();
+	float getBoundingSphereRadius();
 	inline Vector2D getCenter();  
 	inline OBB *getOBB();
 

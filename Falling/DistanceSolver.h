@@ -2,7 +2,7 @@
 #include "Shapes.h"
 #include "queue"
 #include "CollisionDetector.h"
-#define GJK_DESTROYLIMIT 400 // 20 * 20
+#define GJK_DESTROYLIMIT 20
 
 class EPAsolver;
 class GJKsolver : public CollisionDetector
@@ -22,6 +22,7 @@ private:
 	
 	bool ISAsolve();
 	float solveDist(float* bparam);
+	void recomputeSimplex();
 	void updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentricParam);
 	void gjk_buildMarginedSimplexWithOrigin();
 

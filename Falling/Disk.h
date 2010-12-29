@@ -15,7 +15,7 @@ public:
 	Vector2D getCenter();
 	int getSupportPoint(Vector2D &d, Point2D *res);
 	int getSupportPoint(Vector2D &d, Point2D *res, int optimisationId);
-	float getBoundingSphereSqRadius();
+	float getBoundingSphereRadius();
 	void updateAABB();
 	inline int getShapeTypeID();
 

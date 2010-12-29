@@ -466,7 +466,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
 	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);
-	sqradius = _getBoundingSphereSqRadius();
+	radius = sqrt(_getBoundingSphereSqRadius());
 }
 
 float ImplicitPolygon2D::_getBoundingSphereSqRadius()
@@ -482,8 +482,8 @@ float ImplicitPolygon2D::_getBoundingSphereSqRadius()
 	return res;
 }
 
-float ImplicitPolygon2D::getBoundingSphereSqRadius()
-{ return sqradius; }
+float ImplicitPolygon2D::getBoundingSphereRadius()
+{ return radius; }
 
 Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 {	   	

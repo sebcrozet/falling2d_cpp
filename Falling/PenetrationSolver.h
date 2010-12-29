@@ -6,5 +6,6 @@ class PenetrationSolver
 {
 private:
 public:
-	static void solve(std::vector<Contact *> scs, Shape *s1, Shape *s2);
+	static void solve(std::vector<Contact *> scs);
+	static void applyPositionChange(Contact *c,float *ch);
 };

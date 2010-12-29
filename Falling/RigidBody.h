@@ -1,4 +1,6 @@
-#include "Shapes.h"
+#ifndef RBODY
+#include "Polygon2D.h"
+#include "Disk.h"
 
 class RigidBody
 {
@@ -7,13 +9,22 @@ private:
 	Vector2D v;
 	float invM;
 	float invI;
+	Vector2D acc;
 
 	Shape *s;
+
+	RigidBody(Shape *s,float m,Vector2D pos,float teta = 0);
 public:
+	//Do not export this function!
+	inline Shape *getShape();
+	//
+
 	inline Vector2D getPos();
 	inline void setPos(Vector2D);
 	inline float getOmega();
+	inline void addRV(float rv);
 	inline Vector2D getV();
+	inline void addV(Vector2D &v);
 	inline float getTeta();
 	inline void setTeta(float teta);
 	inline float getM();
@@ -23,18 +34,29 @@ public:
 	inline float getI();
 	inline float getInvI();
 	inline float getA();
+	inline Vector2D getAcc();
+
+	// Rigid Body builder
+	static RigidBody *build_circularBody(Point2D &pt, float radius, bool fixed,float m,Vector2D pos,float teta);
+	static RigidBody *build_polygonalBody(Point2D *pts,int n, bool fixed,float m,Vector2D pos,float teta);
 };
 inline float RigidBody::getOmega()
 { return omega; }
+inline void RigidBody::addRV(float po)
+{ omega += po; }
 inline Vector2D RigidBody::getV()
 { return v; }
+inline void RigidBody::addV(Vector2D &pv)
+{ v = v + pv; }
+inline Vector2D RigidBody::getAcc()
+{ return Vector2D(0.,-9.81,0.)/*/acc/*/; }
 
 inline float RigidBody::getTeta()
-{ s->getTeta(); }
+{ return s->getTeta(); }
 inline void RigidBody::setTeta(float teta)
 { s->setTeta(teta); }
 inline Vector2D RigidBody::getPos()
-{ s->getPos(); }
+{ return s->getPos(); }
 inline void RigidBody::setPos(Vector2D pos)
 { s->setPos(pos); }
 
@@ -54,3 +76,8 @@ inline float RigidBody::getInvI()
 
 inline float RigidBody::getA()
 { return s->getSurface(); }
+
+inline Shape *RigidBody::getShape()
+{ return s; }
+#define RBODY
+#endif

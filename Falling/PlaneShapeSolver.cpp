@@ -90,7 +90,7 @@ PlaneImplicitShapeDistanceSolver::PlaneImplicitShapeDistanceSolver(InfinitePlane
 
 bool PlaneImplicitShapeDistanceSolver::canDestroy()
 {
-	return p.sqDistToPlane(Point2D(is.getCenter()) - is.getBoundingSphereSqRadius()) > PS_DESTROYLIMIT;
+	return p.sqDistToPlane(Point2D(is.getCenter()) - is.getBoundingSphereRadius()) > PS_DESTROYLIMIT;
 }
 
 bool PlaneImplicitShapeDistanceSolver::_solve(std::vector<SubCollision> &res)

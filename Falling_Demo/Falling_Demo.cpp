@@ -63,10 +63,13 @@ void initSDL()
     int depth = 0, depth2 = 0;
 	SDL_Init(SDL_INIT_VIDEO);
 	screen = SDL_SetVideoMode(1000, 1000, 32, SDL_HWSURFACE | SDL_RESIZABLE | SDL_DOUBLEBUF);
-	update(screen,ps,depth,depth2,sp);	  
 	while(v)
 	{
-		SDL_WaitEvent(&e);
+		if(!SDL_PollEvent(&e))
+		{
+			update(screen,ps,depth,depth2,sp);
+			continue;
+		}
 		switch(e.type)
 		{
 			case SDL_QUIT:
@@ -122,7 +125,7 @@ void initSDL()
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				if(!slidemode && e.button.button == SDL_BUTTON_LEFT)
+				if(!slidemode)
 				{
 					trace = true;
 					vpts.push_back(Point2D(e.button.x,e.button.y));
@@ -151,7 +154,7 @@ void initSDL()
 						pts = new Point2D[n];
 						for(int i=0; i<n; i++)
 							pts[i] = vpts[i];
-						ps.push_back(new pObject(pts,n,false, ca));
+						ps.push_back(new pObject(pts,n,e.button.button == SDL_BUTTON_LEFT, ca));
 						vpts.clear();					  
 						update(screen, ps,depth, depth2,sp);
 					}
@@ -193,18 +196,25 @@ void exploreOBBtree(SDL_Surface *screen,OBBtree *t, Vector2D v, int deepness, in
 void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,Vector2D &sp)
 {
 	SDL_FillRect(screen,&screen->clip_rect,0xffffffff);
+	if(ps.size())
+	{
+	pObject *pob;
+	pob = ps[ps.size()-1];
+	/*
+		if(!pob->isdisk && !pob->p->isFixed())
+		{		   
+			pob->p->translate(Vector2D(0,2));
+			pob->p->rotate(0.02);
+		}
+		*/
+	}
+
 	for(int po = 0 ; po < ps.size();po++)
 	{
 		pObject *pob;
 		pob = ps[po];
 		if(!pob->isdisk)
 		{		   
-			if(false)//po==ps.size()-1)
-			{
-			    pob->p->translate(Vector2D(5,5*sinf(po)));
-				pob->p->rotate(1);
-				ca.notifyObjectMoved(pob->p);
-			}
 			Polygon2D *p = pob->p;
 			int n;
 			int i;
@@ -266,6 +276,8 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->r,pob->g, pob->b, 255);
 		}
 	}
+	//std::vector<Collision *> cols;
+	//cols = ca.solve(0.016f);
 	std::vector<Collision *> cols;
 	cols = ca.solve(0.016f);
 	for(int i=0; i<cols.size();i++)

@@ -1,19 +1,22 @@
 #include "math.h"
 #include "Polygon2D.h"
-#include "CollisionArbiter.h"
+#include "PenetrationSolver.h"
+#include "ImpulseSolver.h"
+#include "VitessSolver.h"
 
 class World
 {
 private:
 	CollisionArbiter ca;
-	std::stack<Shape *> removeWaitingQueue;
-	std::stack<Shape *> addWaitingQueue;
+	std::vector<RigidBody *> objs;
+	std::stack<RigidBody *> removeWaitingQueue;
+	std::stack<RigidBody *> addWaitingQueue;
 
 	void dumpAddDelete();
 public:
-	void addObject(Shape *s);
-	void removeObject(Shape *s);
+	void addObject(RigidBody *s);
+	void removeObject(RigidBody *s);
 	std::vector<Collision *> solve(float dt);
 
-	void notifyObjectMoved(Shape *s);
+	void notifyObjectMoved(RigidBody *s);
 };

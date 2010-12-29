@@ -2,23 +2,25 @@
 
 pObject::pObject(Point2D *pts,int n,bool iscircle, World &w, Point2D center)  : pts(pts), support(0)
 {
-	isdisk = iscircle;
+	isdisk = false;//iscircle;
 	
 	nb = n;
-	if(!iscircle)
+	if(true)
 	{
 		u = Vector2D(Polygon2D::getCentroid(pts,n));
 		for(int i=0; i<n; i++)
 			pts[i] -= u;
-		p = new Polygon2D(pts,GeometryHelper::Transformation2D(u,1.57f),n, false);
-		w.addObject(p);
+		rb = RigidBody::build_polygonalBody(pts,n,iscircle,10,u,0);
+		p = (Polygon2D*)(rb->getShape());
+		w.addObject(rb);
 	}
 	else
 	{
 		
 		nb = rand() % 250 + 10;
-		d = new Disk(center, nb, false);
-		w.addObject(d);
+		rb = RigidBody::build_circularBody(center, nb, false,0,Vector2D(center),0);
+		d = (Disk *)(rb->getShape());
+		w.addObject(rb);
 	}	  
 	srand(time(0));
 	r = rand()%156; 

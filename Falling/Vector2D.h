@@ -1,12 +1,14 @@
+
 #ifndef VECTOR
 #include <float.h>
+#include <stdio.h>
 #define EPSILON	 FLT_EPSILON
 typedef struct Vector2D Vector2D;
 struct Point2D;
 struct Vector2D
 {
 private:
-	float x ,y ,z,padding;
+	float x,y,z,padding;
 
 public:
 	Vector2D(const Vector2D &v);
@@ -14,6 +16,7 @@ public:
 	Vector2D(Point2D &p1,Point2D &p2);
 	Vector2D(float x = 0,float y = 0, float z = 0);
 
+	inline void print();
 	inline float getX() const;
 	inline float getY() const;
 	inline float getZ() const;
@@ -62,7 +65,15 @@ inline void Vector2D::setY(float _y)
 inline void Vector2D::setZ(float _z)
 { z=_z; }
 
-
+inline void Vector2D::print()
+{
+	printf("%f",x);
+	printf("  ");
+	printf("%f",y);
+	printf("  ");
+	printf("%f",z);
+	printf("\n");
+}
 
 inline bool Vector2D::isNull()
 { return abs(x) < EPSILON && abs(y) < EPSILON; }
