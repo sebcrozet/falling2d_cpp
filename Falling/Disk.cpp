@@ -6,8 +6,8 @@ Disk::Disk(Point2D &pt, float dradius, bool fixed)
 	parent = this;
 	fixedobj = fixed;
 	radius = dradius;
-	margin = 0.04f;
-	radiuslessM = radius - margin;
+	margin = radius;//0.04f;
+	radiuslessM = 0;//radius - margin;
 	t = GeometryHelper::Transformation2D(Vector2D (pt), 0);
 	obb = new OBB(Point2D(-radius, radius),Point2D(radius, radius),Point2D(radius, -radius),Point2D(-radius, -radius), this, radius * radius, 0);
 	otree = new OBBtree(0, 0, obb);
@@ -37,14 +37,14 @@ Vector2D Disk::getCenter()
 int Disk::getSupportPoint(Vector2D &d, Point2D *res)
 {
 	Vector2D v = getCenter();
-	v += d.direction() * radiuslessM;
+	//v += d.direction() * radiuslessM;
 	*res =  Point2D(v.getX(), v.getY()); 
 	return 0; 
 }
 int Disk::getSupportPoint(Vector2D &d, Point2D *res, int optimisationId)
 {	  
 	Vector2D v = getCenter();
-	v += d.direction() * radiuslessM;
+	//v += d.direction() * radiuslessM;
 	*res =  Point2D(v.getX(), v.getY()); 
 	return 0; 
 }

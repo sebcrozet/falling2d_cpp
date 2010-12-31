@@ -1,7 +1,8 @@
 #ifndef RBODY
 #include "Polygon2D.h"
 #include "Disk.h"
-
+#define SLEEPLIMIT 0.8f
+#define BIAS 0.6f
 class RigidBody
 {
 private:
@@ -10,6 +11,8 @@ private:
 	float invM;
 	float invI;
 	Vector2D acc;
+	bool sleeping;
+	float movment;
 
 	Shape *s;
 
@@ -17,7 +20,10 @@ private:
 public:
 	//Do not export this function!
 	inline Shape *getShape();
+	void updateSleepState(float dt);
 	//
+	void setAwake(bool awake);
+	inline bool isSleeping();
 
 	inline Vector2D getPos();
 	inline void setPos(Vector2D);
@@ -25,6 +31,7 @@ public:
 	inline void addRV(float rv);
 	inline Vector2D getV();
 	inline void addV(Vector2D &v);
+	inline void multV(float d);
 	inline float getTeta();
 	inline void setTeta(float teta);
 	inline float getM();
@@ -40,6 +47,9 @@ public:
 	static RigidBody *build_circularBody(Point2D &pt, float radius, bool fixed,float m,Vector2D pos,float teta);
 	static RigidBody *build_polygonalBody(Point2D *pts,int n, bool fixed,float m,Vector2D pos,float teta);
 };
+inline bool RigidBody::isSleeping()
+{ return sleeping; }
+
 inline float RigidBody::getOmega()
 { return omega; }
 inline void RigidBody::addRV(float po)
@@ -48,8 +58,10 @@ inline Vector2D RigidBody::getV()
 { return v; }
 inline void RigidBody::addV(Vector2D &pv)
 { v = v + pv; }
+inline void RigidBody::multV(float d)
+{ v = v*d; }
 inline Vector2D RigidBody::getAcc()
-{ return Vector2D(0.,-9.81,0.)/*/acc/*/; }
+{ return Vector2D(0.,19.62,0.)/*/acc/*/; }
 
 inline float RigidBody::getTeta()
 { return s->getTeta(); }

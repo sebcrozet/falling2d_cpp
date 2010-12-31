@@ -19,7 +19,7 @@ public:
    int nb, support, r, g, b;
    bool isdisk;
 
-   pObject(Point2D * pts,int n,bool iscircle, World &coll, Point2D center = Point2D()); 
+   pObject(Point2D * pts,int n,bool iscircle, World &coll, bool cir,Point2D center = Point2D()); 
 };
 
 void initSDL();

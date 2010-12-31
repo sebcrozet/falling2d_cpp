@@ -8,4 +8,6 @@ private:
 public:
 	static void solve(std::vector<Contact *> scs,float dt);
 	static void applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch);
+	static void solveRelax(std::vector<Contact *> scs,float dt);
+	static void applyVelocityChangeRelax(Contact *c,Vector2D *rch,Vector2D *vch);
 };

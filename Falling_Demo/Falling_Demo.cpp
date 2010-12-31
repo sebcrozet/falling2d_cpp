@@ -6,13 +6,14 @@
 #include "stdlib.h"
 
 World ca;
+int timerc;
 
 void testPairsManager()
 {
 	PairManager pm;
 	srand(time(0));
 	std::vector<Pair> ps;
-	printf("test0"); 	
+	//printf("test0"); 	
 	// add random pairs
 	for(int i = 0; i < 1009; i++)
 		ps.push_back(*pm.addPair(rand(), rand()));
@@ -63,6 +64,7 @@ void initSDL()
     int depth = 0, depth2 = 0;
 	SDL_Init(SDL_INIT_VIDEO);
 	screen = SDL_SetVideoMode(1000, 1000, 32, SDL_HWSURFACE | SDL_RESIZABLE | SDL_DOUBLEBUF);
+	timerc = SDL_GetTicks();
 	while(v)
 	{
 		if(!SDL_PollEvent(&e))
@@ -84,7 +86,7 @@ void initSDL()
 					pts = new Point2D[n];
 					for(int i=0; i<n; i++)
 					pts[i] = vpts[i];
-					ps.push_back(new pObject(pts,n,false, ca));
+					ps.push_back(new pObject(pts,n,false, ca,false));
 					vpts.clear();					  
 					update(screen, ps,depth,depth2,sp);
 				}
@@ -132,7 +134,7 @@ void initSDL()
 				}
 				if(slidemode)
 				{				   
-					ps.push_back(new pObject(0,100,true,ca, Point2D(e.button.x,e.button.y)));
+					ps.push_back(new pObject(0,100,true,ca, true,Point2D(e.button.x,e.button.y)));
 					update(screen, ps,depth, depth2,sp);
 				} 
 				break;
@@ -154,7 +156,8 @@ void initSDL()
 						pts = new Point2D[n];
 						for(int i=0; i<n; i++)
 							pts[i] = vpts[i];
-						ps.push_back(new pObject(pts,n,e.button.button == SDL_BUTTON_LEFT, ca));
+						if(n>3 || e.button.button == SDL_BUTTON_MIDDLE)
+							ps.push_back(new pObject(pts,n,e.button.button == SDL_BUTTON_LEFT, ca,e.button.button == SDL_BUTTON_MIDDLE));
 						vpts.clear();					  
 						update(screen, ps,depth, depth2,sp);
 					}
@@ -237,7 +240,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				j = i;
 				i++;
 			}
-			lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_ym, pob->p->aabb_xm, pob->p->aabb_yM, pob->r + 100,pob->g + 100, pob->b + 100,255);
+			/*lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_ym, pob->p->aabb_xm, pob->p->aabb_yM, pob->r + 100,pob->g + 100, pob->b + 100,255);
 			lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_ym, pob->p->aabb_xM, pob->p->aabb_ym, pob->r + 100,pob->g + 100, pob->b + 100,255);
 			lineRGBA(screen, pob->p->aabb_xm, pob->p->aabb_yM, pob->p->aabb_xM, pob->p->aabb_yM, pob->r + 100,pob->g + 100, pob->b + 100,255);
 			lineRGBA(screen, pob->p->aabb_xM, pob->p->aabb_yM, pob->p->aabb_xM, pob->p->aabb_ym, pob->r + 100,pob->g + 100, pob->b + 100,255);
@@ -278,8 +281,13 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 	}
 	//std::vector<Collision *> cols;
 	//cols = ca.solve(0.016f);
+	int ttt = SDL_GetTicks();
 	std::vector<Collision *> cols;
-	cols = ca.solve(0.016f);
+	cols = ca.solve(0.016);//(float(ttt-timerc))/1000.);
+	timerc = SDL_GetTicks();
+	if(timerc-ttt>8)
+		timerc=timerc;
+	printf("took %i\n",timerc-ttt);
 	for(int i=0; i<cols.size();i++)
 	{
 		for(int j = 0; j<cols[i]->c.size(); j++)

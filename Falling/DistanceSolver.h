@@ -24,7 +24,7 @@ private:
 	float solveDist(float* bparam);
 	void recomputeSimplex();
 	void updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentricParam);
-	void gjk_buildMarginedSimplexWithOrigin();
+	bool gjk_buildMarginedSimplexWithOrigin();
 
 	bool _solve(std::vector<SubCollision> &res);
 	inline void swapPts(Vector2D &a, Vector2D &b);

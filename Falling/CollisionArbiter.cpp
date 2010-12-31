@@ -97,7 +97,7 @@ void CollisionArbiter::notifyObjectMoved(Shape *s)
 
 void CollisionArbiter::solve(std::vector<Collision*> &res)
 {
-	int n;
+	int n = 0;
 	Pair *p;
 	p = sap.solve(&n);
 
@@ -108,7 +108,8 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
 		if(((Collision*)p[i].e)->cd->solve(((Collision *)p[i].e)->c))
 			;//todel.push(&p[i]);
 		else
-			res.push_back((Collision*)p[i].e);
+			if(((Collision*)p[i].e)->c.size())
+				res.push_back((Collision*)p[i].e);
 	}
 	/*while(!todel.empty())
 	{

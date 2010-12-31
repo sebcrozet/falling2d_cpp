@@ -6,8 +6,25 @@ void Contact::updateVelChange(float t)
 	float vFromAcc = s1->getParent()->getAcc() * t * normal;
 	if(s2)
 		vFromAcc -= s2->getParent()->getAcc() * t * normal;
-	desiredVelocityChange = -closingVelocity.getX() - 1.f /* restitution */ * (closingVelocity.getX()/* - vFromAcc*/);
+	float fakerest = 0.2f;
+	if(abs(closingVelocity.getX()) < 0.1f)
+		fakerest = 0;
+	desiredVelocityChange = -closingVelocity.getX() - fakerest /* restitution */ * (closingVelocity.getX() - vFromAcc);
 }
+void Contact::awakeIfNeeded()
+{
+	if(!s2) return;
+	bool s1sl = s1->getParent()->isSleeping();
+	bool s2sl = s2->getParent()->isSleeping();
+	if(s1sl ^ s2sl)
+	{
+		if(s1sl) // s2 not sleeping
+			s1->getParent()->setAwake(true);
+		else
+			s2->getParent()->setAwake(true);
+	}
+}
+
 
 void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,float dt)
 {
@@ -35,22 +52,32 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 			// get tangeant
 			cnt->tangeant = Vector2D(-cnt->normal.getY(),cnt->normal.getX());
 			// now calculate closing velocity
+			cnt->relContactPoint[0] = cnt->s1->toTranslatedInv(cnt->absoluteContactPoint);
+			if(cnt->s2)
+				cnt->relContactPoint[1] = cnt->s2->toTranslatedInv(cnt->absoluteContactPoint);
 			RigidBody *ra = cnt->s1->getParent();
-			Vector2D lin1 = cnt->toLocal(/*Vector2D(0,0,ra->getOmega()).cross(Vector2D(cnt->s1->toLocal(cnt->absoluteContactPoint))) + */ra->getV());
+			Vector2D lin1 = cnt->toLocal(Vector2D(0,0,ra->getOmega()).cross(cnt->relContactPoint[0]) + ra->getV());
 			Vector2D lin2;
 			RigidBody *rb = (cnt->s2?cnt->s2->getParent():0);
-			if(rb)
-				lin2 = cnt->toLocal(/*Vector2D(0,0,rb->getOmega()).cross(Vector2D(cnt->s2->toLocal(cnt->absoluteContactPoint))) +*/ rb->getV());
-			cnt->closingVelocity = lin1 - lin2;
-			// calculate total system's inertia
-			cnt->totalInertia = 1.0f / (ra->getInvM() /*+ ra->getInvI()*/ + (rb?rb->getInvM() /*+ rb->getInvI()*/:0));
-			cnt->updateVelChange(dt);
-			Vector2D dvel = ((Vector2D(cnt->s1->toLocal(cnt->absoluteContactPoint)) ^ cnt->normal) * ra->getInvI())^cnt->s1->toLocal(cnt->absoluteContactPoint);
-			cnt->dvel = /*dvel * cnt->normal + */ra->getInvM();
+			cnt->lin1 = lin1.magnitude();
+			cnt->lin2 = 0;
 			if(rb)
 			{
-				dvel = ((Vector2D(cnt->s2->toLocal(cnt->absoluteContactPoint)) ^ cnt->normal) * rb->getInvI())^cnt->s2->toLocal(cnt->absoluteContactPoint);
-				cnt->dvel += /*dvel * cnt->normal*/ + rb->getInvM();
+				lin2 = cnt->toLocal(Vector2D(0,0,rb->getOmega()).cross(cnt->relContactPoint[1]) + rb->getV());
+				cnt->lin2 = lin2.magnitude();
+			}
+			cnt->closingVelocity = lin1 - lin2;
+			// calculate total system's inertia
+			cnt->totalInertia = 1.0f / (/*cnt->lin1 +*/ ra->getInvM() + /*ra->getInvI() +*/ (rb?rb->getInvM() /*+ rb->getInvI() + cnt->lin2*/:0.));
+			cnt->updateVelChange(dt);
+			Vector2D dvel = ((cnt->relContactPoint[0] ^ cnt->normal) * ra->getInvI())^cnt->relContactPoint[0];
+			cnt->dvel = dvel * cnt->normal + ra->getInvM();
+			Vector2D dvely = ((cnt->relContactPoint[0] ^ cnt->tangeant) * ra->getInvI())^cnt->relContactPoint[0];
+			cnt->dvely = dvely * cnt->tangeant + ra->getInvM();
+			if(rb)
+			{
+				dvel = ((cnt->relContactPoint[1] ^ cnt->normal) * rb->getInvI())^cnt->relContactPoint[1];
+				cnt->dvel += dvel * cnt->normal + rb->getInvM();
 			}
 			cts.push_back(cnt);
 

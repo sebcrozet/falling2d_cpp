@@ -51,7 +51,7 @@ inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2)
 }
 
 inline bool Point2D::equals(const Point2D &p)
-{ return p.x == x && p.y == y; }
+{ return (abs(p.x - x)<0.000001) && (abs(p.y - y)<0.000001); }
 
 inline Point2D Point2D::operator +(const Point2D &p)
 { return Point2D(x+p.x,y+p.y); }

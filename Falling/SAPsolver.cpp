@@ -219,6 +219,7 @@ void SAPsolver::notifyBoxMoved(Shape *s)
 
 void SAPsolver::verifyMovedObjects()
 {
+	updateids.clear();
 	for(int i=0;i<aabbs.size();i++)
 	{
 		Shape *s = aabbs[i].parent;

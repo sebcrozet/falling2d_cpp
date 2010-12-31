@@ -101,7 +101,7 @@ inline void Vector2D::ortho()
 	y = xx;
 }
 inline bool Vector2D::equals(const Vector2D &v)
-{ return v.getX() == x && v.getY() == y; }
+{ return ((abs(v.getX() - x))<=0.001 && (abs(v.getY() - y))<=0.001); }
 
 inline Vector2D Vector2D::cross(const Vector2D &v)
 { return Vector2D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }

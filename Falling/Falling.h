@@ -13,6 +13,7 @@ private:
 	std::stack<RigidBody *> addWaitingQueue;
 
 	void dumpAddDelete();
+	void checkSleeps(float dt);
 public:
 	void addObject(RigidBody *s);
 	void removeObject(RigidBody *s);

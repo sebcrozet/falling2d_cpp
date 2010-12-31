@@ -25,14 +25,15 @@ void Polygon2D::updateAABB()
 	Vector2D vx(1,0);
 	Vector2D vy(0,1);
 	Point2D pt;
+	float m = chull->getMargin();
 	ixM = chull->getSupportPoint(vx,&pt,ixM);
-	aabb_xM = pt.getX();
+	aabb_xM = pt.getX() + m;
 	ixm = chull->getSupportPoint(vx.reflexion(),&pt,ixm);
-	aabb_xm = pt.getX();
+	aabb_xm = pt.getX() - m;
 	iyM = chull->getSupportPoint(vy,&pt,iyM);
-	aabb_yM = pt.getY();
+	aabb_yM = pt.getY() + m;
 	iym = chull->getSupportPoint(vy.reflexion(),&pt,iym);
-	aabb_ym = pt.getY();
+	aabb_ym = pt.getY() - m;
 }
 
 void Polygon2D::tesselate()
@@ -462,7 +463,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	: nbrPts(n) 
 {
 	parent = p; 
-	margin = 0.04f;
+	margin = 0.5f;
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
 	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);
@@ -793,6 +794,13 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 		float dotp	= abs(repY * dl);
  		origin = pts[obbl] + (repY * dotp);
 	}
-	return new OBB(origin, origin - repY * obblon, origin - repY * obblon + repX * obblar, origin + repX * obblar, parent, minAire, id);
+	float m = parent->getMargin();
+	obblon +=  m;
+	obblar += m;
+	Point2D opp = origin - repY * obblon + repX * obblar;
+	obblon +=  m;
+	obblar += m;
+	origin =  opp + repY * obblon - repX * obblar;
+	return new OBB(origin, origin - repY * obblon,opp , origin + repX * obblar, parent, minAire, id);
 }	
 #pragma endregion

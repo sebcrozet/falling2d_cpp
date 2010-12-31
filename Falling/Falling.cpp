@@ -38,19 +38,31 @@ void World::notifyObjectMoved(RigidBody *s)
 	ca.notifyObjectMoved(s->getShape()); 
 }
 
+void World::checkSleeps(float dt)
+{
+	for(int i = 0;i < objs.size();i++)
+		if(!objs[i]->isSleeping())
+			objs[i]->updateSleepState(dt);
+}
+
+
 // return type should be void
 std::vector<Collision *> World::solve(float dt)
 {
 	// add and remove objects now
+	checkSleeps(dt);
 	dumpAddDelete();
 	VitessSolver::integrate(objs,dt);
 	// solve distances (collision detection)
 	std::vector<Collision *> colls;
 	ca.solve(colls);
-	std::vector<Contact *> ctcts;
-	ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
-	PenetrationSolver::solve(ctcts);
-	ImpulseSolver::solve(ctcts,dt);
+	if(colls.size())
+	{
+		std::vector<Contact *> ctcts;
+		ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
+		PenetrationSolver::solve(ctcts);
+		ImpulseSolver::solve(ctcts,dt);
+	}
 	return colls;
 }
 
