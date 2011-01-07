@@ -50,7 +50,7 @@ void World::checkSleeps(float dt)
 std::vector<Collision *> World::solve(float dt)
 {
 	// add and remove objects now
-	checkSleeps(dt);
+	//checkSleeps(dt);
 	dumpAddDelete();
 	VitessSolver::integrate(objs,dt);
 	// solve distances (collision detection)

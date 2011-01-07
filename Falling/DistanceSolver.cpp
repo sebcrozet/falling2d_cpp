@@ -250,7 +250,7 @@ bool GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 		if(stop)
 		{
 			notIn = false;
-			simplexSize--;// = fullSimplexSize;
+			simplexSize = fullSimplexSize;
 			return true;
 		}	
 		fullSimplexSize = simplexSize;
@@ -274,13 +274,13 @@ bool GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 		{
 			notIn = false;
 			simplexSize--;// = fullSimplexSize;
-			if(!Point2D().isInUnorientedTriangle(Point2D(ptsC[0].getX(),ptsC[0].getY()), Point2D(ptsC[1].getX(),ptsC[1].getY()), Point2D(ptsC[2].getX(),ptsC[2].getY())));
+			if(!Point2D().isInUnorientedTriangle(Point2D(ptsC[0].getX(),ptsC[0].getY()), Point2D(ptsC[1].getX(),ptsC[1].getY()), Point2D(ptsC[2].getX(),ptsC[2].getY())))
 				return false;
 			return true;
 		}	
 	} while(notIn);
 
-	if(!Point2D().isInUnorientedTriangle(Point2D(ptsC[0].getX(),ptsC[0].getY()), Point2D(ptsC[1].getX(),ptsC[1].getY()), Point2D(ptsC[2].getX(),ptsC[2].getY())));
+	if(!Point2D().isInUnorientedTriangle(Point2D(ptsC[0].getX(),ptsC[0].getY()), Point2D(ptsC[1].getX(),ptsC[1].getY()), Point2D(ptsC[2].getX(),ptsC[2].getY())))
 		return false;
 	return true;
 }
@@ -378,7 +378,7 @@ float GJKsolver::solveDist(float* bparam)
 		if((dotp > 0 && dotp * dotp > sqmsum * vv))	// no itersection
 		{
 			// no intersection
-			simplexSize--;// = fullSimplexSize;
+			simplexSize = fullSimplexSize;
 			res = 0;
 			*bparam = barycentricParam;
 			return 0;
@@ -388,7 +388,7 @@ float GJKsolver::solveDist(float* bparam)
 			// intersects in margin
 			notMax = false;
 			res = msum - sqrt(vv);
-			simplexSize--;// = fullSimplexSize;
+			simplexSize = fullSimplexSize;
 			if(res<0)
 				return 0;
 			break;

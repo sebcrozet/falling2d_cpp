@@ -1,8 +1,8 @@
 #ifndef RBODY
 #include "Polygon2D.h"
 #include "Disk.h"
-#define SLEEPLIMIT 0.8f
-#define BIAS 0.6f
+#define SLEEPLIMIT 2.0f
+#define BIAS 0.1f
 class RigidBody
 {
 private:
@@ -32,6 +32,7 @@ public:
 	inline Vector2D getV();
 	inline void addV(Vector2D &v);
 	inline void multV(float d);
+	inline void multO(float d);
 	inline float getTeta();
 	inline void setTeta(float teta);
 	inline float getM();
@@ -60,8 +61,10 @@ inline void RigidBody::addV(Vector2D &pv)
 { v = v + pv; }
 inline void RigidBody::multV(float d)
 { v = v*d; }
+inline void RigidBody::multO(float d)
+{ omega = omega*d; }
 inline Vector2D RigidBody::getAcc()
-{ return Vector2D(0.,19.62,0.)/*/acc/*/; }
+{ return Vector2D(0.,2*196.2,0.)/*/acc/*/; }
 
 inline float RigidBody::getTeta()
 { return s->getTeta(); }

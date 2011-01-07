@@ -9,11 +9,15 @@ void VitessSolver::integrate(std::vector<RigidBody*> r,float dt)
 		if(rb->isSleeping()) continue;
 		if(!rb->getShape()->isFixed())
 		{
+			//rb->updateSleepState(dt); 
 			//rb->getV().print();
-			rb->addV(Vector2D(0,19.62,0)*dt);
-			rb->multV(0.995f);
+			rb->multV(pow(0.995f,dt));
+			rb->multO(pow(0.995f,dt));
+			rb->addV(Vector2D(0,19.62*dt,0));
 			rb->setPos(rb->getPos()+rb->getV()*dt);
 			rb->setTeta(rb->getTeta()-rb->getOmega()*dt);
+			rb->multV(pow(0.995f,dt));
+			rb->multO(pow(0.995f,dt));
 		}
 	}
 }

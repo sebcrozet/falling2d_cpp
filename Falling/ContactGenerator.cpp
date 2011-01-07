@@ -67,17 +67,29 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 				cnt->lin2 = lin2.magnitude();
 			}
 			cnt->closingVelocity = lin1 - lin2;
-			// calculate total system's inertia
-			cnt->totalInertia = 1.0f / (/*cnt->lin1 +*/ ra->getInvM() + /*ra->getInvI() +*/ (rb?rb->getInvM() /*+ rb->getInvI() + cnt->lin2*/:0.));
 			cnt->updateVelChange(dt);
 			Vector2D dvel = ((cnt->relContactPoint[0] ^ cnt->normal) * ra->getInvI())^cnt->relContactPoint[0];
-			cnt->dvel = dvel * cnt->normal + ra->getInvM();
+			cnt->angin[0] = dvel * cnt->normal;
+			cnt->linin[0] = ra->getInvM();
+			cnt->dvel = cnt->angin[0] + cnt->linin[0];
 			Vector2D dvely = ((cnt->relContactPoint[0] ^ cnt->tangeant) * ra->getInvI())^cnt->relContactPoint[0];
 			cnt->dvely = dvely * cnt->tangeant + ra->getInvM();
 			if(rb)
 			{
 				dvel = ((cnt->relContactPoint[1] ^ cnt->normal) * rb->getInvI())^cnt->relContactPoint[1];
-				cnt->dvel += dvel * cnt->normal + rb->getInvM();
+				cnt->angin[1] = dvel * cnt->normal;
+				cnt->linin[1] = rb->getInvM();
+				cnt->dvel += cnt->angin[1] + cnt->linin[1];
+				dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * rb->getInvI())^cnt->relContactPoint[1];
+				cnt->dvely += dvely * cnt->tangeant + rb->getInvM();
+			}
+			cnt->totalInertia = 1.0f / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.));
+			cnt->unitlinmov[0] = cnt->linin[0] * cnt->totalInertia;
+			cnt->unitangmov[0] = (((cnt->relContactPoint[0] ^ cnt->normal) * ra->getInvI()).getZ())*cnt->totalInertia;
+			if(rb)
+			{
+				cnt->unitlinmov[1] = cnt->linin[1] * cnt->totalInertia;
+				cnt->unitangmov[1] = (((cnt->relContactPoint[1] ^ cnt->normal) * rb->getInvI()).getZ())*cnt->totalInertia;
 			}
 			cts.push_back(cnt);
 

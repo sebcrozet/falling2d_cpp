@@ -236,7 +236,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			{
 				Point2D ipt = (pob->p->toGlobal(pob->p->points[i]));
 				Point2D jpt = (pob->p->toGlobal(pob->p->points[j]));
-				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->r + 100,pob->g + 100, pob->b + 100,255);
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:pob->r + 100,pob->rb->isSleeping()?0:pob->g + 100, pob->rb->isSleeping()?0:pob->b + 100,255);
 				j = i;
 				i++;
 			}
@@ -258,7 +258,7 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				{		
 					Point2D ipt = (ip->toGlobal(ip->pts[i]));
 					Point2D jpt = (ip->toGlobal(ip->pts[j]));
-					lineRGBA(screen,ipt.getX(), ipt.getY(), jpt.getX(), jpt.getY(), pob->r + 50,pob->g + 50, pob->b + 50,255);
+					lineRGBA(screen,ipt.getX(), ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:pob->r + 50,pob->rb->isSleeping()?0:pob->g + 50, pob->rb->isSleeping()?0:pob->b + 50,255);
 					j = i;
 					i++;
 				} 
@@ -276,18 +276,17 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 		}
 		else
 		{
-			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->r,pob->g, pob->b, 255);
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0:pob->r,pob->rb->isSleeping()?0:pob->g, pob->rb->isSleeping()?0:pob->b, 255);
 		}
 	}
 	//std::vector<Collision *> cols;
 	//cols = ca.solve(0.016f);
 	int ttt = SDL_GetTicks();
 	std::vector<Collision *> cols;
-	cols = ca.solve(0.016);//(float(ttt-timerc))/1000.);
+	cols = ca.solve(0.016f);//(float(ttt-timerc))/1000.);
 	timerc = SDL_GetTicks();
-	if(timerc-ttt>8)
-		timerc=timerc;
 	printf("took %i\n",timerc-ttt);
+	SDL_Delay((16-(timerc-ttt)<0)?0:16-(timerc-ttt));
 	for(int i=0; i<cols.size();i++)
 	{
 		for(int j = 0; j<cols[i]->c.size(); j++)

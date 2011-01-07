@@ -16,6 +16,10 @@ struct Contact
 	float totalInertia;
 	float dvel,dvely;
 	float lin1,lin2;
+	float angin[2];
+	float linin[2];
+	float unitangmov[2];
+	float unitlinmov[2];
 
 	inline Vector2D toLocal(Vector2D &v);
 	inline Vector2D toGlobal(Vector2D &v);

@@ -3,7 +3,7 @@
 
 void ImpulseSolver::solve(std::vector<Contact *> scs,float dt)
 {
-	for(int i = 0;i < scs.size() * 10;i++)
+	for(int i = 0;i < scs.size()*10;i++)
 	{
 		Vector2D rch[2];
 		Vector2D vch[2];
@@ -19,8 +19,6 @@ void ImpulseSolver::solve(std::vector<Contact *> scs,float dt)
 		}
 		if(worst)
 		{
-			if(worstV>50)
-				worstV = worstV;
 			applyVelocityChange(worst,rch,vch);
 
 			// adjust other velocities
@@ -67,7 +65,7 @@ void ImpulseSolver::solve(std::vector<Contact *> scs,float dt)
 
 void ImpulseSolver::applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch)
 {
-	Vector2D impulse = c->toGlobal(Vector2D(c->desiredVelocityChange/c->dvel,0,0));
+	Vector2D impulse = c->toGlobal(Vector2D(c->desiredVelocityChange/(c->dvel),/*-c->closingVelocity.getY()/(c->dvely)*/0,0));
 	vch[0] = (impulse) * c->s1->getParent()->getInvM();
 	rch[0] = ((c->relContactPoint[0] ^ impulse) * c->s1->getParent()->getInvI()); 
 	c->s1->getParent()->addV(vch[0]);
