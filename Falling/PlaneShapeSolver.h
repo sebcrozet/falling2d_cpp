@@ -1,3 +1,4 @@
+#ifndef __PLANE_IMPLICIT_DIST_SOLVER__
 #include "CollisionDetector.h"
 #include "PairManager.h"
 #include "Shapes.h"
@@ -33,3 +34,5 @@ public:
 	PlaneShapeSolver(InfinitePlane *p, Shape *s);
 	bool canDestroy();
 };
+#define __PLANE_IMPLICIT_DIST_SOLVER__
+#endif

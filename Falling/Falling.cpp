@@ -59,6 +59,18 @@ std::vector<Collision *> World::solve(float dt)
 	if(colls.size())
 	{
 		std::vector<Contact *> ctcts;
+		std::stack<Island *> isls;
+		// Build islands
+
+		Island::batchIslands(colls,isls);
+		
+		printf("NBR ISLS ==>  %i\n",isls.size());
+		while(!isls.empty())
+		{
+			isls.top()->calculateStackLevels();
+			isls.pop();
+		}
+		//
 		ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
 		PenetrationSolver::solve(ctcts);
 		ImpulseSolver::solve(ctcts,dt);

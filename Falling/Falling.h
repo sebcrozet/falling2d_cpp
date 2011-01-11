@@ -3,6 +3,7 @@
 #include "PenetrationSolver.h"
 #include "ImpulseSolver.h"
 #include "VitessSolver.h"
+#include "Island.h"
 
 class World
 {

@@ -1,6 +1,7 @@
 // Generic solver using hybrid GJK-EPA collision detection/penetration depth calculator
 // Compute obb-tree intersection, and then apply hybrid distance solver to every sub-shape
 //
+#ifndef __GENERIC_SOLVER__
 #include "CollisionDetector.h"
 #include "PairManager.h"
 #include "OBBtree.h"
@@ -19,3 +20,5 @@ private:
 public: 
 	GenericSolver(Shape *s1, Shape *s2);
 };
+#define __GENERIC_SOLVER__
+#endif

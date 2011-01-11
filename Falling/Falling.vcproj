@@ -239,6 +239,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FakeShape.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\InfinitePlane.cpp"
 					>
 				</File>
@@ -343,6 +347,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Island.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\PenetrationSolver.cpp"
 					>
 				</File>
@@ -402,6 +410,10 @@
 				>
 				<File
 					RelativePath=".\Disk.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FakeShape.h"
 					>
 				</File>
 				<File
@@ -510,6 +522,10 @@
 				</File>
 				<File
 					RelativePath=".\ImpulseSolver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Island.h"
 					>
 				</File>
 				<File

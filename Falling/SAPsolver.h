@@ -22,8 +22,8 @@ private:
 	void updateEndPointMax(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, int xyid);
 	void updateEndPointMin(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, bool sens, int xyid);
 
-	void removePair(Pair *);
 public:
+	void removePair(Pair *);
 	SAPsolver(void (*cb_addobj)(Pair *, Shape *, Shape *), bool (*cb_removeobj)(Pair *), void (*cb_deleteobj)(Pair &));
 	~SAPsolver();
 	void addObject(Shape *s);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ImpulseSolver.h"
 
-void ImpulseSolver::solve(std::vector<Contact *> scs,float dt)
+void ImpulseSolver::solve(std::vector<Contact *> &scs,float dt)
 {
 	for(int i = 0;i < scs.size()*10;i++)
 	{
@@ -80,7 +80,7 @@ void ImpulseSolver::applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch)
 }
 
 
-void ImpulseSolver::solveRelax(std::vector<Contact *> scs,float dt)
+void ImpulseSolver::solveRelax(std::vector<Contact *> &scs,float dt)
 {
 	for(int i = 0;i < scs.size() * 1000;i++)
 	{

@@ -17,6 +17,7 @@ int ImplicitShape::getMarginedSupportPoint(Vector2D &d, Point2D *res, int optimi
 	addMargin(d, res); 
 	return opt;
 }
+
 void Shape::updateAABB(EndPoint *xm, EndPoint *xM, EndPoint *ym, EndPoint *yM)
 {
 	xm->setValue(aabb_xm);

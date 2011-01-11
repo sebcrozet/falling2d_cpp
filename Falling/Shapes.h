@@ -3,6 +3,7 @@
 #include "GeometryHelper.h"
 #include "AABB.h"
 
+class Collision;
 class RigidBody;
 struct OBBtree;
 class Shape
@@ -21,7 +22,17 @@ protected:
 	bool fixedobj;
 	bool moved;
 
+	// Collision graph infos
+	Collision *collisions,*collisionsTail; // <- CollisionTail is useless (juste for debug)
+	int collisionStackLevel;
+
 public:
+	// Collision graph infos
+	inline Collision *getCollisionList();
+	inline void setCollisionList(Collision *,Collision *);
+	inline void setStackLevel(int level);
+	inline int getStackLevel();
+	//
 	virtual float getSurface() = 0;
 	virtual float getInertiaMomentum(float m) = 0; 
 	virtual int getShapeTypeID() = 0;
@@ -59,6 +70,17 @@ public:
 	inline bool getMoved();
 	inline void setMoved(bool m);
 };   
+
+inline void Shape::setStackLevel(int level)
+{ collisionStackLevel = level; }
+inline int Shape::getStackLevel()
+{ return collisionStackLevel; }
+
+inline void Shape::setCollisionList(Collision *l, Collision *tail)
+{ collisions = l; collisionsTail = tail; }
+inline Collision *Shape::getCollisionList()
+{ return collisions; }
+
 inline RigidBody *Shape::getParent()
 { return parentBody; }
 inline void Shape::setParent(RigidBody *p)

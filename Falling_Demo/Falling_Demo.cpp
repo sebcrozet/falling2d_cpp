@@ -236,7 +236,14 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			{
 				Point2D ipt = (pob->p->toGlobal(pob->p->points[i]));
 				Point2D jpt = (pob->p->toGlobal(pob->p->points[j]));
-				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:pob->r + 100,pob->rb->isSleeping()?0:pob->g + 100, pob->rb->isSleeping()?0:pob->b + 100,255);
+				if( pob->p->getStackLevel() == 1)
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:255,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?0: 0,255);
+				else if ( pob->p->getStackLevel() == 2)
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:0,pob->rb->isSleeping()?0:255, pob->rb->isSleeping()?0: 0,255);
+				else if ( pob->p->getStackLevel() == 3)
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:0,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?0: 255,255);
+				else
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:100 + pob->p->getStackLevel() * 10,pob->rb->isSleeping()?0: + pob->p->getStackLevel() * 10, pob->rb->isSleeping()?0: + pob->p->getStackLevel() * 10,255);
 				j = i;
 				i++;
 			}
@@ -276,7 +283,16 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 		}
 		else
 		{
-			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0:pob->r,pob->rb->isSleeping()?0:pob->g, pob->rb->isSleeping()?0:pob->b, 255);
+			if(pob->d->getStackLevel() == 1)
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 255,pob->rb->isSleeping()?0: 0, pob->rb->isSleeping()?0: 0, 255);
+			else if(pob->d->getStackLevel() == 2)
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 0,pob->rb->isSleeping()?0: 255, pob->rb->isSleeping()?0: 0, 255);
+			else if(pob->d->getStackLevel() == 3)
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 0,pob->rb->isSleeping()?0: 0, pob->rb->isSleeping()?0: 255, 255);
+			else if(pob->d->getStackLevel() > 3)
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 0,pob->rb->isSleeping()?0: 255, pob->rb->isSleeping()?0: 255, 255);
+			else
+			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: (pob->d->getStackLevel() * 50+10)%256,pob->rb->isSleeping()?0: (pob->d->getStackLevel()+10)%256, pob->rb->isSleeping()?0: (pob->d->getStackLevel() * 100+10)%256, 255);
 		}
 	}
 	//std::vector<Collision *> cols;
