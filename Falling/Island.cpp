@@ -130,9 +130,9 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 				if(next->sb->isFixed())
 				{
 					insertToOneLevel = true;
-					next->collisionStackLevel = 1;
 					next->sb->setStackLevel(0); // fixed objects are at level 0
-					isl->pushToLevelOneChain(next);
+					isl->pushToLevelOneChain(next);	
+					next->collisionStackLevel = 1;
 				}
 				else
 				{
@@ -155,9 +155,9 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 				if(next->sa->isFixed())
 				{
 					insertToOneLevel = true;
-					next->collisionStackLevel = 1;
 					next->sa->setStackLevel(0); // fixed objects are at level 0
 					isl->pushToLevelOneChain(next);
+					next->collisionStackLevel = 1;
 				}
 				else
 				{
@@ -201,11 +201,13 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
 			// recursive call with non-fixed object
 			if(colls[i]->sa->isFixed())
 			{
+				colls[i]->sb->setStackLevel(-2);
 				batchIsland(isl,colls[i]->sb);
 				// island will always contain one object
 			}
 			else
 			{
+				colls[i]->sa->setStackLevel(-2);
 				batchIsland(isl,colls[i]->sa);
 				if(isl->isEmpty()) // empty island => no fixed objects in the graph
 				{

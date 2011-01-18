@@ -16,7 +16,7 @@ RigidBody::RigidBody(Shape *sh,float m,Vector2D pos,float teta)
 void RigidBody::updateSleepState(float dt)
 {
 	float currm = v * v + omega * omega;
-	float bias = 0.5f;//pow(BIAS,dt);
+	float bias = pow(BIAS,dt);
 	movment = (bias*movment) + (1-bias) * currm;
 	if(movment > 10*SLEEPLIMIT)
 		movment = 10*SLEEPLIMIT;

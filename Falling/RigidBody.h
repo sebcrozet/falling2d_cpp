@@ -1,8 +1,8 @@
 #ifndef RBODY
 #include "Polygon2D.h"
 #include "Disk.h"
-#define SLEEPLIMIT 2.0f
-#define BIAS 0.1f
+#define SLEEPLIMIT 0.2f
+#define BIAS 0.6f
 class RigidBody
 {
 private:

@@ -6,16 +6,16 @@ void PenetrationSolver::solve(Island *isl)
 	do
 	{
 		// next level
-		Collision *curr = isl->graphNodes.front();
-		// TODO: sort list
-		// TODO: Take deeper penetration in curr
-		isl->graphNodes.pop();
-		for(int id = 0;id < scs.size()*10;id++)
+		Collision *curr = isl->stackLevels.front();
+		// sort list
+		curr = Collision::inPlaceSortList(curr);
+		Collision *begining = curr;
+		isl->stackLevels.pop();
+		for(int id = 0;id < /*scs.size()**/50;id++)
 		{
 			float trchange[2];
 			float rchange[2];
 			Contact *worst = 0;
-			float worstP = 0.01;
 			worst = curr->worstContact;
 			if(worst)
 			{
@@ -24,42 +24,90 @@ void PenetrationSolver::solve(Island *isl)
 				// adjust other penetrations
 				if(worst->s1)
 				{
+					// Correct attached nodes
+					// iterate through graph's edges:
+					Collision * cl = worst->s1->getCollisionList();
+					cl = cl->nexta; // skip sentinel
+					while(cl->nexta != cl->nextb)	// while other sentinel not reached; do
+					{
+						Contact **scs = cl->cnts; // scs[] <==> Contact *[]
+						cl->worstContact = 0;
+						cl->worstPenetrationAmount = 0.01f;
+						for(int j = 0;j < cl->c.size();j++)
+						{
+							// update and save worst contact
+							if(scs[j]->s1 == worst->s1)
+							{
+								float m = (worst->normal*trchange[0])*scs[j]->normal + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
+								scs[j]->penetration -= m;
+							}
+							else// if(scs[j]->s2 == worst->s1)
+							{
+								scs[j]->penetration += (worst->normal*trchange[0])*scs[j]->normal;
+								scs[j]->penetration += (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
+							}
+							if(scs[j]->penetration > cl->worstPenetrationAmount)
+							{
+								cl->worstContact = scs[j];
+								cl->worstPenetrationAmount = scs[j]->penetration;
+							}
+						}
+						if(cl->sa == worst->s1)
+							cl = cl->nexta;
+						else
+							cl = cl->nextb;
+					}
 				}
 				if(worst->s2)
 				{
+					// Correct attached nodes
+					// iterate through graph's edges:
+					Collision * cl = worst->s2->getCollisionList();	
+					cl = cl->nexta; // skip sentinel
+					while(cl->nexta != cl->nextb)	// while other sentinel not reached; do
+					{
+						Contact **scs = cl->cnts; // scs[] -> Contact *[]
+						cl->worstContact = 0;
+						cl->worstPenetrationAmount = 0.01f;
+						for(int j = 0;j < cl->c.size();j++)
+						{
+							// update and save worst contact
+							if(scs[j]->s1 == worst->s2)
+							{
+								float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
+								scs[j]->penetration -= m;
+							}
+							else// if(scs[j]->s2 == worst->s2)
+							{
+								float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
+								scs[j]->penetration += (worst->normal*trchange[1])*scs[j]->normal;
+								scs[j]->penetration += (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
+							}
+							if(scs[j]->penetration > cl->worstPenetrationAmount)
+							{
+								cl->worstContact = scs[j];
+								cl->worstPenetrationAmount = scs[j]->penetration;
+							}
+						}
+						if(cl->sa == worst->s2)
+							cl = cl->nexta;
+						else
+							cl = cl->nextb;		   
+					}
 				}
-				for(int j=0;j<scs.size();j++)
+				// sort list again
+				curr = Collision::inPlaceSortList(begining);
+				begining = curr;
+				
+				// TOTO: register which node has to be sorted (to avoid useless tests on already sorted elements)
+				/*if(worst->s2)
 				{
-					if(scs[j]->s1 == worst->s1)
-					{
-						float m = (worst->normal*trchange[0])*scs[j]->normal + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
-						scs[j]->penetration -= m;
-					}
-					else// if(scs[j]->s2 == worst->s1)
-					{
-						scs[j]->penetration += (worst->normal*trchange[0])*scs[j]->normal;
-						scs[j]->penetration += (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
-					}
-					if(worst->s2)
-					{
-						if(scs[j]->s1 == worst->s2)
-						{
-							float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-							scs[j]->penetration -= m;
-						}
-						else// if(scs[j]->s2 == worst->s2)
-						{
-							float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-							scs[j]->penetration += (worst->normal*trchange[1])*scs[j]->normal;
-							scs[j]->penetration += (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-						}
-					}
-				}
+				}	*/
 			}
 			else break;
 		}
 	}
-	while(!isl->graphNodes.empty()) 
+	while(!isl->stackLevels.empty()); 
 }
 
 void PenetrationSolver::solve(std::vector<Contact *> &scs)

@@ -31,8 +31,9 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 	for(int i=0; i<collisions.size();i++)
 	{
 		Collision *c = collisions[i];
-		float pen = 0;
 		int max = c->c.size();
+		c->worstContact = 0;
+		c->worstPenetrationAmount = 0.01f;
 		if(max)
 		{
 			c->cnts = new Contact *[max];
@@ -97,9 +98,9 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 				}
 				cts.push_back(cnt);
 				c->cnts[j] = cnt;
-				if(cnt->penetration > pen)
+				if(cnt->penetration > c->worstPenetrationAmount)
 				{
-					pen = cnt->penetration;
+					c->worstPenetrationAmount = cnt->penetration;
 					c->worstContact = cnt;
 				}
 			}

@@ -135,6 +135,73 @@ void Collision::insertInLevel(Collision *c)
 	c->nextlvlptr = this;
 	nextlvlptr->prevlvlptr = this;
 }
+
+Collision *Collision::inPlaceSortList(Collision *lbegin)
+{
+	Collision *lend = lbegin->prevlvlptr;
+	Collision *curr = lbegin->nextlvlptr;   // begin with the second element
+	Collision *next = curr; // save next element
+	Collision *res = lbegin;
+	// for all, do:
+	while(curr != lend) // lend is a spetial case (handled separately)
+	{
+		next = curr->nextlvlptr;
+		float currpen = curr->worstPenetrationAmount;
+		while(true) // see stop condition in the next if statement
+		{
+			if(curr->prevlvlptr == lend) // it's a doubly-linked list (so, detect circularity to stop sorting)
+			{
+				res = curr; // save the first element
+				break;
+			}
+			if(curr->prevlvlptr->worstPenetrationAmount < currpen)
+			{
+				// swap
+				// TODO: swap only at last iteration!
+				Collision *prevptr = curr->prevlvlptr;
+				// 6 pointers => 6 affectations
+				prevptr->prevlvlptr->nextlvlptr = curr;
+				curr->prevlvlptr = prevptr->prevlvlptr;
+				prevptr->prevlvlptr = curr;
+				prevptr->nextlvlptr = curr->nextlvlptr;
+				curr->nextlvlptr->prevlvlptr = prevptr;
+				curr->nextlvlptr = prevptr;
+			}
+			else
+				break;  
+		}				 
+		curr = next;
+	}
+	// handle lend case
+	Collision *newend = curr->prevlvlptr;
+	float currpen = curr->worstPenetrationAmount;
+		while(true) // see stop condition in the next if statment
+		{
+			if(curr->prevlvlptr->worstPenetrationAmount < currpen)
+			{
+				// swap
+				// TODO: swap only at last iteration!
+				Collision *prevptr = curr->prevlvlptr;	
+				// 6 pointers => 6 affectations
+				prevptr->prevlvlptr->nextlvlptr = curr;
+				curr->prevlvlptr = prevptr->prevlvlptr;
+				prevptr->prevlvlptr = curr;
+				prevptr->nextlvlptr = curr->nextlvlptr;	  
+				curr->nextlvlptr->prevlvlptr = prevptr;
+				curr->nextlvlptr = prevptr;
+			}
+			else
+				break;
+			if(curr->prevlvlptr == newend) // it's a doubly-linked list (so, detect circularity to stop sorting)
+			{
+				res = curr;
+				break;
+			}
+		}
+	// done
+	return res;
+}
+
 // Collision arbiter
 CollisionArbiter::CollisionArbiter() : sap(addP,removeP,deleteP)
 { }

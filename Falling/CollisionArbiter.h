@@ -15,6 +15,7 @@ struct Collision
 	Collision *preva,*prevb,*nexta,*nextb;
 	Collision *nextlvlptr,*prevlvlptr;
 	Contact *worstContact;
+	float worstPenetrationAmount;
 	int collisionStackLevel;
 
 	Collision(Shape *sa, Shape *sb);
@@ -23,6 +24,8 @@ struct Collision
 	void removeFromList();
 	void autoInsert();
 	void insertInLevel(Collision *);
+
+	static Collision *inPlaceSortList(Collision *);
 };
 
 
