@@ -2,11 +2,12 @@
 #ifndef SHAPE
 #include "GeometryHelper.h"
 #include "AABB.h"
+#define PROXIMITY_AWARENESS 1.f
 
-class Collision;
+struct Collision;
 class RigidBody;
 struct OBBtree;
-class Shape
+class FALLINGAPI Shape
 {
 private:
 	int aabbid;
@@ -123,7 +124,9 @@ inline bool Shape::AABBvsAABB(float xm, float xM, float ym, float yM)
 
 inline void Shape::rotate(float dteta)
 { 
-	setMoved(true);
+	setMoved(true);	
+	if(abs(dteta) > 0.5)
+		dteta = dteta;
 	t.addTeta(dteta);	
 }
 inline void Shape::translate(Vector2D du)
@@ -158,7 +161,7 @@ inline Vector2D Shape::toTranslatedInv(Vector2D &v)
 { return t.translateinv(v); }
 
 
-class ImplicitShape
+class FALLINGAPI ImplicitShape
 {
 protected:	
 	float margin;

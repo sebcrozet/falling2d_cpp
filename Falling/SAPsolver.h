@@ -1,4 +1,5 @@
-#ifndef _SAPSOLVER_H
+#ifndef _SAPSOLVER_H	  
+#include "TunningConstants.h"
 #include "PairManager.h"
 #include "Shapes.h"
 #include "AABB.h"

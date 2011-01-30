@@ -54,38 +54,16 @@ void Island::calculateStackLevels()
 			{
 				if(next->sa == sh)
 				{
-					if(next->sb->getStackLevel() < 0)
+					if(next->c.size())
 					{
-						next->sb->setStackLevel(sh->getStackLevel() + 1);
-						graphNodes.push(next->sb);
-					}
-					next->collisionStackLevel = (next->sb->getStackLevel() + next->sa->getStackLevel() + 1) / 2;
-					if(next->collisionStackLevel == currLevel)
-					{
-						if(levelHead == 0)
+						if(next->sb->getStackLevel() < 0)
 						{
-							next->nextlvlptr = next; // make it circular
-							next->prevlvlptr = next;
-							levelHead = next;
-							stackLevels.push(levelHead); // push new graph level
+							next->sb->setStackLevel(sh->getStackLevel() + 1);
+							graphNodes.push(next->sb);
 						}
-						else
-							next->insertInLevel(levelHead);
-					}
-					else // insert in last level (levelLessOne must be != 0)
-						next->insertInLevel(levelLessOneHead);
-					next = next->nexta;
-				}
-				else
-				{
-					if(next->sa->getStackLevel() < 0)
-					{
-						next->sa->setStackLevel(sh->getStackLevel() + 1);
-						graphNodes.push(next->sa);
-					}
-					next->collisionStackLevel = (next->sb->getStackLevel() + next->sa->getStackLevel() + 1) / 2;
-					if(next->collisionStackLevel == currLevel)
-					{
+						next->collisionStackLevel = (next->sb->getStackLevel() + next->sa->getStackLevel() + 1) / 2;
+						if(next->collisionStackLevel == currLevel)
+						{
 							if(levelHead == 0)
 							{
 								next->nextlvlptr = next; // make it circular
@@ -95,9 +73,37 @@ void Island::calculateStackLevels()
 							}
 							else
 								next->insertInLevel(levelHead);
+						}
+						else // insert in last level (levelLessOne must be != 0)
+							next->insertInLevel(levelLessOneHead);
 					}
-					else // insert in last level (levelLessOne must be != 0)
-						next->insertInLevel(levelLessOneHead);
+					next = next->nexta;
+				}
+				else
+				{
+					if(next->c.size())
+					{
+						if(next->sa->getStackLevel() < 0)
+						{
+							next->sa->setStackLevel(sh->getStackLevel() + 1);
+							graphNodes.push(next->sa);
+						}
+						next->collisionStackLevel = (next->sb->getStackLevel() + next->sa->getStackLevel() + 1) / 2;
+						if(next->collisionStackLevel == currLevel)
+						{
+								if(levelHead == 0)
+								{
+									next->nextlvlptr = next; // make it circular
+									next->prevlvlptr = next;
+									levelHead = next;
+									stackLevels.push(levelHead); // push new graph level
+								}
+								else
+									next->insertInLevel(levelHead);
+						}
+						else // insert in last level (levelLessOne must be != 0)
+							next->insertInLevel(levelLessOneHead);
+					}
 					next = next->nextb;
 				}
 			}
@@ -125,8 +131,8 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 		if(next->sa == coll)
 		{
 			// go on next node
-			//if(next->c.size() > 0)
-			//{
+			if(next->c.size())
+			{
 				if(next->sb->isFixed())
 				{
 					insertToOneLevel = true;
@@ -143,15 +149,15 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 					}
 					next->collisionStackLevel = -2;
 				}
-			//}
+			}
 			// go to next edge
 			next = next->nexta;
 		}
 		else
 		{
 			// go on next node
-			//if(next->c.size() > 0)
-			//{
+			if(next->c.size())
+			{
 				if(next->sa->isFixed())
 				{
 					insertToOneLevel = true;
@@ -168,7 +174,7 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 					}
 					next->collisionStackLevel = -2;
 				}
-			//}
+			}
 			// go to next edge
 			next = next->nextb;
 		}
@@ -184,7 +190,7 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &islands)
 {
 	// Reinit
-	for(int i=0; i<colls.size();i++)
+	for(unsigned int i=0; i<colls.size();i++)
 	{
 		Collision *c = colls[i];
 		c->collisionStackLevel = -1;
@@ -192,7 +198,7 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
 		c->sb->setStackLevel(-1);
 	}
 	// Make a depth first research
-	for(int i=0;i<colls.size();i++)
+	for(unsigned int i=0;i<colls.size();i++)
 	{
 		if(colls[i]->collisionStackLevel == -1)
 		{
@@ -222,22 +228,22 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
 					{
 						if(next->sa == coll)
 						{
-							//if(next->c.size() > 0)
-							//{
-							next->sb->setStackLevel(1);
-							next->collisionStackLevel = 1;
-							isl->pushToLevelOneChain(next);
-							//}
+							if(next->c.size() > 0)
+							{
+								next->sb->setStackLevel(1);
+								next->collisionStackLevel = 1;
+								isl->pushToLevelOneChain(next);
+							}
 							next = next->nexta;
 						}
 						else
 						{
-							//if(next->c.size() > 0)
-							//{
-							next->collisionStackLevel = 1;
-							next->sa->setStackLevel(1);
-							isl->pushToLevelOneChain(next);
-							//}
+							if(next->c.size() > 0)
+							{
+								next->collisionStackLevel = 1;
+								next->sa->setStackLevel(1);
+								isl->pushToLevelOneChain(next);
+							}
 							next = next->nextb;
 						}
 					}

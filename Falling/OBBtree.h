@@ -1,4 +1,5 @@
-#ifndef _OBBtree
+#ifndef _OBBtree   
+#include "TunningConstants.h"
 #include "OBB.h"
 #include <vector>
 #include <stack>

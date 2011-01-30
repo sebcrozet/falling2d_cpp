@@ -1,5 +1,6 @@
 #define DEBUGMOD
-#ifndef _OBB
+#ifndef _OBB	  
+#include "TunningConstants.h"
 #include "Shapes.h"
 #include "InfinitePlane.h"
 

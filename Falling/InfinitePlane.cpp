@@ -9,6 +9,8 @@ InfinitePlane::InfinitePlane(Point2D p, Vector2D normal)
 	spt = p + perpdir;
 	fixedobj = true;
 }
+int InfinitePlane::getShapeTypeID()
+{ return 100; }
 float InfinitePlane::getInertiaMomentum(float m)
 { return FLT_MAX; }
 float InfinitePlane::getSurface()

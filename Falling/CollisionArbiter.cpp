@@ -4,10 +4,22 @@
 Collision::Collision(Shape *s)
 {
 	sa = s;
-	sb = s;
+	sb = s;	   
+	// TODO: remove: useless but OK for debug	 
+	preva =0;
+	prevb = 0;
+	nexta=0;
+	nextb=0;
+	//
 }
 Collision::Collision(Shape *s, Shape *s2)
 {
+	// TODO: remove: useless but OK for debug	 
+	preva =0;
+	prevb = 0;
+	nexta=0;
+	nextb=0;
+	//
 	// choose correct collision detector and order shapes
 	int idsum = s->getShapeTypeID() + s2->getShapeTypeID();
 	if(idsum == 2)
@@ -76,7 +88,7 @@ void Collision::removeFromList()
 	else
 		nextb->prevb = prevb;
 	
-	// Useless but OK for debug purpoise
+	// TODO: remove: Useless but OK for debug purpoise
 	preva =0;
 	prevb = 0;
 	nexta=0;
@@ -84,6 +96,10 @@ void Collision::removeFromList()
 }
 void Collision::autoInsert()
 {
+	// TODO: remove: validity test
+	if(preva != 0)
+		return; // error...
+	// end TODO
 	Collision *ca = sa->getCollisionList();
 	Collision *cb = sb->getCollisionList();
 	preva = ca;
@@ -281,12 +297,23 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
 	std::stack<Pair *> todel;
 	for(int i = 0; i < n; i ++)
 	{
-		((Collision *)p[i].e)->c.clear();
+		bool collisionLost = false;
+		if(!((Collision*)p[i].e)->sa->getParent()->isSleeping() || !((Collision*)p[i].e)->sb->getParent()->isSleeping())
+		{
+			collisionLost = ((Collision *)p[i].e)->c.size() > 0;
+			((Collision *)p[i].e)->c.clear();
 		/*if(*/((Collision*)p[i].e)->cd->solve(((Collision *)p[i].e)->c);//)
 		//	;//todel.push(&p[i]);
 		//else
+		}	  
 		if(((Collision*)p[i].e)->c.size())
-				res.push_back((Collision*)p[i].e);
+			res.push_back((Collision*)p[i].e);
+		else if(collisionLost)
+		{
+			// Wake up objects
+			((Collision*)p[i].e)->sa->getParent()->setAwake(true);
+			((Collision*)p[i].e)->sb->getParent()->setAwake(true);
+		}
 	}
 	/*while(!todel.empty())
 	{

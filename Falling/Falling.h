@@ -1,3 +1,4 @@
+#include "TunningConstants.h"
 #include "math.h"
 #include "Polygon2D.h"
 #include "PenetrationSolver.h"
@@ -5,7 +6,7 @@
 #include "VitessSolver.h"
 #include "Island.h"
 
-class World
+class FALLINGAPI World
 {
 private:
 	CollisionArbiter ca;
@@ -15,10 +16,15 @@ private:
 
 	void dumpAddDelete();
 	void checkSleeps(float dt);
-public:
+public:	
+	World();
+	~World();
+	// for debug
+	bool penAlgorithm;
+	// end: for debug
 	void addObject(RigidBody *s);
 	void removeObject(RigidBody *s);
-	std::vector<Collision *> solve(float dt);
+	void solve(float dt);
 
 	void notifyObjectMoved(RigidBody *s);
 };

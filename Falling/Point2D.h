@@ -1,8 +1,9 @@
 #ifndef POINT
+#include "TunningConstants.h"
 #include "Vector2D.h"
 			 
 typedef struct Point2D Point2D;
-struct Point2D
+struct FALLINGAPI Point2D
 {
 private:
 	float x,y;
@@ -17,11 +18,13 @@ public:
 	inline void setY(float y);
 
 	inline float isLeftTo(const Point2D &p,const Point2D &p2);
+	static float intersectSegments(Point2D &p,Point2D &p2,Point2D &p3,Point2D &p4, Point2D *res, float *bparam2);
 	bool isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);
 	bool isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);   
 	bool isInUnorientedTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);		   
 
 	inline bool equals(const Point2D &p);
+	inline bool exactEquals(const Point2D &p);
 	inline void operator+=(const Point2D &p);
 	inline void operator-=(const Point2D &p);
 	inline void operator+=(Vector2D &p);
@@ -47,11 +50,15 @@ inline void Point2D::setY(float y)
 inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2)
 {
 	float px = p.getX(), py = p.getY();
-	return (p2.getX() - px) * (y - py) - (p2.getY() - py) * (x - px);
+	float res = (p2.getX() - px) * (y - py) - (p2.getY() - py) * (x - px);
+	return res;
 }
 
 inline bool Point2D::equals(const Point2D &p)
 { return (abs(p.x - x)<0.000001) && (abs(p.y - y)<0.000001); }
+
+inline bool Point2D::exactEquals(const Point2D &p)
+{ return p.x == x && p.y == y; }
 
 inline Point2D Point2D::operator +(const Point2D &p)
 { return Point2D(x+p.x,y+p.y); }

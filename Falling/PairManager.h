@@ -1,4 +1,5 @@
-#ifndef _PAIRMANAGER_H
+#ifndef _PAIRMANAGER_H			
+#include "TunningConstants.h"
 #include <vector>
 typedef unsigned short ushort;	 
 typedef unsigned int uint;

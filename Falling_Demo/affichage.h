@@ -21,6 +21,5 @@ public:
 
    pObject(Point2D * pts,int n,bool iscircle, World &coll, bool cir,Point2D center = Point2D()); 
 };
-
 void initSDL();
-void update(SDL_Surface *screen, std::vector<pObject *> ps, int depth, int depth2, Vector2D &sp);
+void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,Vector2D &sp);

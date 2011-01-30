@@ -11,6 +11,17 @@ Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n, boo
 	int nchull;
 	Point2D *chullpts = 0;
 	nbrPts = simplify(p, n, &points, 25);
+	// get orientation and invert points if non CCW
+	if(!isCCW())
+	{
+		for(int i = 0;i<nbrPts / 2;i++)
+		{
+			// swap
+			Point2D tmp = points[i];
+			points[i] = points[nbrPts - i - 1];
+			points[nbrPts - i - 1] = tmp;
+		}
+	}
 	nchull = Polygon2D::buildConvexHull(points, nbrPts, &chullpts);	 
 	chull = new ImplicitPolygon2D(chullpts, nchull, this, 0);
 	if(nchull != nbrPts) // le polygone n'était pas déjà convexe, il faut faire une tesselation
@@ -18,6 +29,25 @@ Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n, boo
 	buildOBBtree();
 	t.setTeta(tr.getTeta());
 	t.setU(tr.getU());
+}
+
+bool Polygon2D::isCCW()
+{
+	// find lowest point
+	int idp = 0;
+	Point2D lpt = points[idp];
+	for(int i = 1; i < nbrPts; i++)
+	{
+		Point2D tmp = points[i];
+		if((lpt.getY() > tmp.getY()) ||(lpt.getY() == tmp.getY() && lpt.getX() < tmp.getY()))
+		{
+			idp = i;
+			lpt = tmp;
+		}
+		// else next
+	}
+	// return cross product sign
+	return points[(idp - 1 < 0)?nbrPts - 1:idp - 1].isLeftTo(lpt,points[(idp + 1 == nbrPts)?0:idp + 1]) > 0; 
 }
 
 void Polygon2D::updateAABB()
@@ -38,22 +68,39 @@ void Polygon2D::updateAABB()
 
 void Polygon2D::tesselate()
 {
-	std::vector<int> ipts, lastPoly;
+	std::vector<int> ipts, lastPoly, realLastPoly;
 	std::vector<ImplicitPolygon2D *> polys;
+	// TODO: remove vector
+	// (for visualisation)
+	std::vector<Point2D> vis;
+	//
 	for(int i = 0; i < nbrPts; i++)
+	{
+		vis.push_back(points[i]);
 		ipts.push_back(i);
+	}
 	int id = 0, size = nbrPts, CWid = nbrPts - 1, CCWid = 0;
 	bool CWpropagation = false;
 	while(size >= 3)
 	{		  
+		if(id == -1)
+			break;
 		Point2D p0 = points[ipts[tmod(id, size)]],
 				p1 = points[ipts[tmod(id + 1, size)]],
 				p2 = points[ipts[tmod(id + 2, size)]];
-		if(p2.isLeftTo(p0, p1) > 0)
+		if(p2.isLeftTo(p0, p1) > 0) // no degenerate here
 		{
 			bool noOverlap = false;
 			for(int i = tmod(id + 3, size); i != id && !noOverlap; i = tmod(i + 1, size))
-				noOverlap = points[ipts[i]].isInCCWTriangle(p0, p1, p2);
+			{
+				Point2D ipt = points[ipts[i]];
+				if(ipt.exactEquals(p0)||ipt.exactEquals(p1)||ipt.exactEquals(p2))
+					noOverlap = false;
+				else
+					noOverlap =ipt.isInCCWTriangle(p0, p1, p2);
+				if(noOverlap)
+					break;
+			}
 			if(!noOverlap)
 			{	
 				// build convex polygon
@@ -61,21 +108,37 @@ void Polygon2D::tesselate()
 				lastPoly.push_back(tmod(id, size));
 				lastPoly.push_back(tmod(id + 1, size));
 				lastPoly.push_back(tmod(id + 2, size));
+				realLastPoly.push_back(tmod(id, size));
+				realLastPoly.push_back(tmod(id + 1, size));
+				realLastPoly.push_back(tmod(id + 2, size));
 				// CCW extantion
 				Point2D lp = points[ipts[lastPoly[0]]],
 						llp =  points[ipts[lastPoly[1]]],
 						fp = points[ipts[lastPoly[nb - 1]]],
 						sp = points[ipts[lastPoly[nb - 2]]];
+				if(fp.exactEquals(sp) || sp.exactEquals(lp) || llp.exactEquals(fp))
+					fp = fp;
 				for(int nid = tmod(lastPoly[nb - 1] + 1, size); nid != lastPoly[0]; nid = tmod(nid + 1, size))
 				{		
 					Point2D np = points[ipts[nid]];
-					if(np.isLeftTo(llp, lp) <= 0 && 
-					   fp.isLeftTo(lp, np) <= 0	&&
-					   sp.isLeftTo(np, fp) <= 0)
+					if(np.isLeftTo(llp, lp) < 0 && 
+					   fp.isLeftTo(lp, np) < 0	&&
+					   sp.isLeftTo(np, fp) < 0)
 					{			  
-						bool noIntercect = true;
-						for(int i = tmod(nid + 1, size); i != lastPoly[0] && noIntercect; i = tmod(i + 1, size))
-							noIntercect = !points[ipts[i]].isInCCWTriangle(lp, fp, np);
+						bool noIntercect = true;	  
+						/*if(lp.exactEquals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
+							noIntercect = true;	 // triangle dégénéré
+						else
+						{  */
+							for(int i = tmod(nid + 1, size); i != lastPoly[0] && noIntercect; i = tmod(i + 1, size))
+							{
+								Point2D ipt = points[ipts[i]];
+								if(ipt.exactEquals(lp)||ipt.exactEquals(fp)||ipt.exactEquals(np))
+									noIntercect = true;
+								else
+									noIntercect = !ipt.isInCCWTriangle(lp, fp, np);
+							}
+						//}
 						if(noIntercect)
 						{
 							// add point
@@ -92,17 +155,30 @@ void Polygon2D::tesselate()
 				fp = points[ipts[lastPoly[0]]],
 				sp =  points[ipts[lastPoly[1]]],
 				lp = points[ipts[lastPoly[nb - 1]]];
-				llp = points[ipts[lastPoly[nb - 2]]];
+				llp = points[ipts[lastPoly[nb - 2]]];		  
+				if(fp.exactEquals(sp) || sp.exactEquals(lp) || llp.exactEquals(fp))
+					fp = fp;
 				for(int nid = tmodinv(lastPoly[0] - 1, size); nid != lastPoly[nb - 1]; nid = tmodinv(nid - 1, size))
 				{		
 					Point2D np = points[ipts[nid]];
-					if(np.isLeftTo(llp, lp) >= 0 && 
-					   fp.isLeftTo(lp, np) >= 0	&&
-					   sp.isLeftTo(np, fp) >= 0)
+					if(np.isLeftTo(llp, lp) > 0 && 
+					   fp.isLeftTo(lp, np) > 0	&&
+					   sp.isLeftTo(np, fp) > 0)
 					{			  
 						bool noIntercect = true;
-						for(int i = tmodinv(nid - 1, size); i != lastPoly[nb - 1] && noIntercect; i = tmodinv(i - 1, size))
-							noIntercect = !points[ipts[i]].isInCWTriangle(lp, fp, np);
+						/*if(lp.exactEquals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
+							noIntercect = true;	 // triangle dégénéré
+						else
+						{  */
+							for(int i = tmodinv(nid - 1, size); i != lastPoly[nb - 1] && noIntercect; i = tmodinv(i - 1, size))
+							{				  
+								Point2D ipt = points[ipts[i]];
+								if(ipt.exactEquals(lp)||ipt.exactEquals(fp)||ipt.exactEquals(np))
+									noIntercect = true;
+								else
+									noIntercect = !ipt.isInCWTriangle(lp, fp, np);
+							}
+						//}
 						if(noIntercect)
 						{
 							// add point
@@ -117,8 +193,21 @@ void Polygon2D::tesselate()
 				}
 				// end of extantion
 				Point2D *respts = new Point2D[nb];
+				int realnb = nb;
+				int offset = 0;
 				for(int i = 0; i < nb; i ++)
-					respts[i] = points[ipts[lastPoly[i]]];
+				{
+					Point2D pt = points[ipts[lastPoly[i]]];
+					if(i > 0 && pt.exactEquals(respts[i - 1]))
+					{
+						offset++;
+						realnb--;
+					}
+					else
+						respts[i - offset] = points[ipts[lastPoly[i]]];
+				}
+				if(respts[realnb-1].exactEquals(respts[0]))
+					realnb--;
 				for(int i = 1; i < nb - 1; i ++)
 				{
 					int pivot = lastPoly[i];
@@ -130,7 +219,7 @@ void Polygon2D::tesselate()
 					}
 				}
 				size -= nb - 2;
-				polys.push_back(new ImplicitPolygon2D(respts, nb, this, (int)polys.size() + 1));
+				polys.push_back(new ImplicitPolygon2D(respts, realnb, this, (int)polys.size() + 1));
 				lastPoly.clear();
 				id = 0;
 				CWid = size - 1;
@@ -173,7 +262,7 @@ void Polygon2D::tesselate()
 	{	  
 		for(int i = 0; i < nbrSubShapes; i++)
 			delete subShapes[i];
-		delete subShapes;
+		delete[] subShapes;
 	}
 	nbrSubShapes = (int)polys.size();			 
 	subShapes = new ImplicitPolygon2D*[nbrSubShapes];
@@ -372,6 +461,142 @@ float Polygon2D::getSurface()
 { return Polygon2D::getSurface(points, nbrPts); }
 
 #pragma region Static methods
+
+	struct PointWithNext
+	{
+		Point2D pt;
+		struct PointWithNext *next, *homolog;
+		float bparam;
+		inline PointWithNext(Point2D pt)
+		{ this->pt = pt; next = this; homolog = 0; bparam = -1; }
+	};
+int Polygon2D::getUncrossedPolygon(Point2D *pts, int nb, Point2D **res)
+{
+	// create initial chain
+		// find an external point
+	int mostext = 0;
+	for(int i = 1; i < nb; i++)
+	{
+		if(pts[i].getY() < pts[mostext].getY())
+			mostext = i;
+		i++;
+	}
+		// create chain with mostext at initial point
+	struct PointWithNext *head = new struct PointWithNext(pts[mostext]);
+	struct PointWithNext *prev = head;
+	int j = (mostext == nb - 1) ? 0	: mostext + 1;
+	while(j != mostext)
+	{
+		prev->next = new struct PointWithNext(pts[j]);
+		prev = prev->next;
+		if(j == nb - 1)
+			j = 0;														
+		else
+			j++;
+	}
+	prev->next = head; // make it circular
+	// find all intersection and insert them in the chain
+	struct PointWithNext *currref   = head, *ncurrref;
+	struct PointWithNext *currscan, *ncurrscan;	
+	int nbinter = 0;
+	do
+	{
+		// find next currref  
+		ncurrref = currref->next;
+		while(ncurrref->homolog != 0)
+			ncurrref = ncurrref->next;
+		if(ncurrref == head)
+			break; // don't test last edge as base
+		// find currscan	  
+		currscan = ncurrref->next;	 // skip next epge
+		while(currscan->homolog != 0)
+			currscan = currscan->next;
+		// find intersections
+		while(currscan != head)
+		{
+			// find next currscan
+			ncurrscan = currscan->next;
+			while(ncurrscan->homolog != 0)
+				ncurrscan = ncurrscan->next;
+			if(ncurrscan == currref)
+				break;
+			// find intersection
+			Point2D inter;
+			float bparamscan;
+			float bparamref = Point2D::intersectSegments(currref->pt,ncurrref->pt,currscan->pt, ncurrscan->pt,&inter,&bparamscan);
+			if(bparamref != -1)
+			{			
+				nbinter += 2;
+				// if intersects, insert in chain sorting by the barycentric coord
+				struct PointWithNext *inter1 = new struct PointWithNext(inter);	  
+				struct PointWithNext *inter2 = new struct PointWithNext(inter); 
+				inter1->bparam = bparamref;
+				inter2->bparam = bparamscan;
+				inter1->homolog = inter2;
+				inter2->homolog = inter1;
+				// insert 1 in chain
+				struct PointWithNext *previnsert = currref;
+				while(previnsert->next->homolog != 0 && previnsert->next->bparam < bparamref)
+					previnsert = previnsert->next;
+				inter1->next = previnsert->next;
+				previnsert->next = inter1;
+				// insert 2 in chain
+				previnsert = currscan;
+				while(previnsert->next->homolog != 0 && previnsert->next->bparam < bparamscan)
+					previnsert = previnsert->next;
+				inter2->next = previnsert->next;
+				previnsert->next = inter2;
+				// end of insersion
+
+			}
+			// else no intersection
+			currscan = ncurrscan;
+		}
+		currref = ncurrref;
+	}
+	while(currref != head);
+	// now parc links and revert links
+	currref = head->next; // skip head: cannot be an intersection point
+	while(currref != head)
+	{
+		if(currref->homolog != 0)
+		{   
+			struct PointWithNext *prevparc = currref->next;
+			struct PointWithNext *parc = prevparc->next;
+			// invert links to homolog	
+			while(parc != currref->homolog)
+			{					
+				struct PointWithNext *n = parc->next;
+				parc->next = prevparc;
+				prevparc = parc;
+				parc = n;
+			}
+			currref->next->next = currref->homolog;
+			currref->next = prevparc;
+			currref->homolog->homolog = 0; // never reinterpret it again
+			currref->homolog = 0; // never reinterpret it again
+		}
+		currref = currref->next;
+	}
+
+	// the polygon is now uncrossed, copy the result  
+	// and free memory
+	currref = head;
+	int l = nbinter + nb; 
+    *res = new Point2D[l];
+	int i = 0;
+	while(i<l)
+	{
+		struct PointWithNext *toDestroy;
+		toDestroy = currref;
+		(*res)[i] = currref->pt;
+		currref = currref->next;
+		// free
+		delete toDestroy;
+		i++;
+	}
+	return l;
+}
 /////////////////////////////////////////////////
 //				MELKMAN ALGORITHM			   //
 // Builds convex hull of current polygon's	   //
@@ -421,7 +646,7 @@ int Polygon2D::buildConvexHull(Point2D *pts, int nbPts,Point2D ** outHull)
 	*outHull = new Point2D[res];
 	for(i=bot;i<=top;i++)
 		(*outHull)[i - bot] =  pts[D[i]]; 
-	delete D;
+	delete[] D;
 	return res;
 }
 float Polygon2D::getSurface(Point2D *in, int n)
@@ -463,7 +688,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	: nbrPts(n) 
 {
 	parent = p; 
-	margin = 0.5f;
+	margin = PROXIMITY_AWARENESS + 0.5f;
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
 	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);

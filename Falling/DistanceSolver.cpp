@@ -189,7 +189,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 									swapPts(dirs[0], dirs[2]);	
 									ptsA[0] = ptsA[2];	
 									ptsB[0] = ptsB[2];
-									*barycentricParam = 1.- *barycentricParam;
+									*barycentricParam = 1.f- *barycentricParam;
 
 								}
 								else

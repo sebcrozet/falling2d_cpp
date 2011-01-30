@@ -1,11 +1,14 @@
-#ifndef __COLLISION_ARBITER__
+#ifndef __COLLISION_ARBITER__	  
+#include "TunningConstants.h"
 #include "CollisionDetector.h"
 #include "DiskDiskSolver.h"
 #include "GenericSolver.h"
 #include "PlaneShapeSolver.h"
 #include "FakeShape.h"
+#include "RigidBody.h"
 
 struct Contact;
+struct QuarterSpace;
 struct Collision
 {
 	Shape *sa, *sb;
@@ -16,7 +19,8 @@ struct Collision
 	Collision *nextlvlptr,*prevlvlptr;
 	Contact *worstContact;
 	float worstPenetrationAmount;
-	int collisionStackLevel;
+	int collisionStackLevel;   
+	QuarterSpace *liberty1,*liberty2;
 
 	Collision(Shape *sa, Shape *sb);
 	Collision(Shape *s);

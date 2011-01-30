@@ -9,7 +9,7 @@
 #include <vector>
 
 class ImplicitPolygon2D;
-class Polygon2D	: public Shape
+class FALLINGAPI Polygon2D	: public Shape
 {	  
 #ifdef DEBUGMOD
 public:
@@ -25,10 +25,11 @@ private:
 
 	void buildOBBtree();
 	void buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polyset, int &i);
-	int simplify(Point2D * in, int n, Point2D **out, int tolerence);
 	void tesselate();
 	void tesselate2();
-public:
+	bool isCCW();
+public:												   
+	static int simplify(Point2D * in, int n, Point2D **out, int tolerence);
 	Polygon2D(Point2D *pts,GeometryHelper::Transformation2D &tr, int n, bool fixed);
 	~Polygon2D();
 
@@ -50,9 +51,10 @@ public:
 	static Point2D getCentroid(Point2D * in, int n, float aire);
 	static float getSurface(Point2D *in, int n);  
 	static int buildConvexHull(Point2D *pts, int nbPts, Point2D ** outHull);
+	static int getUncrossedPolygon(Point2D * pts, int nb, Point2D **res);
 };	  
 
-class ImplicitPolygon2D	: public ImplicitShape
+class FALLINGAPI ImplicitPolygon2D	: public ImplicitShape
 {
 #ifdef DEBUGMOD
 public:

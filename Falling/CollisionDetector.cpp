@@ -7,7 +7,7 @@ CollisionDetector::CollisionDetector() : isInactive(false)
 { }
 
 bool CollisionDetector::solve(std::vector<SubCollision> &res)
-{
+{			
 	if(!isInactive)
 		return _solve(res);
 	else

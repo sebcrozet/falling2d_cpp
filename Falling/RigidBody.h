@@ -1,9 +1,11 @@
 #ifndef RBODY
+#include "TunningConstants.h"
 #include "Polygon2D.h"
 #include "Disk.h"
-#define SLEEPLIMIT 0.2f
+#define SLEEPLIMIT 2.f
 #define BIAS 0.6f
-class RigidBody
+#define NBRLOOPSTABILISATION 50
+class FALLINGAPI RigidBody
 {
 private:
 	float omega;
@@ -11,16 +13,32 @@ private:
 	float invM;
 	float invI;
 	Vector2D acc;
+	// sleep datas
 	bool sleeping;
 	float movment;
+	//
+	// position stabilisation detector
+	int nbrValues;
+	float tetas[NBRLOOPSTABILISATION];
+	Vector2D poss[NBRLOOPSTABILISATION];
+	float lastTeta;
+	Vector2D lastPos;	 
+	Vector2D totalDPos;
+	float totalDTeta;
+	int loopCursor;
+	//
+	float dTeta;
+	float consumedDeltaTeta;
 
 	Shape *s;
 
-	RigidBody(Shape *s,float m,Vector2D pos,float teta = 0);
+	RigidBody(Shape *s,float m,Vector2D pos,float teta = 0);   
+	void reinitStabilisationDetector();
 public:
-	//Do not export this function!
+	//Do not export these function!
 	inline Shape *getShape();
 	void updateSleepState(float dt);
+	bool updateMovementStabilisationState();
 	//
 	void setAwake(bool awake);
 	inline bool isSleeping();
@@ -39,9 +57,27 @@ public:
 	inline float getInvM();
 	inline void setM(float mass);
 	inline void setMwithDensity(float rho);
-	inline float getI();
+	inline float getI();  
 	inline float getInvI();
 	inline float getA();
+	inline void setDeltaTeta(float dt)
+	{
+		consumedDeltaTeta = 0.f; // reinit consumed rotation (for penetration resolution)
+		dTeta = dt; 
+	}							  
+	inline void addConsumedTeta(float dt)
+	{ 
+		consumedDeltaTeta += dt;
+		// TODO :  remove validity test
+		if(consumedDeltaTeta*dTeta < 0
+			|| abs(consumedDeltaTeta) > abs(dTeta))
+			dTeta = dTeta;
+		//
+	}
+	inline float getConsumedDeltaTeta()
+	{ return consumedDeltaTeta; }
+	inline float getDeltaTeta()
+	{ return dTeta; }
 	inline Vector2D getAcc();
 
 	// Rigid Body builder
@@ -64,7 +100,7 @@ inline void RigidBody::multV(float d)
 inline void RigidBody::multO(float d)
 { omega = omega*d; }
 inline Vector2D RigidBody::getAcc()
-{ return Vector2D(0.,2*196.2,0.)/*/acc/*/; }
+{ return Vector2D(0.f,2.f*196.2f,0.f)/*/acc/*/; }
 
 inline float RigidBody::getTeta()
 { return s->getTeta(); }

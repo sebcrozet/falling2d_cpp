@@ -1,4 +1,5 @@
-#ifndef GHELP
+#ifndef GHELP			  
+#include "TunningConstants.h"
 #include "Primitives.h"
 
 
@@ -39,7 +40,15 @@ namespace GeometryHelper
    };
 }
 inline void GeometryHelper::Transformation2D::setTeta(float t)
-{ teta = t; coteta = cos(t); siteta = sin(t); }
+{ 
+	teta = t; coteta = cos(t); siteta = sin(t); 
+	// TODO: remove that
+	// Validity tests
+	//
+	if(!(teta == teta)||!(coteta == coteta)||!(siteta == siteta))
+		setTeta(0);
+	//
+}
 inline void GeometryHelper::Transformation2D::addTeta(float t)
 { setTeta(teta + t); }
 inline float GeometryHelper::Transformation2D::getTeta()
@@ -47,7 +56,12 @@ inline float GeometryHelper::Transformation2D::getTeta()
 inline void GeometryHelper::Transformation2D::setU(Vector2D &v)
 { u = v; }
 inline void GeometryHelper::Transformation2D::addU(Vector2D &v)
-{ u += v; }
+{ 
+	u += v;
+	// TODO: remove validity test
+	if(v.getX() > 10000 || v.getY() > 10000)
+		v.setX(0);
+}
 inline Vector2D GeometryHelper::Transformation2D::getU()
 { return u; }
 

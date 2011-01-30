@@ -1,11 +1,11 @@
-
 #ifndef VECTOR
+#include "TunningConstants.h"
 #include <float.h>
 #include <stdio.h>
 #define EPSILON	 FLT_EPSILON
 typedef struct Vector2D Vector2D;
-struct Point2D;
-struct Vector2D
+struct FALLINGAPI Point2D;
+struct FALLINGAPI Vector2D
 {
 private:
 	float x,y,z,padding;

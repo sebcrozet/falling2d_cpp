@@ -5,7 +5,7 @@ Disk::Disk(Point2D &pt, float dradius, bool fixed)
 {
 	parent = this;
 	fixedobj = fixed;
-	radius = dradius;
+	radius = dradius + PROXIMITY_AWARENESS;
 	margin = radius;//0.04f;
 	radiuslessM = 0;//radius - margin;
 	t = GeometryHelper::Transformation2D(Vector2D (pt), 0);

@@ -79,7 +79,7 @@ void initSDL()
 				break;
 			case SDL_KEYDOWN:
 				if(e.key.keysym.sym == SDLK_s)
-					slidemode = !slidemode;
+					ca.penAlgorithm = !ca.penAlgorithm;
 				else if(e.key.keysym.sym == SDLK_t)
 				{	
 					int n = vpts.size();
@@ -211,7 +211,14 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 		}
 		*/
 	}
-
+			  
+	int ttt = SDL_GetTicks();
+	std::vector<Collision *> cols;
+	float dt = (float(ttt-timerc))/1000.;
+	cols = ca.solve((dt>0.020f)?0.020:dt);
+	timerc = SDL_GetTicks();
+	printf("took %i\n",timerc-ttt);
+	SDL_Delay((16-(timerc-ttt)<0)?0:16-(timerc-ttt));
 	for(int po = 0 ; po < ps.size();po++)
 	{
 		pObject *pob;
@@ -237,13 +244,13 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 				Point2D ipt = (pob->p->toGlobal(pob->p->points[i]));
 				Point2D jpt = (pob->p->toGlobal(pob->p->points[j]));
 				if( pob->p->getStackLevel() == 1)
-				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:255,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?0: 0,255);
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?255:255,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?0: 0,255);
 				else if ( pob->p->getStackLevel() == 2)
-				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:0,pob->rb->isSleeping()?0:255, pob->rb->isSleeping()?0: 0,255);
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:0,pob->rb->isSleeping()?255:255, pob->rb->isSleeping()?0: 0,255);
 				else if ( pob->p->getStackLevel() == 3)
-				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:0,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?0: 255,255);
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:0,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?255: 255,255);
 				else
-				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?0:100 + pob->p->getStackLevel() * 10,pob->rb->isSleeping()?0: + pob->p->getStackLevel() * 10, pob->rb->isSleeping()?0: + pob->p->getStackLevel() * 10,255);
+				lineRGBA(screen, ipt.getX() , ipt.getY(), jpt.getX(), jpt.getY(), pob->rb->isSleeping()?100:100,pob->rb->isSleeping()?0:0, pob->rb->isSleeping()?0: 0,255);
 				j = i;
 				i++;
 			}
@@ -283,8 +290,9 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 		}
 		else
 		{
-			if(pob->d->getStackLevel() == 1)
+			//if(pob->d->getStackLevel() == 1)
 			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 255,pob->rb->isSleeping()?0: 0, pob->rb->isSleeping()?0: 0, 255);
+			/*
 			else if(pob->d->getStackLevel() == 2)
 			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 0,pob->rb->isSleeping()?0: 255, pob->rb->isSleeping()?0: 0, 255);
 			else if(pob->d->getStackLevel() == 3)
@@ -293,16 +301,12 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: 0,pob->rb->isSleeping()?0: 255, pob->rb->isSleeping()?0: 255, 255);
 			else
 			circleRGBA(screen, pob->d->getCenter().getX(), pob->d->getCenter().getY(), pob->nb,pob->rb->isSleeping()?0: (pob->d->getStackLevel() * 50+10)%256,pob->rb->isSleeping()?0: (pob->d->getStackLevel()+10)%256, pob->rb->isSleeping()?0: (pob->d->getStackLevel() * 100+10)%256, 255);
+		*/
 		}
 	}
 	//std::vector<Collision *> cols;
 	//cols = ca.solve(0.016f);
-	int ttt = SDL_GetTicks();
-	std::vector<Collision *> cols;
-	cols = ca.solve(0.016f);//(float(ttt-timerc))/1000.);
-	timerc = SDL_GetTicks();
-	printf("took %i\n",timerc-ttt);
-	SDL_Delay((16-(timerc-ttt)<0)?0:16-(timerc-ttt));
+	/*
 	for(int i=0; i<cols.size();i++)
 	{
 		for(int j = 0; j<cols[i]->c.size(); j++)
@@ -310,6 +314,6 @@ void update(SDL_Surface *screen, std::vector<pObject *> ps,int depth,int depth2,
 			lineRGBA(screen, cols[i]->c[j].ptA.getX(), cols[i]->c[j].ptA.getY(), cols[i]->c[j].ptB.getX(), cols[i]->c[j].ptB.getY(), 0,0, 0,255);
 
 		}
-	}
+	}*/
 	SDL_Flip(screen);
 }

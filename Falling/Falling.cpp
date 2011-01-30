@@ -3,6 +3,11 @@
 
 #include "stdafx.h"
 #include "Falling.h"
+
+World::World()
+{ }
+World::~World()
+{ }
 												
 void World::addObject(RigidBody *s)
 {
@@ -40,17 +45,17 @@ void World::notifyObjectMoved(RigidBody *s)
 
 void World::checkSleeps(float dt)
 {
-	for(int i = 0;i < objs.size();i++)
+	for(unsigned int i = 0;i < objs.size();i++)
 		if(!objs[i]->isSleeping())
 			objs[i]->updateSleepState(dt);
 }
 
 
 // return type should be void
-std::vector<Collision *> World::solve(float dt)
+void World::solve(float dt)
 {
 	// add and remove objects now
-	//checkSleeps(dt);
+	checkSleeps(dt);
 	dumpAddDelete();
 	VitessSolver::integrate(objs,dt);
 	// solve distances (collision detection)
@@ -60,27 +65,33 @@ std::vector<Collision *> World::solve(float dt)
 	{
 		std::vector<Contact *> ctcts;
 		std::stack<Island *> isls,isls2;
-		// Build islands
-
-		Island::batchIslands(colls,isls);
-		
-		printf("NBR ISLS ==>  %i\n",isls.size());
-		while(!isls.empty())
-		{
-			// TODO: ce trensfert de pile est très moche!
-			isls2.push(isls.top());
-			isls.top()->calculateStackLevels();
-			isls.pop();
+		if(true)//penAlgorithm)
+		{								
+			// Build islands		
+			Island::batchIslands(colls,isls);			
+			//printf("NBR ISLS ==>  %i\n",isls.size());
+				while(!isls.empty())
+				{
+					// TODO: ce transfert de pile est très moche!
+					isls2.push(isls.top());
+					isls.top()->calculateStackLevels();
+					isls.pop();
+				}
+				//		
+				ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
+				while(!isls2.empty())
+				{
+					PenetrationSolver::solve(isls2.top());
+					isls2.pop();																									
+				}
+				PenetrationSolver::solve(ctcts);
 		}
-		//
-		ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
-		while(!isls2.empty())
-		{
-			PenetrationSolver::solve(isls2.top());
-			isls2.pop();																									
+		else
+		{								 
+			ContactGenerator::DeduceContactsDatasOldAlgorithm(colls,ctcts,dt);	 
+			PenetrationSolver::solve(ctcts);
 		}
 		ImpulseSolver::solve(ctcts,dt);
 	}
-	return colls;
 }
 
