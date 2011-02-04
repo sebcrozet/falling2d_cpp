@@ -87,8 +87,11 @@ void Polygon2D::tesselate()
 			break;
 		Point2D p0 = points[ipts[tmod(id, size)]],
 				p1 = points[ipts[tmod(id + 1, size)]],
-				p2 = points[ipts[tmod(id + 2, size)]];
-		if(p2.isLeftTo(p0, p1) > 0) // no degenerate here
+				p2 = points[ipts[tmod(id + 2, size)]];								
+		float lto = p2.isLeftTo(p0, p1);
+		if(lto == 0)
+			lto = 0;
+		if(lto > 0) // no degenerate here
 		{
 			bool noOverlap = false;
 			for(int i = tmod(id + 3, size); i != id && !noOverlap; i = tmod(i + 1, size))
@@ -105,6 +108,7 @@ void Polygon2D::tesselate()
 			{	
 				// build convex polygon
 				int nb = 3;
+				int falsenb = 3;
 				lastPoly.push_back(tmod(id, size));
 				lastPoly.push_back(tmod(id + 1, size));
 				lastPoly.push_back(tmod(id + 2, size));
@@ -118,19 +122,25 @@ void Polygon2D::tesselate()
 						sp = points[ipts[lastPoly[nb - 2]]];
 				if(fp.exactEquals(sp) || sp.exactEquals(lp) || llp.exactEquals(fp))
 					fp = fp;
-				for(int nid = tmod(lastPoly[nb - 1] + 1, size); nid != lastPoly[0]; nid = tmod(nid + 1, size))
+				for(int nid = tmod(lastPoly[nb - 1] + 1, size); nid != realLastPoly[0]; nid = tmod(nid + 1, size))
 				{		
+					bool gob;
 					Point2D np = points[ipts[nid]];
-					if(np.isLeftTo(llp, lp) < 0 && 
-					   fp.isLeftTo(lp, np) < 0	&&
-					   sp.isLeftTo(np, fp) < 0)
+					gob = np.exactEquals(lp) || np.exactEquals(fp);
+					if(np.isLeftTo(llp, lp, -1) < 0 && 
+					   fp.isLeftTo(lp, np, -1) < 0	&&
+					   sp.isLeftTo(np, fp, -1) < 0)
 					{			  
-						bool noIntercect = true;	  
-						/*if(lp.exactEquals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
+						bool noIntercect = true;	
+						
+						if(!gob)
+						{
+						/*if(lp.exactEq
+						uals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
 							noIntercect = true;	 // triangle dégénéré
 						else
 						{  */
-							for(int i = tmod(nid + 1, size); i != lastPoly[0] && noIntercect; i = tmod(i + 1, size))
+							for(int i = tmod(nid + 1, size); i != realLastPoly[0] && noIntercect; i = tmod(i + 1, size))
 							{
 								Point2D ipt = points[ipts[i]];
 								if(ipt.exactEquals(lp)||ipt.exactEquals(fp)||ipt.exactEquals(np))
@@ -138,14 +148,23 @@ void Polygon2D::tesselate()
 								else
 									noIntercect = !ipt.isInCCWTriangle(lp, fp, np);
 							}
+						}
 						//}
-						if(noIntercect)
+						if(gob || noIntercect)
 						{
 							// add point
-							lastPoly.push_back(nid);
+							if(!gob)
+							{
+								lastPoly.push_back(nid); 
+								sp = fp;
+								fp = np;
+								falsenb++;
+							}
+							else
+								falsenb = falsenb;
+							// else gob point without adding to the polygon
+							realLastPoly.push_back(nid);
 							nb++;
-							sp = fp;
-							fp = np;
 						}
 						else break;
 					}
@@ -154,23 +173,27 @@ void Polygon2D::tesselate()
 				// CW extantion
 				fp = points[ipts[lastPoly[0]]],
 				sp =  points[ipts[lastPoly[1]]],
-				lp = points[ipts[lastPoly[nb - 1]]];
-				llp = points[ipts[lastPoly[nb - 2]]];		  
+				lp = points[ipts[lastPoly[falsenb - 1]]];
+				llp = points[ipts[lastPoly[falsenb - 2]]];		  
 				if(fp.exactEquals(sp) || sp.exactEquals(lp) || llp.exactEquals(fp))
 					fp = fp;
-				for(int nid = tmodinv(lastPoly[0] - 1, size); nid != lastPoly[nb - 1]; nid = tmodinv(nid - 1, size))
+				for(int nid = tmodinv(realLastPoly[0] - 1, size); nid != realLastPoly[nb - 1]; nid = tmodinv(nid - 1, size))
 				{		
+					bool gob;
 					Point2D np = points[ipts[nid]];
-					if(np.isLeftTo(llp, lp) > 0 && 
-					   fp.isLeftTo(lp, np) > 0	&&
-					   sp.isLeftTo(np, fp) > 0)
+					gob = np.exactEquals(lp) || np.exactEquals(fp);
+					if(gob || (np.isLeftTo(llp, lp, 1) > 0 && 
+					   (fp.isLeftTo(lp, np, 1) > 0 &&
+					   (sp.isLeftTo(np, fp, 1) > 0))))
 					{			  
 						bool noIntercect = true;
 						/*if(lp.exactEquals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
 							noIntercect = true;	 // triangle dégénéré
 						else
 						{  */
-							for(int i = tmodinv(nid - 1, size); i != lastPoly[nb - 1] && noIntercect; i = tmodinv(i - 1, size))
+						if(!gob)
+						{
+							for(int i = tmodinv(nid - 1, size); i != realLastPoly[nb - 1] && noIntercect; i = tmodinv(i - 1, size))
 							{				  
 								Point2D ipt = points[ipts[i]];
 								if(ipt.exactEquals(lp)||ipt.exactEquals(fp)||ipt.exactEquals(np))
@@ -178,49 +201,54 @@ void Polygon2D::tesselate()
 								else
 									noIntercect = !ipt.isInCWTriangle(lp, fp, np);
 							}
+						}
 						//}
-						if(noIntercect)
+						if(gob || noIntercect)
 						{
 							// add point
-							lastPoly.insert(lastPoly.begin(), nid);
+							// add point
+							if(!gob)
+							{							
+								lastPoly.insert(lastPoly.begin(), nid);
+								sp = fp;
+								fp = np;
+								falsenb++;
+							}
+							// TODO: remove this
+							else
+								falsenb = falsenb;
+							// else gob point without adding to the polygon		
+							realLastPoly.insert(realLastPoly.begin(), nid);
+
 							nb++;
-							sp = fp;
-							fp = np;
 						}
 						else break;
 					}
 					else break;
 				}
 				// end of extantion
-				Point2D *respts = new Point2D[nb];
-				int realnb = nb;
+				Point2D *respts = new Point2D[falsenb];
+				int realnb = falsenb;
 				int offset = 0;
-				for(int i = 0; i < nb; i ++)
+				for(int i = 0; i < falsenb; i ++)
 				{
 					Point2D pt = points[ipts[lastPoly[i]]];
-					if(i > 0 && pt.exactEquals(respts[i - 1]))
-					{
-						offset++;
-						realnb--;
-					}
-					else
-						respts[i - offset] = points[ipts[lastPoly[i]]];
+					respts[i] = points[ipts[lastPoly[i]]];
 				}
-				if(respts[realnb-1].exactEquals(respts[0]))
-					realnb--;
 				for(int i = 1; i < nb - 1; i ++)
 				{
-					int pivot = lastPoly[i];
+					int pivot = realLastPoly[i];
 					ipts.erase(ipts.begin() + pivot);
 					for(int j = i + 1; j < nb - 1; j ++)
 					{
-						if(lastPoly[j] > pivot)
-							lastPoly[j]--;
+						if(realLastPoly[j] > pivot)
+							realLastPoly[j]--;
 					}
 				}
 				size -= nb - 2;
 				polys.push_back(new ImplicitPolygon2D(respts, realnb, this, (int)polys.size() + 1));
 				lastPoly.clear();
+				realLastPoly.clear();
 				id = 0;
 				CWid = size - 1;
 				CCWid = 0;
@@ -258,6 +286,7 @@ void Polygon2D::tesselate()
 	}
 	ipts.clear();
 	lastPoly.clear();
+	realLastPoly.clear();
 	if(nbrSubShapes > 0)
 	{	  
 		for(int i = 0; i < nbrSubShapes; i++)

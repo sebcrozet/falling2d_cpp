@@ -231,6 +231,10 @@
 				Name="Primitives"
 				>
 				<File
+					RelativePath=".\DirectionnalPoint2D.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Point2D.cpp"
 					>
 				</File>
@@ -404,6 +408,10 @@
 			<Filter
 				Name="Primitives"
 				>
+				<File
+					RelativePath=".\DirectionnalPoint2D.h"
+					>
+				</File>
 				<File
 					RelativePath=".\Point2D.h"
 					>

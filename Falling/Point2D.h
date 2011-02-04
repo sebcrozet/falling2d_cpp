@@ -17,7 +17,8 @@ public:
 	inline float getY() const;
 	inline void setY(float y);
 
-	inline float isLeftTo(const Point2D &p,const Point2D &p2);
+	inline float isLeftTo(const Point2D &p,const Point2D &p2);   
+	inline float isLeftTo(const Point2D &p,const Point2D &p2, int onsegmentvalue);
 	static float intersectSegments(Point2D &p,Point2D &p2,Point2D &p3,Point2D &p4, Point2D *res, float *bparam2);
 	bool isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);
 	bool isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);   
@@ -50,7 +51,19 @@ inline void Point2D::setY(float y)
 inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2)
 {
 	float px = p.getX(), py = p.getY();
-	float res = (p2.getX() - px) * (y - py) - (p2.getY() - py) * (x - px);
+	return (p2.getX() - px) * (y - py) - (p2.getY() - py) * (x - px);
+}						
+inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2, int onsegmentvalue)
+{
+	float px = p.getX(), py = p.getY();
+	Vector2D cp(p,*this), pp2(p,p2); 
+	float res = pp2.perp(cp);
+	if(res == 0)
+	{
+		float dot = cp * cp;
+		if(dot >= 0 && dot <= pp2 * pp2)
+			res = onsegmentvalue;
+	}
 	return res;
 }
 

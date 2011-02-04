@@ -12,8 +12,8 @@ private:
 
 public:
 	Vector2D(const Vector2D &v);
-	Vector2D(Point2D &p);
-	Vector2D(Point2D &p1,Point2D &p2);
+	Vector2D(const Point2D &p);
+	Vector2D(const Point2D &p1,const Point2D &p2);
 	Vector2D(float x = 0,float y = 0, float z = 0);
 
 	inline void print();

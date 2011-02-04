@@ -1,17 +1,14 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Falling", "Falling\Falling.vcproj", "{C7F9F4B3-2F54-4EFB-BEF6-CB80C33CEA54}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Falling", "Falling\Falling.vcxproj", "{C7F9F4B3-2F54-4EFB-BEF6-CB80C33CEA54}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Falling_Demo", "Falling_Demo\Falling_Demo.vcproj", "{5C9DB88E-F0AB-467E-8344-CC76827FD549}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Falling_Demo", "Falling_Demo\Falling_Demo.vcxproj", "{5C9DB88E-F0AB-467E-8344-CC76827FD549}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C7F9F4B3-2F54-4EFB-BEF6-CB80C33CEA54} = {C7F9F4B3-2F54-4EFB-BEF6-CB80C33CEA54}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FallingDemo", "FallingDemo\FallingDemo.vcproj", "{80090162-FD53-492E-841A-AD24D3A022BF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C7F9F4B3-2F54-4EFB-BEF6-CB80C33CEA54} = {C7F9F4B3-2F54-4EFB-BEF6-CB80C33CEA54}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FallingDemo", "FallingDemo\FallingDemo.vcxproj", "{80090162-FD53-492E-841A-AD24D3A022BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
