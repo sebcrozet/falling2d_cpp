@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RigidBody.h"
+#include "Tesselator.h"
 
 RigidBody::RigidBody(Shape *sh,float m,Vector2D pos,float teta)
 {				
@@ -92,15 +93,8 @@ void RigidBody::setAwake(bool awake)
 
 RigidBody *RigidBody::build_polygonalBody(Point2D *pts,int n, bool fixed,float m,Vector2D pos,float teta)
 {
-	/* simplify polygon
-	Point2D *simplified;
-	n = Polygon2D::simplify(pts,n,&simplified,25);
-	// uncross polygon if needed
-	Point2D *uncrossed;
-	n = Polygon2D::getUncrossedPolygon(simplified,n,&uncrossed);
-	*/
-	Polygon2D *pp=new Polygon2D(pts,GeometryHelper::Transformation2D(pos,teta),n, fixed);
-	return new RigidBody(pp,m*pp->getSurface(),pos,teta);
+	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, 1, pos, true, teta, 10, false, fixed);
+	return new RigidBody(pp,m*pp->getSurface(),pp->getCentroid(),teta);
 }
 
 RigidBody *RigidBody::build_circularBody(Point2D &pt, float radius, bool fixed,float m,Vector2D pos,float teta)

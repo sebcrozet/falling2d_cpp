@@ -6,6 +6,7 @@
 #include "GeometryHelper.h"
 #include "OBBtree.h"
 #include "AABB.h"
+#include "Tesselator.h"
 #include <vector>
 
 class ImplicitPolygon2D;
@@ -16,8 +17,9 @@ public:
 #else
 private:
 #endif
-	int nbrPts, nbrSubShapes, nbrSubShapes2;
-	ImplicitPolygon2D *chull, **subShapes, **subShapes2;
+	int nbrPts, nbrSubShapes;
+	ImplicitPolygon2D **subShapes;
+	ImplicitPolygon2D *chull;
 	Point2D *points;
 
 	
@@ -25,31 +27,35 @@ private:
 
 	void buildOBBtree();
 	void buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polyset, int &i);
-	void tesselate();
-	void tesselate2();
-	bool isCCW();
 public:												   
-	static int simplify(Point2D * in, int n, Point2D **out, int tolerence);
-	Polygon2D(Point2D *pts,GeometryHelper::Transformation2D &tr, int n, bool fixed);
+	Polygon2D(
+		Point2D p[], 
+		int nbpts, 
+		Point2D *holespts[], 
+		int nbrholes, 
+		int holesnbrpts[], 
+		int mergetype, 
+		Vector2D position, 
+		bool useCentroid, 
+		float orientation, 
+		float mass, 
+		bool isimmediatemass, 
+		bool fixed
+		);
 	~Polygon2D();
 
+	static int simplify(Point2D * in, int n, Point2D **out, float tolerence);
 	void update(float rotationAngle);
-	float getInertiaMomentum(float m);
+	float getInertiaMomentum(float density);
 	float getSurface();
 	void updateAABB();
-
-	/*inline Point2D toGlobal(Point2D &p);
-	inline Vector2D toGlobal(Vector2D &p);
-	inline Vector2D toLocal(Vector2D &p);
-	inline Point2D toLocal(Point2D &p);
-	inline Vector2D toRotatedInv(Vector2D &p);
-	*/
 	inline Vector2D getCentroid();
 	inline int getShapeTypeID();
 
 	static Point2D getCentroid(Point2D * in, int n);
 	static Point2D getCentroid(Point2D * in, int n, float aire);
 	static float getSurface(Point2D *in, int n);  
+	static float getUnitInertiaMomentum(Point2D *pts, int n, Vector2D &axistranslate);
 	static int buildConvexHull(Point2D *pts, int nbPts, Point2D ** outHull);
 	static int getUncrossedPolygon(Point2D * pts, int nb, Point2D **res);
 };	  
@@ -65,6 +71,8 @@ private:
 	int nbrPts;
 	OBB *obb;
 	float radius;
+	float surface;
+	float unitInertia;
 
 	int naiveClimb(int ibase, int imax,Vector2D &v);
 	float _getBoundingSphereSqRadius();
@@ -75,8 +83,16 @@ public:
 	int getSupportPoint(Vector2D &d, Point2D * res);
 	int getSupportPoint(Vector2D &d, Point2D * res, int o);	 
 	float getBoundingSphereRadius();
+	void translateCentroid(Vector2D &);
 	inline Vector2D getCenter();  
+	inline Vector2D getCentroid();
 	inline OBB *getOBB();
+	inline float getUnitInertiaMomentum();
+	inline float getSurface();
+	inline int getNbrPts()
+	{ return nbrPts; }
+	inline Point2D *getPts()
+	{ return pts; }
 
 	static OBB *buildOBB (Point2D *pts, int n, ImplicitPolygon2D *p, int id);
 };
@@ -86,9 +102,14 @@ inline int Polygon2D::getShapeTypeID()
 inline Vector2D Polygon2D::getCentroid()
 { return t.getU(); }
 
-							  
+inline float ImplicitPolygon2D::getSurface()
+{ return surface; }
+inline float ImplicitPolygon2D::getUnitInertiaMomentum()
+{ return unitInertia + surface * (center.getX() * center.getX() + center.getY() * center.getY()); }
 inline Vector2D ImplicitPolygon2D::getCenter()
 { return toGlobal(center); }
+inline Vector2D ImplicitPolygon2D::getCentroid()
+{ return center; }
 				  
 inline OBB *ImplicitPolygon2D::getOBB()
 { return obb; }

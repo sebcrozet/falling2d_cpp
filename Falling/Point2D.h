@@ -36,6 +36,8 @@ public:
 	inline Point2D operator-(Vector2D &v);
 
 	static inline Point2D getMiddle(const Point2D &pa,const Point2D &pb);
+	// determine if a point is included in a polygon
+	static bool pointInPolygon(Point2D pt, Point2D *pts, int nbpts);
 };
 
 

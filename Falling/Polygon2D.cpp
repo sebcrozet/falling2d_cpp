@@ -4,50 +4,56 @@
 #include <vector>
 
 #pragma region Polygon2D
-Polygon2D::Polygon2D(Point2D * p,GeometryHelper::Transformation2D &tr,int n, bool fixed) : nbrSubShapes(0), ixm(0), ixM(0), iym(0), iyM(0)
-{ 
-	fixedobj = fixed;
-	t = GeometryHelper::Transformation2D(Vector2D(),0);
-	int nchull;
-	Point2D *chullpts = 0;
-	nbrPts = simplify(p, n, &points, 25);
-	// get orientation and invert points if non CCW
-	if(!isCCW())
-	{
-		for(int i = 0;i<nbrPts / 2;i++)
-		{
-			// swap
-			Point2D tmp = points[i];
-			points[i] = points[nbrPts - i - 1];
-			points[nbrPts - i - 1] = tmp;
-		}
-	}
-	nchull = Polygon2D::buildConvexHull(points, nbrPts, &chullpts);	 
-	chull = new ImplicitPolygon2D(chullpts, nchull, this, 0);
-	if(nchull != nbrPts) // le polygone n'était pas déjà convexe, il faut faire une tesselation
-		tesselate();
-	buildOBBtree();
-	t.setTeta(tr.getTeta());
-	t.setU(tr.getU());
-}
-
-bool Polygon2D::isCCW()
+Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int hnbrpts[], int mergetype, Vector2D position, bool useCentroid, float orientation, float mass, bool isimmediatemass, bool fixed)
+	: ixm(0), ixM(0), iym(0), iyM(0)
 {
-	// find lowest point
-	int idp = 0;
-	Point2D lpt = points[idp];
-	for(int i = 1; i < nbrPts; i++)
+	Tesselator tess;
+	Point2D **subpolys;
+	int *nbptssubpolys;
+	fixedobj = fixed;
+	int *holesnbrpts = new int[nbholes];
+	Point2D **holespts = new Point2D*[nbholes];
+	// simplify
+	nbrPts = simplify(p, nbpts, &points, 0.05f);
+	for(int i = 0; i < nbholes; i++)
+		holesnbrpts[i] = simplify(hpts[i], hnbrpts[i], &(holespts[i]), 0.05f);
+	t = GeometryHelper::Transformation2D(Vector2D(),0);
+	// calculate convex decomposition
+	nbrSubShapes = tess.initAndRun(mergetype, p, nbpts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
+	// calculate centroid and surface of all subpolygons
+	float totalSurface = 0;
+	Point2D totalCentroid(0,0);
+	// build implicit polygons
+	subShapes = new ImplicitPolygon2D *[nbrSubShapes];
+	for(int i = 0; i < nbrSubShapes; i++)
 	{
-		Point2D tmp = points[i];
-		if((lpt.getY() > tmp.getY()) ||(lpt.getY() == tmp.getY() && lpt.getX() < tmp.getY()))
-		{
-			idp = i;
-			lpt = tmp;
-		}
-		// else next
+		subShapes[i] = new ImplicitPolygon2D(subpolys[i], nbptssubpolys[i], this, i);
+		totalSurface += subShapes[i]->getSurface();
+		Point2D centr= subShapes[i]->getCentroid();
+		// TODO: remove test
+		//if(!(centr.getX() == centr.getX() && centr.getY() == centr.getY()))
+		//	while (true);
+		// end todo
+		totalCentroid += subShapes[i]->getCentroid() * subShapes[i]->getSurface();
 	}
-	// return cross product sign
-	return points[(idp - 1 < 0)?nbrPts - 1:idp - 1].isLeftTo(lpt,points[(idp + 1 == nbrPts)?0:idp + 1]) > 0; 
+	totalCentroid = Point2D(totalCentroid.getX() / totalSurface, totalCentroid.getY() / totalSurface);
+	for(int i = 0; i < nbrSubShapes; i++)
+		subShapes[i]->translateCentroid(Vector2D(-totalCentroid.getX(), -totalCentroid.getY(), 0));
+	// translate points
+	for(int i = 0; i < nbrSubShapes; i++)
+	{
+		for(int j = 0; j < nbptssubpolys[i]; j++)
+			subpolys[i][j] = subpolys[i][j] - totalCentroid;
+		if(subpolys[i][2].isLeftTo(subpolys[i][0], subpolys[i][1]) <= 0)
+			while(true);
+	}
+	// build obb tree
+	buildOBBtree();
+	// adjust position
+	t.setTeta(orientation);
+	t.setU((useCentroid)?Vector2D(totalCentroid):position);
+
+	delete holesnbrpts;
 }
 
 void Polygon2D::updateAABB()
@@ -66,290 +72,14 @@ void Polygon2D::updateAABB()
 	aabb_ym = pt.getY() - m;
 }
 
-void Polygon2D::tesselate()
-{
-	std::vector<int> ipts, lastPoly, realLastPoly;
-	std::vector<ImplicitPolygon2D *> polys;
-	// TODO: remove vector
-	// (for visualisation)
-	std::vector<Point2D> vis;
-	//
-	for(int i = 0; i < nbrPts; i++)
-	{
-		vis.push_back(points[i]);
-		ipts.push_back(i);
-	}
-	int id = 0, size = nbrPts, CWid = nbrPts - 1, CCWid = 0;
-	bool CWpropagation = false;
-	while(size >= 3)
-	{		  
-		if(id == -1)
-			break;
-		Point2D p0 = points[ipts[tmod(id, size)]],
-				p1 = points[ipts[tmod(id + 1, size)]],
-				p2 = points[ipts[tmod(id + 2, size)]];								
-		float lto = p2.isLeftTo(p0, p1);
-		if(lto == 0)
-			lto = 0;
-		if(lto > 0) // no degenerate here
-		{
-			bool noOverlap = false;
-			for(int i = tmod(id + 3, size); i != id && !noOverlap; i = tmod(i + 1, size))
-			{
-				Point2D ipt = points[ipts[i]];
-				if(ipt.exactEquals(p0)||ipt.exactEquals(p1)||ipt.exactEquals(p2))
-					noOverlap = false;
-				else
-					noOverlap =ipt.isInCCWTriangle(p0, p1, p2);
-				if(noOverlap)
-					break;
-			}
-			if(!noOverlap)
-			{	
-				// build convex polygon
-				int nb = 3;
-				int falsenb = 3;
-				lastPoly.push_back(tmod(id, size));
-				lastPoly.push_back(tmod(id + 1, size));
-				lastPoly.push_back(tmod(id + 2, size));
-				realLastPoly.push_back(tmod(id, size));
-				realLastPoly.push_back(tmod(id + 1, size));
-				realLastPoly.push_back(tmod(id + 2, size));
-				// CCW extantion
-				Point2D lp = points[ipts[lastPoly[0]]],
-						llp =  points[ipts[lastPoly[1]]],
-						fp = points[ipts[lastPoly[nb - 1]]],
-						sp = points[ipts[lastPoly[nb - 2]]];
-				if(fp.exactEquals(sp) || sp.exactEquals(lp) || llp.exactEquals(fp))
-					fp = fp;
-				for(int nid = tmod(lastPoly[nb - 1] + 1, size); nid != realLastPoly[0]; nid = tmod(nid + 1, size))
-				{		
-					bool gob;
-					Point2D np = points[ipts[nid]];
-					gob = np.exactEquals(lp) || np.exactEquals(fp);
-					if(np.isLeftTo(llp, lp, -1) < 0 && 
-					   fp.isLeftTo(lp, np, -1) < 0	&&
-					   sp.isLeftTo(np, fp, -1) < 0)
-					{			  
-						bool noIntercect = true;	
-						
-						if(!gob)
-						{
-						/*if(lp.exactEq
-						uals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
-							noIntercect = true;	 // triangle dégénéré
-						else
-						{  */
-							for(int i = tmod(nid + 1, size); i != realLastPoly[0] && noIntercect; i = tmod(i + 1, size))
-							{
-								Point2D ipt = points[ipts[i]];
-								if(ipt.exactEquals(lp)||ipt.exactEquals(fp)||ipt.exactEquals(np))
-									noIntercect = true;
-								else
-									noIntercect = !ipt.isInCCWTriangle(lp, fp, np);
-							}
-						}
-						//}
-						if(gob || noIntercect)
-						{
-							// add point
-							if(!gob)
-							{
-								lastPoly.push_back(nid); 
-								sp = fp;
-								fp = np;
-								falsenb++;
-							}
-							else
-								falsenb = falsenb;
-							// else gob point without adding to the polygon
-							realLastPoly.push_back(nid);
-							nb++;
-						}
-						else break;
-					}
-					else break;
-				}														  
-				// CW extantion
-				fp = points[ipts[lastPoly[0]]],
-				sp =  points[ipts[lastPoly[1]]],
-				lp = points[ipts[lastPoly[falsenb - 1]]];
-				llp = points[ipts[lastPoly[falsenb - 2]]];		  
-				if(fp.exactEquals(sp) || sp.exactEquals(lp) || llp.exactEquals(fp))
-					fp = fp;
-				for(int nid = tmodinv(realLastPoly[0] - 1, size); nid != realLastPoly[nb - 1]; nid = tmodinv(nid - 1, size))
-				{		
-					bool gob;
-					Point2D np = points[ipts[nid]];
-					gob = np.exactEquals(lp) || np.exactEquals(fp);
-					if(gob || (np.isLeftTo(llp, lp, 1) > 0 && 
-					   (fp.isLeftTo(lp, np, 1) > 0 &&
-					   (sp.isLeftTo(np, fp, 1) > 0))))
-					{			  
-						bool noIntercect = true;
-						/*if(lp.exactEquals(fp)||fp.exactEquals(np)||lp.exactEquals(np))
-							noIntercect = true;	 // triangle dégénéré
-						else
-						{  */
-						if(!gob)
-						{
-							for(int i = tmodinv(nid - 1, size); i != realLastPoly[nb - 1] && noIntercect; i = tmodinv(i - 1, size))
-							{				  
-								Point2D ipt = points[ipts[i]];
-								if(ipt.exactEquals(lp)||ipt.exactEquals(fp)||ipt.exactEquals(np))
-									noIntercect = true;
-								else
-									noIntercect = !ipt.isInCWTriangle(lp, fp, np);
-							}
-						}
-						//}
-						if(gob || noIntercect)
-						{
-							// add point
-							// add point
-							if(!gob)
-							{							
-								lastPoly.insert(lastPoly.begin(), nid);
-								sp = fp;
-								fp = np;
-								falsenb++;
-							}
-							// TODO: remove this
-							else
-								falsenb = falsenb;
-							// else gob point without adding to the polygon		
-							realLastPoly.insert(realLastPoly.begin(), nid);
-
-							nb++;
-						}
-						else break;
-					}
-					else break;
-				}
-				// end of extantion
-				Point2D *respts = new Point2D[falsenb];
-				int realnb = falsenb;
-				int offset = 0;
-				for(int i = 0; i < falsenb; i ++)
-				{
-					Point2D pt = points[ipts[lastPoly[i]]];
-					respts[i] = points[ipts[lastPoly[i]]];
-				}
-				for(int i = 1; i < nb - 1; i ++)
-				{
-					int pivot = realLastPoly[i];
-					ipts.erase(ipts.begin() + pivot);
-					for(int j = i + 1; j < nb - 1; j ++)
-					{
-						if(realLastPoly[j] > pivot)
-							realLastPoly[j]--;
-					}
-				}
-				size -= nb - 2;
-				polys.push_back(new ImplicitPolygon2D(respts, realnb, this, (int)polys.size() + 1));
-				lastPoly.clear();
-				realLastPoly.clear();
-				id = 0;
-				CWid = size - 1;
-				CCWid = 0;
-				CWpropagation = false;
-			}
-			else
-			{				  
-				CWpropagation = !CWpropagation;
-				if(CWpropagation)
-				{
-					id = CWid;
-					CWid = tmodinv(CWid - 1, size);	  // le décrémant vient après				
-				}
-				else
-				{
-					CCWid = tmod(CCWid + 1, size);;  // l'incrément vient avant
-					id = CCWid;
-				}
-			}
-		}
-		else
-		{
-			CWpropagation = !CWpropagation;
-			if(CWpropagation)
-			{
-				id = CWid;
-				CWid--;	  // le décrémant vient après				
-			}
-			else
-			{
-				CCWid++;  // l'incrément vient avant
-				id = CCWid;
-			}
-		}
-	}
-	ipts.clear();
-	lastPoly.clear();
-	realLastPoly.clear();
-	if(nbrSubShapes > 0)
-	{	  
-		for(int i = 0; i < nbrSubShapes; i++)
-			delete subShapes[i];
-		delete[] subShapes;
-	}
-	nbrSubShapes = (int)polys.size();			 
-	subShapes = new ImplicitPolygon2D*[nbrSubShapes];
-	for(int i = 0; i < nbrSubShapes; i++)
-		subShapes[i] = polys[i];
-	polys.clear();
-		
-}
-
 void Polygon2D::buildOBBtree()
 {	
-	otree = new OBBtree(0, 0, chull->getOBB());
-	if(nbrSubShapes > 1)
-	{
-		// divide space		  
-		std::vector<ImplicitPolygon2D *> rightset;
-		std::vector<ImplicitPolygon2D *> leftset;
-		Point2D ao;
-		Point2D as;
-		otree->o->getMedialAxis(&ao, &as);
-		for(int i = 0; i < nbrSubShapes; i++)
-		{
-			Vector2D vp = subShapes[i]->getCenter();
-			Point2D p(vp.getX(), vp.getY());
-			if(p.isLeftTo(ao, as) < 0)
-				leftset.push_back(subShapes[i]);
-			else
-				rightset.push_back(subShapes[i]);
-		}
-		if(rightset.size()==0)
-		{
-			int ls = ((int)leftset.size()) / 2;
-			while(leftset.size() != ls)
-			{
-				rightset.push_back(leftset[leftset.size()-1]);
-				leftset.pop_back();
-			}
-		}
-		else if(leftset.size() == 0)
-		{	 
-			int ls = ((int)rightset.size()) / 2;
-			while((int)rightset.size() != ls)
-			{
-				leftset.push_back(rightset[(int)rightset.size()-1]);
-				rightset.pop_back();
-			}
-		}
-		// rego	
-		int id = 0;
-		if((int)rightset.size()!=0)
-			buildOBBtree(&(otree->r), rightset, id);
-		else
-			otree->r = 0;
-		if((int)leftset.size()!=0)
-			buildOBBtree(&(otree->l), leftset, id);
-		else
-			otree->l = 0;
-	}
+	// divide space		  
+	int id = 0;
+	std::vector<ImplicitPolygon2D *> set;
+	for(int i = 0; i < nbrSubShapes; i++)
+		set.push_back(subShapes[i]);
+	buildOBBtree(&otree, set, id);
 }
 
 void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polyset, int &id)
@@ -358,6 +88,11 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	int s = (int)polyset.size();
 	if(s == 1)
 	{
+		// build obb	
+		// if id == 1, the object's convex hull has been calculated, so store it
+		if(id == 1)
+			chull = new ImplicitPolygon2D(polyset[0]->getPts(), polyset[0]->getNbrPts(),this,1);
+		//
 		*o = new OBBtree(0,0, polyset[0]->getOBB());
 		polyset.clear();
 		return;
@@ -375,6 +110,8 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		tmp = polyset[i]->toLocal(tmp);
 		if(tmp.getY() < miny.getY())
 			miny = tmp;
+		else if(tmp.getY() == miny.getY() && tmp.getX() < miny.getX())
+			miny = tmp;
 	}				
 	studiedpt = miny;
 	do
@@ -383,9 +120,34 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		Point2D rp = polyset[0]->rightTgtPt(studiedpt);
 		for(int i = 1; i < s; i++)
 		{
+			// TODO: remove test
+			int iii;
+			for(iii = 0; iii < polyset[i]->nbrPts; iii++)
+			{
+				if(polyset[i]->pts[iii].exactEquals(studiedpt))
+					break;
+			}
+			if(iii == polyset[i]->nbrPts && Point2D::pointInPolygon(studiedpt, polyset[i]->pts, polyset[i]->nbrPts))
+				while(true);
+			// end TODO
 			Point2D tmp = polyset[i]->rightTgtPt(studiedpt); 
-			if(tmp.isLeftTo(studiedpt, rp) < 0)
-				rp = tmp;			
+			// TODO: remove test
+			if(tmp.exactEquals(miny))
+				printf("aienratenrtaueausieasrieanietaunietars\n");
+			// end todo
+			if(tmp.exactEquals(studiedpt))
+				continue;
+			float lt = tmp.isLeftTo(studiedpt, rp); 
+			if(lt < 0)
+				rp = tmp;	
+			else if(lt == 0)
+			{
+				// handle three-colinear-points case
+				Vector2D rs(studiedpt, rp);
+				Vector2D ts(studiedpt, tmp);
+				if(ts * ts < rs * rs) // nearest point is selected
+					rp = tmp;
+			} 
 		}	
 		studiedpt = rp;
 	} while(studiedpt.getX() != miny.getX() || studiedpt.getY() != miny.getY());
@@ -395,6 +157,10 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		ch[i] = chpts[i];
 	chpts.clear();
 	// build obb	
+	// if id == 1, the object's convex hull has been calculated, so store it
+	if(id == 1)
+		chull = new ImplicitPolygon2D(ch,chn,this,1);
+	//
 	*o = new OBBtree(0, 0, ImplicitPolygon2D::buildOBB(ch, chn, chull, -1));
 	OBBtree *oo = *o;
 
@@ -440,7 +206,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 }
 
 
-int Polygon2D::simplify(Point2D *in, int n, Point2D **out, int tolerence)
+int Polygon2D::simplify(Point2D *in, int n, Point2D **out,  float tolerence)
 {
 	Point2D *pt = new Point2D[n];
 	int s = 0;
@@ -453,7 +219,7 @@ int Polygon2D::simplify(Point2D *in, int n, Point2D **out, int tolerence)
 		      ya = in[p].getY(),
 		      yc = in[np].getY(),
 		      yb = in[nnp].getY();
-		if(abs(xa*yc-xa*yb+xb*ya-xb*yc+xc*yb-xc*ya) >= 2 * tolerence)
+		if(abs(xa*yc-xa*yb+xb*ya-xb*yc+xc*yb-xc*ya) > 2.f * tolerence)
 		{
 			pt[s] = in[np];
 			s++;
@@ -471,26 +237,39 @@ int Polygon2D::simplify(Point2D *in, int n, Point2D **out, int tolerence)
     return s;
 }
 
-float Polygon2D::getInertiaMomentum(float m)
-{
+float Polygon2D::getUnitInertiaMomentum(Point2D *points, int nbpts, Vector2D &axisTranslate)
+{									  
 	float num = 0, denum = 0;
-	int l = nbrPts, j = l - 1;
+	int l = nbpts, j = l - 1;
 	for (int i = 0; i < l; i++)
 	{
-		Vector2D pn = Vector2D(points[j]);
-		Vector2D pn1 = Vector2D(points[i]);
+		Vector2D pn = Vector2D(points[j]) + axisTranslate;
+		Vector2D pn1 = Vector2D(points[i]) + axisTranslate;
 		float f = pn1.cross(pn).magnitude();
 		denum += f;
 		num += f * (pn1.dot(pn1) + pn1.dot(pn) + pn.dot(pn));
 		j = i;
 	}
-	return (denum == 0) ? 0 : abs(m * num / (6 * denum));
+	return (denum == 0) ? 0 : abs(num / (6 * denum));
 }
+
+float Polygon2D::getInertiaMomentum(float density)
+{ 
+	float totalInertia = 0;
+	for(int i = 0; i < nbrSubShapes; i++)
+		totalInertia += subShapes[i]->getUnitInertiaMomentum() * density;
+	return totalInertia;
+}
+
 float Polygon2D::getSurface()
-{ return Polygon2D::getSurface(points, nbrPts); }
+{
+	float totalSurface = 0;
+	for(int i = 0; i < nbrSubShapes; i++)
+		totalSurface += subShapes[i]->getSurface();
+	return totalSurface;
+}
 
 #pragma region Static methods
-
 	struct PointWithNext
 	{
 		Point2D pt;
@@ -714,14 +493,45 @@ Point2D Polygon2D::getCentroid(Point2D *in, int n,float aire)
 
 #pragma region ImplicitPolygon2D
 ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, int id) 
-	: nbrPts(n) 
-{
+{	
+	/*
+	for(int i = 0; i < n; i++)
+	{
+		Point2D tmp = globalPts[i];
+		globalPts[i] = globalPts[n - 1 - i];
+		globalPts[n - 1 - i] = tmp;
+	}
+	*/
+	// TODO: remove test
+	int j = n-1;
+	for(int i = 0; i < n; i++)
+	{
+		for(int k = i+1; k < n-2; k++)
+		{
+			Point2D useless;
+			float param;
+			if(Point2D::intersectSegments(globalPts[j], globalPts[i], globalPts[k], globalPts[k+1], &useless, &param) != -1)
+			{
+				while(true);
+			}
+		}
+	}
+	//
+	nbrPts = n;
 	parent = p; 
 	margin = PROXIMITY_AWARENESS + 0.5f;
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
 	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);
 	radius = sqrt(_getBoundingSphereSqRadius());
+	surface = Polygon2D::getSurface(pts, n);
+	unitInertia = Polygon2D::getUnitInertiaMomentum(pts, n, Vector2D(-center.getX(), -center.getY(),0)) * surface;
+}
+
+void ImplicitPolygon2D::translateCentroid(Vector2D &u)
+{
+	center += u;
+	obb->translate(u);
 }
 
 float ImplicitPolygon2D::_getBoundingSphereSqRadius()
@@ -743,6 +553,20 @@ float ImplicitPolygon2D::getBoundingSphereRadius()
 Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 {	   	
 	int a = 0, b = nbrPts - 1, ires;
+	ires = 0;
+	if(pts[ires].exactEquals(ref))
+		ires = 1;
+	// TODO: remove: brute force test
+	for(a = ires; a < nbrPts; a++)
+	{
+		if(!pts[ires].exactEquals(ref))
+		{
+			if(pts[a].isLeftTo(ref, pts[ires]) < 0)
+				ires = a;
+		}
+	}
+	return pts[ires];
+	/*
     if(pts[a].equals(ref))
 		ires = 1;		
     else if(pts[b].equals(ref))
@@ -796,6 +620,7 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 		}
 	}
 	return pts[ires];
+	*/
 } 
 
 int ImplicitPolygon2D::naiveClimb(int ibase, int imax, Vector2D &v)
@@ -827,7 +652,8 @@ int ImplicitPolygon2D::getSupportPoint(Vector2D &od, Point2D *res)
 {		   
 	Vector2D d = toRotatedInv(od);
 	int ires;
-	if(nbrPts < 8) // n - 1 < 3 * log(n) pour n < 8
+	// TODO: remove: test
+	if(true)//nbrPts < 8) // n - 1 < 3 * log(n) pour n < 8
 		ires = naiveClimb(0, nbrPts - 1, d);
 	else
 	{

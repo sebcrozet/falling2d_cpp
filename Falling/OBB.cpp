@@ -17,6 +17,14 @@ OBB::OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, float ai
 	}
 }
 
+void OBB::translate(Vector2D &u)
+{
+	for(int i = 0; i < 4; i++)
+		pts[i] += u;
+	origin[0] = pts[0] * axis[0];
+	origin[1] = pts[1] * axis[1];
+}
+
 bool OBB::intersects(OBB *o)
 { return intersects2axis(o) && o->intersects2axis(this); }
 

@@ -56,7 +56,7 @@ public:
 	inline float getM();
 	inline float getInvM();
 	inline void setM(float mass);
-	inline void setMwithDensity(float rho);
+	inline void setMWithDensity(float rho);
 	inline float getI();  
 	inline float getInvI();
 	inline float getA();
@@ -116,9 +116,9 @@ inline float RigidBody::getM()
 inline float RigidBody::getInvM()
 { return invM; }
 inline void RigidBody::setM(float mass)
-{ invM = 1.0f / mass; invI = 1.0f / s->getInertiaMomentum(mass); }
-inline void	RigidBody::setMwithDensity(float rho)
-{ setM(rho * getA()); }
+{ invM = 1.0f / mass; invI = 1.0f / s->getInertiaMomentum(mass / s->getSurface()); }
+inline void RigidBody::setMWithDensity(float density)
+{ invM = 1.0f / (density * s->getSurface()); invI = 1.0f / s->getInertiaMomentum(density); }
 
 inline float RigidBody::getI()
 { return 1.0f/invI; }

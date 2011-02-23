@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "Falling.h"
-
+#include "DoubleLinkedList.h"
 World::World()
 { }
 World::~World()
@@ -54,6 +54,35 @@ void World::checkSleeps(float dt)
 // return type should be void
 void World::solve(float dt)
 {
+	/*		  
+	// TODO: REMOVE
+	DoubleLinkedList<int> *s = new DoubleLinkedList<int>(0);
+	DoubleLinkedList<int> *parc = s; 
+	for(int i = 1; i < 6; i++)
+	{
+		parc->InsertAfter(i);
+		parc = parc->getnext();
+	} 
+	parc = s;
+	DoubleLinkedList<int> *cut1 = s->getnext(),
+		*cut2 = s->getprev()->getprev();
+	s->Split(cut1, cut2, 1000, 1000);
+	parc = cut1;
+	do
+	{
+		printf("%i - ", parc->getValue());
+		parc = parc->getprev();
+	} while (parc != cut1);
+	printf("\n");		 
+	parc = cut2;
+	do
+	{
+		printf("%i - ", parc->getValue());
+		parc = parc->getprev();
+	} while (parc != cut2);
+	 */
+	// end TODO
+
 	// add and remove objects now
 	checkSleeps(dt);
 	dumpAddDelete();
