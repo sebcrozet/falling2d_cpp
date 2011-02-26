@@ -65,8 +65,8 @@ bool QuarterSpace::getSignificantDualQuarterSpace(QuarterSpace *q[4])
 void Contact::updateVelChange(float t)
 {
 	float vFromAcc = s1->getParent()->getAcc() * t * normal;
-	if(s2)
-		vFromAcc -= s2->getParent()->getAcc() * t * normal;
+	if(s2nfixed)
+		vFromAcc -= s2nfixed->getParent()->getAcc() * t * normal;
 	float fakerest = 0.2f;
 	if(abs(closingVelocity.getX()) < 0.1f)
 		fakerest = 0;
@@ -109,7 +109,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 				cnt->absoluteContactPoint= Point2D::getMiddle(sc.ptA,sc.ptB);
 				cnt->normal = Vector2D(sc.ptA,sc.ptB);
 				cnt->setPenetration(cnt->normal.normalise() - 2.f * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
-				if(/*cnt->s1->isFixed() || */cnt->s1->getStackLevel() < cnt->s2->getStackLevel())
+				if(cnt->s1->isFixed())// || */cnt->s1->getStackLevel() < cnt->s2->getStackLevel())
 				{
 					if(!cnt->s1->isFixed())
 						cnt->s2nfixed = cnt->s1;
@@ -119,7 +119,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 					cnt->s2 = 0;
 					cnt->normal.reflect();
 				}
-				else if(/*cnt->s2->isFixed() || */cnt->s1->getStackLevel() > cnt->s2->getStackLevel())
+				else if(cnt->s2->isFixed())//|| */cnt->s1->getStackLevel() > cnt->s2->getStackLevel())
 				{
 					if(!cnt->s2->isFixed())
 						cnt->s2nfixed = cnt->s2;
@@ -145,8 +145,14 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 				{
 					lin2 = cnt->toLocal(Vector2D(0,0,rb->getOmega()).cross(cnt->relContactPoint[1]) + rb->getV());
 					cnt->lin2 = lin2.magnitude();
+					cnt->closingVelocity = lin1 - lin2;
 				}
-				cnt->closingVelocity = lin1 - lin2;
+				else if(cnt->s2nfixed)
+				{
+					float lin2nfixed = (cnt->toLocal(Vector2D(0,0,cnt->s2nfixed->getParent()->getOmega()).cross(cnt->relContactPoint[1]) + cnt->s2nfixed->getParent()->getV())).magnitude();
+					cnt->closingVelocity = lin1 - lin2nfixed;
+				}
+				else cnt->closingVelocity = lin1;
 				cnt->updateVelChange(dt);
 				Vector2D dvel = ((cnt->relContactPoint[0] ^ cnt->normal) * ra->getInvI())^cnt->relContactPoint[0];
 				cnt->angin[0] = dvel * cnt->normal;

@@ -14,19 +14,20 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
 	int *holesnbrpts = new int[nbholes];
 	Point2D **holespts = new Point2D*[nbholes];
 	// simplify
-	nbrPts = simplify(p, nbpts, &points, 0.05f);
+	// nbrPts = nbpts;
+	nbrPts = simplifyToProper(p, nbpts, &points, 0.05f);
 	for(int i = 0; i < nbholes; i++)
 		holesnbrpts[i] = simplify(hpts[i], hnbrpts[i], &(holespts[i]), 0.05f);
 	t = GeometryHelper::Transformation2D(Vector2D(),0);
 	// calculate convex decomposition
-	nbrSubShapes = tess.initAndRun(mergetype, p, nbpts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
+	nbrSubShapes = tess.initAndRun(mergetype, points, nbrPts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
 	// calculate centroid and surface of all subpolygons
 	float totalSurface = 0;
 	Point2D totalCentroid(0,0);
 	// build implicit polygons
 	subShapes = new ImplicitPolygon2D *[nbrSubShapes];
 	for(int i = 0; i < nbrSubShapes; i++)
-	{
+	{		  
 		subShapes[i] = new ImplicitPolygon2D(subpolys[i], nbptssubpolys[i], this, i);
 		totalSurface += subShapes[i]->getSurface();
 		Point2D centr= subShapes[i]->getCentroid();
@@ -116,7 +117,16 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	studiedpt = miny;
 	do
 	{
-		chpts.push_back(studiedpt);
+		if(chpts.size() >= 2)
+		{
+			if(abs(studiedpt.isLeftTo(chpts[chpts.size()-2], chpts[chpts.size()-1])) > 0.000001f &&
+				abs(studiedpt.isLeftTo(chpts[0], chpts[1])) > 0.000001f &&
+				abs(studiedpt.isLeftTo(chpts[0], chpts[chpts.size()-1])) > 0.000001f) 
+				chpts.push_back(studiedpt);
+			else printf("ah voila");
+		}
+		else
+			chpts.push_back(studiedpt);
 		Point2D rp = polyset[0]->rightTgtPt(studiedpt);
 		for(int i = 1; i < s; i++)
 		{
@@ -155,13 +165,19 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	Point2D *ch = new Point2D[chn];
 	for(int i = 0; i < chn; i++)
 		ch[i] = chpts[i];
-	chpts.clear();
 	// build obb	
 	// if id == 1, the object's convex hull has been calculated, so store it
 	if(id == 1)
+	{
+		// TODO: remove test
+		Point2D *out;
+		simplifyToProper(ch,chn, &out,0);
+		// end todo
 		chull = new ImplicitPolygon2D(ch,chn,this,1);
+	}
 	//
 	*o = new OBBtree(0, 0, ImplicitPolygon2D::buildOBB(ch, chn, chull, -1));
+	chpts.clear();
 	OBBtree *oo = *o;
 
 	// divide space		  
@@ -204,7 +220,39 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	if(leftset.size()!=0)
 		buildOBBtree(&(oo->l), leftset, id);
 }
-
+int Polygon2D::simplifyToProper(Point2D *in, int n, Point2D **out,  float tolerence)
+{
+	Point2D *pt = new Point2D[n];
+	int s = 0;
+	int p=n-2, np=n-1, nnp=0;
+	while(nnp<n)
+	{
+		float xa =in[p].getX(),
+		      xc = in[np].getX(),
+		      xb = in[nnp].getX(),
+		      ya = in[p].getY(),
+		      yc = in[np].getY(),
+		      yb = in[nnp].getY();
+		if(abs(in[nnp].isLeftTo(in[np], in[p])) > 0.001f)
+		{
+			pt[s] = in[np];
+			s++;
+			p = np;
+			np = nnp;
+		}
+		else
+		{
+			printf("Was not proper\n");
+			np = nnp;	 
+		}
+		nnp++;
+	}
+	*out = new Point2D[s];
+	for(int i=0;i<s;i++)
+		(*out)[i] = pt[i];
+	delete[] pt;
+    return s;
+}
 
 int Polygon2D::simplify(Point2D *in, int n, Point2D **out,  float tolerence)
 {
@@ -554,21 +602,27 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 {	   	
 	int a = 0, b = nbrPts - 1, ires;
 	ires = 0;
-	if(pts[ires].exactEquals(ref))
+	// TODO: remove: brute force test
+	if(pts[a].exactEquals(ref))
 		ires = 1;
-	// TODO: remove: brute force test
-	for(a = ires; a < nbrPts; a++)
+	else
 	{
-		if(!pts[ires].exactEquals(ref))
+		for(a = ires; a < nbrPts; a++)
 		{
-			if(pts[a].isLeftTo(ref, pts[ires]) < 0)
-				ires = a;
+			if(!pts[ires].exactEquals(ref))
+			{
+				if(pts[a].isLeftTo(ref, pts[ires]) < 0)
+					ires = a;
+			}
+			else 
+				ires = a + 1;
 		}
 	}
-	return pts[ires];
+
 	/*
-    if(pts[a].equals(ref))
-		ires = 1;		
+	int aref, bref;
+	if(pts[a].exactEquals(ref))
+		ires = 1;
     else if(pts[b].equals(ref))
 		ires = a;
 	else if(pts[a].isLeftTo(ref, pts[a+1]) < 0	&& pts[a].isLeftTo(ref, pts[b]) <= 0)
@@ -579,7 +633,13 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 	{
 		while(true)
 		{
+			bool arrived = true;
 			int c = (a + b)/2;
+			if(c == ires2)
+			{
+				aref = a;
+				bref = b;
+			}
 						
 			bool dnc = pts[c].isLeftTo(ref, pts[c+1]) < 0;   
 			if(pts[c].equals(ref))
@@ -592,7 +652,7 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 				ires = c;
 				break;
 			}
-			float upa = pts[a].isLeftTo(ref, pts[a+1])  > 0;
+			bool upa = pts[a].isLeftTo(ref, pts[a+1])  > 0;
 			if(upa)
 			{
 				if(dnc)
@@ -619,8 +679,8 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 			}
 		}
 	}
+	//*/
 	return pts[ires];
-	*/
 } 
 
 int ImplicitPolygon2D::naiveClimb(int ibase, int imax, Vector2D &v)
@@ -652,8 +712,7 @@ int ImplicitPolygon2D::getSupportPoint(Vector2D &od, Point2D *res)
 {		   
 	Vector2D d = toRotatedInv(od);
 	int ires;
-	// TODO: remove: test
-	if(true)//nbrPts < 8) // n - 1 < 3 * log(n) pour n < 8
+	if(nbrPts < 8) // n - 1 < 3 * log(n) pour n < 8
 		ires = naiveClimb(0, nbrPts - 1, d);
 	else
 	{
@@ -847,6 +906,10 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 				int id = t_p[i];
 				Vector2D vc = Vector2D(pts[id],pts[tmod(id+1,nbrPts)]);
 				t_teta[i] = acos(vc.dot(calipers[i])/vc.magnitude());
+				// TODO: remove test
+				if(t_teta[i] < 0.0000000001f)
+					printf("mhhhh");
+				// end todo
 			}
 			if(t_teta[i] < minTeta)
 				minTeta = t_teta[i];							

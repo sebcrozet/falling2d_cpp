@@ -8,7 +8,7 @@ void ImpulseSolver::solve(std::vector<Contact *> &scs,float dt)
 		Vector2D rch[2];
 		Vector2D vch[2];
 		Contact *worst = 0;
-		float worstV = 0.01;
+		float worstV = 0.01f;
 		for(unsigned int j=0;j<scs.size();j++)
 		{
 			if(scs[j]->getPenetration() >= -0.5f && scs[j]->desiredVelocityChange > worstV)

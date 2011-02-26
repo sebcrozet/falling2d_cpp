@@ -30,6 +30,7 @@ Poly::~Poly()
 #pragma region As 
 void Poly::testAdj()
 {
+	return;
 	DoubleLinkedList<Edge *> *adjparc = this->adj;
 	DoubleLinkedList<Point *> *parc = this->pts;
 	// test if not degenerate
@@ -260,7 +261,7 @@ void Poly::split(Point *splitpt, Poly **oth1, Poly **oth2)
  **
  * Prototype :
  * split(
- *		Point *splitpt			: Splitting point
+ *		Point *splitpt			: Splitting p—oint
  *		Point *pt1e				: Right point of the edge to be splitted
  *		Point *pt2e				: Left point of the edge to be splitted
  *		Poly **adjsplitted		: pointer which will be set to adjascent split
@@ -325,7 +326,7 @@ Poly *Poly::split(Point *splitpt, Point *pt1e, Point *pt2e, Poly **adjsplitted)
 	// TODO: remove test
 	testAdj();
 	pol2->testAdj();
-	printf("posttest");
+	//printf("posttest");
 	// end TODO
 	// now these objects can be seen as a polygons ==> can use split function
 	Poly *npoly = this->split(thirdpt->getValue(), l1->getValue());
@@ -334,7 +335,7 @@ Poly *Poly::split(Point *splitpt, Point *pt1e, Point *pt2e, Poly **adjsplitted)
 	(*adjsplitted) = pol2->split(thirdo->getValue(),l1o->getValue());
 	npoly->testAdj();
 	this->testAdj();
-	printf("porstnpoly");
+	//printf("porstnpoly");
 	(*adjsplitted)->testAdj();
 	pol2->testAdj();
 	return npoly;
@@ -751,10 +752,10 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 	// (point is not in this triangle due to
 	// previous tests).
 	poly = opppoly;	
-	printf("Not found!\n\r");
+	//printf("Not found!\n\r");
 	while(true)
 	{
-		printf("loop...");
+		//printf("loop...");
 		Poly *lastopppoly = opppoly;
 		// swap p1 and p2 to be in CCW order
 		Point *oldp1 = p1;
@@ -787,7 +788,7 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 		}
 		else // points aligned
 		{
-			printf("Rec with: %f , % f \n\r", thirdpt->pt.getX(), thirdpt->pt.getY());
+			//printf("Rec with: %f , % f \n\r", thirdpt->pt.getX(), thirdpt->pt.getY());
 			return triangleMarching(thirdpt, end, graphpt);
 		}
 		poly = opppoly;
@@ -867,7 +868,7 @@ void Poly::triangulate(Point *basep1)
 	// call recursion
 	if(curr != r->getnext())
 	{
-		printf("splitr\n");
+		//printf("splitr\n");
 		this->split(r->getValue(), curr->getValue())->triangulate(curr->getValue());
 		this->testAdj();
 	}
@@ -875,7 +876,7 @@ void Poly::triangulate(Point *basep1)
 	curr = r->getnext();
 	if(curr!= l->getprev())
 	{
-		printf("splitl\n");
+		//printf("splitl\n");
 		if(this->pts->getnext()->getnext()->getnext() == this->pts)
 			while(true);
 		this->split(curr->getValue(), l->getValue())->triangulate(l->getValue());
@@ -933,7 +934,7 @@ void Tesselator::insertPoint(Point2D &point, Point **gpoints)
 		Poly *topo = t->testAndSwap(pt);
 		if(topo)
 		{
-			printf("SWAP!\n");
+			//printf("SWAP!\n");
 			toVerify.push(t);
 			toVerify.push(topo);
 		}
@@ -959,7 +960,7 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 		opppoly = poly->getOppositeEdgeAndAdjascent(begin,&p1, &p2)->getOther(poly);
 		if(end->pt.exactEquals(p1->pt) || end->pt.exactEquals(p2->pt))
 		{
-			printf("exists\n");
+			//printf("exists\n");
 			return;
 		}
 
@@ -968,19 +969,19 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 		
 		float dotl1 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p1->pt));
 		float dotl2 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p2->pt));
-		printf("l1 -> %f ||", l1);
-		printf("l2 -> %f ||", l2);
+		//printf("l1 -> %f ||", l1);
+		//printf("l2 -> %f ||", l2);
 		if(abs(l1) <= 0.01f && dotl1 > 0)
 		{
 			// point of triangle in the same line
-			printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
+			//printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
 			insertEdge(p1, end);
 			return;
 		}
 		else if(abs(l2) <= 0.01f && dotl2 > 0)
 		{
 			// point of triangle in the same line
-			printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
+			//printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
 			insertEdge(p2, end);
 			return;
 		}
@@ -997,7 +998,7 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 	Poly *tomerge = poly;	 
 	poly = opppoly; 	  
 	Point *oldp1, *oldp2;
-	printf("NOT\n");
+	//printf("NOT\n");
 	while(true)
 	{				 
 		oldp1 = p1;
@@ -1012,20 +1013,20 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 			break;
 
 		float lt = thirdpt->pt.isLeftTo(begin->pt, end->pt); 
-		printf("lt -> %f ||", lt);
+		//printf("lt -> %f ||", lt);
 		if(lt > 0.01)
 		{										  
-			printf("merge > 0");
+			//printf("merge > 0");
 			opppoly = poly->getOppositeEdgeAndAdjascent(p1, &p1, &p2)->getOther(poly);
 		}
 		else if(lt < -0.01)
 		{
-			printf("merge < 0");
+			//printf("merge < 0");
 			opppoly = poly->getOppositeEdgeAndAdjascent(p2, &p1, &p2)->getOther(poly);
 		}
 		else // points aligned
 		{
-			printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
+			//printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
 			insertEdge(thirdpt, end);
 			end = thirdpt;
 			break;
@@ -1196,7 +1197,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 						nbinter++;
 						Point *steiner;
 						// insert intersecion point
-						printf("Intersection found: bparam: %f", bparam1);
+						//printf("Intersection found: bparam: %f", bparam1);
 						insertPoint(inter, &steiner);
 						steinerpoints.push(steiner);
 					}
@@ -1214,7 +1215,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 					nbinter++;
 					Point *steiner;
 					// insert intersecion point
-					printf("Intersection found: bparam: %f", bparam1);
+					//printf("Intersection found: bparam: %f", bparam1);
 					insertPoint(inter, &steiner);
 					steinerpoints.push(steiner);
 				}
@@ -1230,7 +1231,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 				{
 					nbinter++;
 					Point *steiner;
-					printf("Intersection found: bparam: %f", bparam1);
+					//printf("Intersection found: bparam: %f", bparam1);
 					// insert intersecion point
 					insertPoint(inter, &steiner);
 					steinerpoints.push(steiner);
@@ -1253,7 +1254,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 				nbinter++;
 				Point *useless;
 				// insert intersecion point
-				printf("Intersection found: bparam: %f", bparam1);
+				//printf("Intersection found: bparam: %f", bparam1);
 				insertPoint(inter, &useless);
 			}
 		}
@@ -1286,7 +1287,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	int totpolys = batchTriangles(remainingtriangles, respolys);
 	(*subPolys) = new Point2D *[totpolys];
 	(*nbptsSubPolys) = new int[totpolys];
-	printf("Nbr: %i", totpolys);
+	//printf("Nbr: %i", totpolys);
 	ipoly = 0;
 	while(!respolys.empty())
 	{
@@ -1295,8 +1296,8 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 		ipoly++;
 	}
 	// TODO: remove debug print
-	printf("INTER: %i\n", nbinter);
-	printf("ipoly: %i\n", ipoly);
+	//printf("INTER: %i\n", nbinter);
+	//printf("ipoly: %i\n", ipoly);
 	// end todo
 	// tesselation ended!
 
@@ -1471,7 +1472,7 @@ int Tesselator::batchTriangles(std::stack<Poly *> &toparcpol, std::stack<Poly *>
 		while(!polys.empty())
 		{
 			Poly *pol = polys.front();
-			printf("pop!  \n");
+			//printf("pop!  \n");
 			polys.pop();
 			respolys.push(pol);
 			nbrres++;
@@ -1491,11 +1492,11 @@ int Tesselator::batchTriangles(std::stack<Poly *> &toparcpol, std::stack<Poly *>
 						DoubleLinkedList<Point *> *opt = pp->pts;
 						while(opt->getValue() != currpt->getValue())
 							opt = opt->getnext();
-						// see if merge with triangle is possible
-						if(currpt->getValue()->pt.isLeftTo(currpt->getprev()->getValue()->pt, opt->getnext()->getValue()->pt) <  0
+						// see if merge with triangle is possible. Make only proper polygons
+						if(currpt->getValue()->pt.isLeftTo(currpt->getprev()->getValue()->pt, opt->getnext()->getValue()->pt) <  -0.01f
 							&&
 							currpt->getnext()->getValue()->pt.isLeftTo(opt->getprev()->getprev()->getValue()->pt,
-							currpt->getnext()->getnext()->getValue()->pt) < 0) 
+							currpt->getnext()->getnext()->getValue()->pt) < -0.01f) 
 						{
 							// ok, merge and retry
 							pol->mergeNoDelete(pp, currpt->getValue(), currpt->getnext()->getValue());
@@ -1506,7 +1507,7 @@ int Tesselator::batchTriangles(std::stack<Poly *> &toparcpol, std::stack<Poly *>
 							retry = true;
 							break;
 						}	  
-						printf("compushed\n");
+						//printf("compushed\n");
 						pp->parcstate = false;
 						polys.push(pp);
 					}
