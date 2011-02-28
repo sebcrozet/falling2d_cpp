@@ -19,6 +19,7 @@ public:
 
 	inline float isLeftTo(const Point2D &p,const Point2D &p2);   
 	inline float isLeftTo(const Point2D &p,const Point2D &p2, int onsegmentvalue);
+	inline float isInLine(const Point2D &p,const Point2D& p2);
 	static float intersectSegments(Point2D &p,Point2D &p2,Point2D &p3,Point2D &p4, Point2D *res, float *bparam2);
 	bool isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);
 	bool isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3);   
@@ -34,6 +35,8 @@ public:
 	inline Point2D operator-(const Point2D &p);	
 	inline Point2D operator+(Vector2D &v);
 	inline Point2D operator-(Vector2D &v);
+	inline Point2D operator*(const float &f)
+	{ return Point2D(x*f,y*f); }
 
 	static inline Point2D getMiddle(const Point2D &pa,const Point2D &pb);
 	// determine if a point is included in a polygon
@@ -54,6 +57,31 @@ inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2)
 {
 	float px = p.getX(), py = p.getY();
 	return (p2.getX() - px) * (y - py) - (p2.getY() - py) * (x - px);
+}						
+
+inline float Point2D::isInLine(const Point2D &p,const Point2D& p2)
+{
+	float px = p.getX(), py = p.getY();
+	float xx = abs(p.getX() - p2.getX());
+	float yy = abs(p.getY() - p2.getY());
+	float a,b;
+	if(x - px == 0)
+	{
+		a = p2.getX();
+		b = x;
+	}
+	else if(p2.getX() - px == 0)
+	{
+		a = x;
+		b = px;
+	}
+	else
+	{
+		a = /*(p2.getY() - py)/(p2.getX() - px);*/(p2.getX() - px) * (y - py);
+		b = /*(y-py)/(x-px);*/(p2.getY() - py) * (x - px);
+	}
+	printf("%f vs %f\n",sqrt((double)FLT_EPSILON) * max(abs(a),max(abs(b),1.0)), abs(a-b));
+	return abs(a - b) <= sqrt(FLT_EPSILON) * max(abs(a),max(abs(b),1.0));
 }						
 inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2, int onsegmentvalue)
 {

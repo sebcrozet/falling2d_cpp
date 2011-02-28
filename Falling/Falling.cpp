@@ -55,7 +55,7 @@ void World::checkSleeps(float dt)
 void World::solve(float dt)
 {
 	// add and remove objects now
-	checkSleeps(dt);
+	//checkSleeps(dt);
 	dumpAddDelete();
 	VitessSolver::integrate(objs,dt);
 	// solve distances (collision detection)
@@ -85,9 +85,13 @@ void World::solve(float dt)
 					for(int i = 0; i < 5; i++)
 					{
 						// stack implosion
-						PenetrationSolver::solve(isls2.top(), true);
+						int basecoeff = ctcts.size() / 10;
+						if(basecoeff < 2)
+							basecoeff = 2;
+						//PenetrationSolver::solve(ctcts);
+						PenetrationSolver::solve(isls2.top(), true, (5-i) / 2);//*basecoeff/2);
 						// stack explosion
-						PenetrationSolver::solve(isls2.top(), false);
+						PenetrationSolver::solve(isls2.top(), false, i);//basecoeff);
 					}
 					isls2.pop();																									
 				}

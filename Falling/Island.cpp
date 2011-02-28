@@ -11,17 +11,17 @@ void Island::pushToLevelOneChain(Collision *next)
 	{
 		next->nextlvlptr = next;
 		next->prevlvlptr = next;
-		stackLevels.push(next);
+		stackLevels.push_back(next);
 	}
 	else
-		next->insertInLevel(stackLevels.front());
+		next->insertInLevel(stackLevels[stackLevels.size()-1]);
 }
 
 void Island::calculateStackLevels()
 {
 	// Make a breadth first research
 	Collision *levelHead = 0;
-	Collision *levelLessOneHead = stackLevels.front(); // previous level'head
+	Collision *levelLessOneHead = stackLevels[stackLevels.size()-1]; // previous level'head
 	int currLevel = 2;
 	graphNodes.push(0); // push level-1 mark
 	int iter = 0;
@@ -69,7 +69,7 @@ void Island::calculateStackLevels()
 								next->nextlvlptr = next; // make it circular
 								next->prevlvlptr = next;
 								levelHead = next;
-								stackLevels.push(levelHead); // push new graph level
+								stackLevels.push_back(levelHead); // push new graph level
 							}
 							else
 								next->insertInLevel(levelHead);
@@ -96,7 +96,7 @@ void Island::calculateStackLevels()
 									next->nextlvlptr = next; // make it circular
 									next->prevlvlptr = next;
 									levelHead = next;
-									stackLevels.push(levelHead); // push new graph level
+									stackLevels.push_back(levelHead); // push new graph level
 								}
 								else
 									next->insertInLevel(levelHead);

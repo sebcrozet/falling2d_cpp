@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "PenetrationSolver.h"
 
-void PenetrationSolver::solve(Island *isl,bool implode)
+void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 {
-	do
+	int nbstack = isl->stackLevels.size();
+	for(int currlevel = implode?nbstack-1:0; implode?currlevel >= 0: currlevel < nbstack; implode?currlevel--:currlevel++)
 	{
 		// next level
-		Collision *curr = isl->stackLevels.front();
+		Collision *curr = isl->stackLevels[currlevel];
 		// sort list
 		curr = Collision::inPlaceSortList(curr);
 		Collision *begining = curr;
-		isl->stackLevels.pop();
-		for(int id = 0;id < /*scs.size()**/50;id++)
+		for(int id = 0;id < maxiter;id++)
 		{
 			float trchange[2];
 			float rchange[2];
@@ -122,20 +122,57 @@ void PenetrationSolver::solve(Island *isl,bool implode)
 			else break;
 		}
 	}
-	while(!isl->stackLevels.empty()); 
+}
+
+void PenetrationSolver::solveRelax(std::vector<Contact *> &scs, float relaxRate)
+{
+	for(unsigned int id = 0;id < 2;id++)
+	{
+		float trchange[2];
+		float rchange[2];
+		Contact *worst = 0;
+		for(unsigned int ji=0;ji<scs.size();ji++)
+		{
+			if(scs[ji]->getPenetration() < 0.01f)
+				continue;
+			worst = scs[ji];
+			worst->awakeIfNeeded();
+			applyPositionChangeRelax(worst,trchange,rchange,relaxRate);
+			// adjust other penetrations
+			for(unsigned int j=0;j<scs.size();j++)
+			{
+				if(scs[j]->s1 == worst->s1)
+				{
+					float m = (worst->normal*trchange[0])*scs[j]->normal + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
+					scs[j]->setPenetration(scs[j]->getPenetration() - m);				   
+				}
+				else if(scs[j]->s2 == worst->s1)
+				{
+					scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[0])*scs[j]->normal);
+					scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal);  
+				}
+				if(worst->s2)
+				{
+					if(scs[j]->s1 == worst->s2)
+					{
+						float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
+						scs[j]->setPenetration(scs[j]->getPenetration() - m);    
+					}
+					else if(scs[j]->s2 == worst->s2)
+					{
+						float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
+						scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[1])*scs[j]->normal);
+						scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal);    
+					}
+				}	  
+			}
+		}
+	}
 }
 
 void PenetrationSolver::solve(std::vector<Contact *> &scs)
 {
-	//PenetrationSolver::solveRelax(scs);	
-	// TODO: Remove: Validity check
-		for(unsigned int j=0;j<scs.size();j++)
-		{
-			if(!(scs[j]->getPenetration() == scs[j]->getPenetration()))
-				scs[j]->setPenetration(0);
-		}
-	// END: Validity check					
-	for(unsigned int id = 0;id < 2/*scs.size()*/;id++)
+	for(unsigned int id = 0;id < scs.size()/2;id++)
 	{
 		float trchange[2];
 		float rchange[2];
@@ -160,18 +197,11 @@ void PenetrationSolver::solve(std::vector<Contact *> &scs)
 				{
 					float m = (worst->normal*trchange[0])*scs[j]->normal + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
 					scs[j]->setPenetration(scs[j]->getPenetration() - m);				   
-					// TODO: Remove: Validity check
-							if(!(scs[j]->getPenetration() == scs[j]->getPenetration()))
-								scs[j]->setPenetration(0);
-					// END: Validity check
 				}
 				else if(scs[j]->s2 == worst->s1)
 				{
 					scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[0])*scs[j]->normal);
 					scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal);  
-					// TODO: Remove: Validity check
-							if(!(scs[j]->getPenetration() == scs[j]->getPenetration()))
-								scs[j]->setPenetration(0);
 				}
 				if(worst->s2)
 				{
@@ -179,29 +209,19 @@ void PenetrationSolver::solve(std::vector<Contact *> &scs)
 					{
 						float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
 						scs[j]->setPenetration(scs[j]->getPenetration() - m);    
-					// TODO: Remove: Validity check
-							if(!(scs[j]->getPenetration() == scs[j]->getPenetration()))
-								scs[j]->setPenetration(0);
 					}
 					else if(scs[j]->s2 == worst->s2)
 					{
 						float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
 						scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[1])*scs[j]->normal);
 						scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal);    
-					// TODO: Remove: Validity check
-							if(!(scs[j]->getPenetration() == scs[j]->getPenetration()))
-								scs[j]->setPenetration(0);
 					}
 				}	  
-					// TODO: Remove: Validity check
-							if(!(scs[j]->getPenetration() == scs[j]->getPenetration()))
-								scs[j]->setPenetration(0);
 			}
 		}
 		else 
 			break;
 	}
-	//PenetrationSolver::solveRelax(scs);
 }
 
 void PenetrationSolver::applyPositionChangePerLevel(Contact *c,float *ch,float *ah, bool implode)
@@ -252,12 +272,95 @@ void PenetrationSolver::applyPositionChangePerLevel(Contact *c,float *ch,float *
 		c->s1->translate(c->normal*ch[0]);
 		c->s1->rotate(-ah[0]);
 	}
-	if(c->s2 && (implode ? c->s1->getStackLevel() <= c->s2->getStackLevel()
+	if(c->s2 && (implode ? c->s1->getStackLevel() >= c->s2->getStackLevel()
 						  : c->s1->getStackLevel() <= c->s2->getStackLevel()))
 	{
 		float factor = (!lvlequ)?1.f/((c->linin[1] + c->angin[1])*c->totalInertia):1.f;
 		ch[1] = -c->getPenetration()*c->unitlinmov[1]*factor;
 		ah[1] = -c->getPenetration()*c->unitangmov[1]*factor;
+		
+		limita = c->s2->getParent()->getDeltaTeta();
+		pivot = c->s2->getParent()->getConsumedDeltaTeta();
+		dch = 0;
+		if(limita < 0) 
+		{
+			if(ah[1] + pivot > 0)
+			{
+				dch = ((Vector2D(0,0,(ah[1] + pivot)) ^ c->relContactPoint[1])*c->normal);
+				ah[1] = -pivot;
+			}
+			else if(ah[1] + pivot < limita)
+			{	  
+				dch = ((Vector2D(0,0,(ah[1] - limita + pivot)) ^ c->relContactPoint[1])*c->normal);
+				ah[1] = limita - pivot;
+			}
+			//else ok
+		}
+		else // limita >= 0 // same thing
+		{	   
+			if(ah[1] + pivot < 0)
+			{
+				dch = ((Vector2D(0,0,(ah[1] + pivot)) ^ c->relContactPoint[1])*c->normal);
+				ah[1] = -pivot;
+			}
+			else if(ah[1] + pivot > limita)
+			{	  
+				dch = ((Vector2D(0,0,(ah[1] - limita + pivot)) ^ c->relContactPoint[1])*c->normal);
+				ah[1] = limita - pivot;
+			}
+			//else ok
+		}
+		c->s2->getParent()->addConsumedTeta(ah[1]);
+		ch[1] += dch;
+		c->s2->translate(c->normal*ch[1]);
+		c->s2->rotate(-ah[1]);
+	}
+}
+
+void PenetrationSolver::applyPositionChangeRelax(Contact *c,float *ch,float *ah, float relaxmultiplier)
+{
+	float relaxpen = c->getPenetration()*1.f/relaxmultiplier;
+	ah[0] = relaxpen*c->unitangmov[0];
+	ch[0] = relaxpen*c->unitlinmov[0];
+	float limita = c->s1->getParent()->getDeltaTeta();
+	float pivot = c->s1->getParent()->getConsumedDeltaTeta();
+	float dch = 0;
+	if(limita < 0) 
+	{
+		if(ah[0] + pivot > 0)
+		{
+			dch = ((Vector2D(0,0,(ah[0] + pivot)) ^ c->relContactPoint[0])*c->normal);
+			ah[0] = -pivot;
+		}
+		else if(ah[0] + pivot < limita)
+		{	  
+			dch = ((Vector2D(0,0,(ah[0] - limita + pivot)) ^ c->relContactPoint[0])*c->normal);
+			ah[0] = limita - pivot;
+		}
+		//else ok
+	}
+	else // limita >= 0 // same thing
+	{	   
+		if(ah[0] + pivot < 0)
+		{
+			dch = ((Vector2D(0,0,(ah[0] + pivot)) ^ c->relContactPoint[0])*c->normal);
+			ah[0] = -pivot;
+		}
+		else if(ah[0] + pivot > limita)
+		{	  
+			dch = ((Vector2D(0,0,(ah[0] - limita + pivot)) ^ c->relContactPoint[0])*c->normal);
+			ah[0] = limita - pivot;
+		}
+		//else ok
+	}
+	c->s1->getParent()->addConsumedTeta(ah[0]);
+	ch[0] += dch;
+	c->s1->translate(c->normal*ch[0]);
+	c->s1->rotate(-ah[0]);
+	if(c->s2)
+	{
+		ch[1] = -relaxpen*c->unitlinmov[1];
+		ah[1] = -relaxpen*c->unitangmov[1];
 		
 		limita = c->s2->getParent()->getDeltaTeta();
 		pivot = c->s2->getParent()->getConsumedDeltaTeta();
@@ -375,60 +478,5 @@ void PenetrationSolver::applyPositionChange(Contact *c,float *ch,float *ah)
 		ch[1] += dch;
 		c->s2->translate(c->normal*ch[1]);
 		c->s2->rotate(-ah[1]);
-	}
-}
-
-void PenetrationSolver::solveRelax(std::vector<Contact *> &scs)
-{
-	for(unsigned int id = 0;id < scs.size() * 10;id++)
-	{
-		float trchange[2];
-		Contact *worst = 0;
-		float worstP = 0.01;
-		for(unsigned int i=0;i<scs.size();i++)
-		{
-			worst = scs[i];
-			if(worst->getPenetration() > worstP)
-			{
-				worst->awakeIfNeeded();
-				applyPositionChangeRelax(worst,trchange);
-				// adjust other penetrations
-				for(unsigned int j=0;j<scs.size();j++)
-				{
-					if(scs[j]->s1 == worst->s1)
-					{
-						scs[j]->setPenetration(scs[j]->getPenetration() - (worst->normal*trchange[0])*scs[j]->normal);
-					}
-					else if(scs[j]->s2 == worst->s1)
-					{
-						scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[0])*scs[j]->normal);
-					}
-					if(worst->s2)
-					{
-						if(scs[j]->s1 == worst->s2)
-						{
-							scs[j]->setPenetration(scs[j]->getPenetration() - (worst->normal*trchange[1])*scs[j]->normal);
-						}
-						else if(scs[j]->s2 == worst->s2)
-						{
-							scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[1])*scs[j]->normal);
-						}
-					}
-				}
-			}
-			else break;
-		}
-	}
-}
-
-
-void PenetrationSolver::applyPositionChangeRelax(Contact *c,float *ch)
-{
-	ch[0] = ((c->getPenetration())<0.5f?c->getPenetration():0.5f)*(c->s1->getParent()->getInvM()/*+c->lin1*/)*c->totalInertia;
-	c->s1->translate(c->normal*ch[0]);
-	if(c->s2)
-	{
-		ch[1] = ((c->getPenetration())<0.5f?-c->getPenetration():-0.5f)*(c->s2->getParent()->getInvM()/*+c->lin2*/)*c->totalInertia;
-		c->s2->translate(c->normal*ch[1]);
 	}
 }

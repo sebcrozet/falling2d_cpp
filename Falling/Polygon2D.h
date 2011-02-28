@@ -44,6 +44,7 @@ public:
 		);
 	~Polygon2D();
 
+	static void scalepts(Point2D *in, int n, float scalefactor);
 	static int simplify(Point2D * in, int n, Point2D **out, float tolerence);
 	static int simplifyToProper(Point2D * in, int n, Point2D **out, float tolerence);
 	void update(float rotationAngle);

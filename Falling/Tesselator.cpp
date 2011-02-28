@@ -30,7 +30,7 @@ Poly::~Poly()
 #pragma region As 
 void Poly::testAdj()
 {
-	return;
+	//return;
 	DoubleLinkedList<Edge *> *adjparc = this->adj;
 	DoubleLinkedList<Point *> *parc = this->pts;
 	// test if not degenerate
@@ -704,8 +704,6 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 	{
 		poly = curr->getValue();
 		opppoly = poly->getOppositeEdgeAndAdjascent(begin,&p1, &p2)->getOther(poly);
-		float l1 = p1->pt.isLeftTo(begin->pt, end); 
-		float l2 = p2->pt.isLeftTo(begin->pt, end);
 		// test if point included (any kind of inclusion, can be equal to a point) in the triangle
 		if(end.isInCCWTriangle(begin->pt, p1->pt, p2->pt))
 		// stop march and return current triangle
@@ -726,16 +724,20 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 				return poly;
 			}
 		}
+		float l1 = p1->pt.isLeftTo(begin->pt, end); 
+		float l2 = p2->pt.isLeftTo(begin->pt, end);
 		float dotl1 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p1->pt));
 		float dotl2 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p2->pt));
-		if(l1 == 0 && dotl1 > 0)
+		if(p1->pt.isInLine(begin->pt, end) && dotl1 > 0)
 		{
 			// point of triangle in the same line
+			printf("blabla");
 			return triangleMarching(p1, end, graphpt);
 		}
-		else if(l2 == 0 && dotl2 > 0)
+		else if(p2->pt.isInLine(begin->pt, end) && dotl2 > 0)
 		{
 			// point of triangle in the same line
+			printf("blabla");
 			return triangleMarching(p2, end, graphpt);
 		}
 		else if(l1 < 0 && l2 > 0)
@@ -902,7 +904,7 @@ void Tesselator::insertPoint(Point2D &point, Point **gpoints)
 	int i;
 	for(i = 0; i < 3; i++)
 	{
-		if(pt->pt.isLeftTo(currpt->getValue()->pt, currpt->getprev()->getValue()->pt) == 0)
+		if(pt->pt.isInLine(currpt->getValue()->pt, currpt->getprev()->getValue()->pt))//pt->pt.isLeftTo(currpt->getValue()->pt, currpt->getprev()->getValue()->pt) == 0)
 			break;
 		curr = curr->getnext();
 		currpt = currpt->getnext();
@@ -944,9 +946,12 @@ void Tesselator::insertPoint(Point2D &point, Point **gpoints)
 }
 // Edge insertion
 void Tesselator::insertEdge(Point *begin, Point *end)
+{ insertEdge(begin,begin,end); }
+
+void Tesselator::insertEdge(Point *basebegin, Point *begin, Point *end)
 {
 	// find merged polygon
-	if(begin == end)
+	if(begin == end)
 		return ; // no path to follow
 	// find first triangle
 	DoubleLinkedList<Poly *> *curr = begin->adjlist;
@@ -958,31 +963,31 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 		poly =  curr->getValue();
 
 		opppoly = poly->getOppositeEdgeAndAdjascent(begin,&p1, &p2)->getOther(poly);
-		if(end->pt.exactEquals(p1->pt) || end->pt.exactEquals(p2->pt))
+		if(end == p1 || end == p2)
 		{
 			//printf("exists\n");
 			return;
 		}
 
-		float l1 = p1->pt.isLeftTo(begin->pt, end->pt); 
-		float l2 = p2->pt.isLeftTo(begin->pt, end->pt);
+		float l1 = p1->pt.isLeftTo(basebegin->pt, end->pt); 
+		float l2 = p2->pt.isLeftTo(basebegin->pt, end->pt);
 		
-		float dotl1 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p1->pt));
-		float dotl2 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p2->pt));
+		float dotl1 = Vector2D(basebegin->pt, end->pt).dot(Vector2D(basebegin->pt,p1->pt));
+		float dotl2 = Vector2D(basebegin->pt, end->pt).dot(Vector2D(basebegin->pt,p2->pt));
 		//printf("l1 -> %f ||", l1);
 		//printf("l2 -> %f ||", l2);
-		if(abs(l1) <= 0.01f && dotl1 > 0)
+		if(p1->pt.isInLine(basebegin->pt, end->pt) && dotl1 > 0)
 		{
 			// point of triangle in the same line
-			//printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
-			insertEdge(p1, end);
+			printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
+			insertEdge(basebegin, p1, end);
 			return;
 		}
-		else if(abs(l2) <= 0.01f && dotl2 > 0)
+		else if(p2->pt.isInLine(basebegin->pt, end->pt) && dotl2 > 0)
 		{
 			// point of triangle in the same line
-			//printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
-			insertEdge(p2, end);
+			printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
+			insertEdge(basebegin, p2, end);
 			return;
 		}
 		else if(l1 < 0 && l2 > 0)
@@ -1012,24 +1017,23 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 			// cannot be equal to p1 or p2
 			break;
 
-		float lt = thirdpt->pt.isLeftTo(begin->pt, end->pt); 
+		float lt = thirdpt->pt.isLeftTo(basebegin->pt, end->pt); 
 		//printf("lt -> %f ||", lt);
-		if(lt > 0.01)
+		if(thirdpt->pt.isInLine(basebegin->pt, end->pt))
+		{
+			insertEdge(basebegin, thirdpt, end);
+			end = thirdpt;
+			break;
+		}
+		else if(lt > 0)
 		{										  
 			//printf("merge > 0");
 			opppoly = poly->getOppositeEdgeAndAdjascent(p1, &p1, &p2)->getOther(poly);
 		}
-		else if(lt < -0.01)
+		else
 		{
 			//printf("merge < 0");
 			opppoly = poly->getOppositeEdgeAndAdjascent(p2, &p1, &p2)->getOther(poly);
-		}
-		else // points aligned
-		{
-			//printf("aaaaaaaaauienaretanieteaaaaaaaaaaaaaaaa");
-			insertEdge(thirdpt, end);
-			end = thirdpt;
-			break;
 		}
 		tomerge->merge(poly, oldp1, oldp2);
 		// verify if we are not in the good triangle
@@ -1249,12 +1253,21 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 			float bparam1, bparam2;
 			Point2D inter;
 			bparam1 = Point2D::intersectSegments(pts[ptsm1], pts[i], pts[p],pts[o], &inter, &bparam2);
-			if(bparam1 != -1)
+			if(bparam1 != -1 && bparam1 != 0.f && bparam2 != 0.f)
 			{
 				nbinter++;
 				Point *useless;
 				// insert intersecion point
-				//printf("Intersection found: bparam: %f", bparam1);
+				printf("Intersection found: bparam: %f\n", bparam1);
+				printf("Intersection found: bparam2: %f\n", bparam2);
+				if((!inter.isInLine(pts[ptsm1],pts[i])) || (!inter.isInLine(pts[p],pts[o])))
+				{
+					while(true)
+					{
+						inter.isInLine(pts[ptsm1],pts[i]);
+						inter.isInLine(pts[p],pts[o]);
+					}
+				}
 				insertPoint(inter, &useless);
 			}
 		}

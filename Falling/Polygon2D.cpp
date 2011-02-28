@@ -18,9 +18,12 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
 	nbrPts = simplifyToProper(p, nbpts, &points, 0.05f);
 	for(int i = 0; i < nbholes; i++)
 		holesnbrpts[i] = simplify(hpts[i], hnbrpts[i], &(holespts[i]), 0.05f);
+	//scalepts(points, nbrPts, 1000.f);
 	t = GeometryHelper::Transformation2D(Vector2D(),0);
 	// calculate convex decomposition
 	nbrSubShapes = tess.initAndRun(mergetype, points, nbrPts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
+	//for(int i = 0; i < nbrSubShapes; i++)
+	//	scalepts(subpolys[i], nbptssubpolys[i], 0.001f);
 	// calculate centroid and surface of all subpolygons
 	float totalSurface = 0;
 	Point2D totalCentroid(0,0);
@@ -45,8 +48,6 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
 	{
 		for(int j = 0; j < nbptssubpolys[i]; j++)
 			subpolys[i][j] = subpolys[i][j] - totalCentroid;
-		if(subpolys[i][2].isLeftTo(subpolys[i][0], subpolys[i][1]) <= 0)
-			while(true);
 	}
 	// build obb tree
 	buildOBBtree();
@@ -55,6 +56,14 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
 	t.setU((useCentroid)?Vector2D(totalCentroid):position);
 
 	delete holesnbrpts;
+}
+
+void Polygon2D::scalepts(Point2D *pts, int n, float scalefactor)
+{
+	for(int i = 0; i < n; i++)
+	{
+		pts[i] = pts[i] * scalefactor;
+	}
 }
 
 void Polygon2D::updateAABB()
@@ -233,7 +242,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		      ya = in[p].getY(),
 		      yc = in[np].getY(),
 		      yb = in[nnp].getY();
-		if(abs(in[nnp].isLeftTo(in[np], in[p])) > 0.001f)
+		if(!in[nnp].isInLine(in[np], in[p]))
 		{
 			pt[s] = in[np];
 			s++;
@@ -567,7 +576,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	//
 	nbrPts = n;
 	parent = p; 
-	margin = PROXIMITY_AWARENESS + 0.5f;
+	margin = PROXIMITY_AWARENESS + 0.01f;
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
 	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);

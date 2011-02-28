@@ -11,7 +11,7 @@ void ImpulseSolver::solve(std::vector<Contact *> &scs,float dt)
 		float worstV = 0.01f;
 		for(unsigned int j=0;j<scs.size();j++)
 		{
-			if(scs[j]->getPenetration() >= -0.5f && scs[j]->desiredVelocityChange > worstV)
+			if(scs[j]->getPenetration() > -0.001f && scs[j]->desiredVelocityChange > worstV)
 			{   
 				worstV = scs[j]->desiredVelocityChange;
 				worst = scs[j];

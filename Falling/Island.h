@@ -6,7 +6,7 @@ class Island
 {
 	friend PenetrationSolver;
 private:
-	std::queue<Collision *> stackLevels;
+	std::vector<Collision *> stackLevels;
 	std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
 
 	static void batchIsland(Island *isl,Shape *coll); // recursive call

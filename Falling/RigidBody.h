@@ -100,7 +100,7 @@ inline void RigidBody::multV(float d)
 inline void RigidBody::multO(float d)
 { omega = omega*d; }
 inline Vector2D RigidBody::getAcc()
-{ return Vector2D(0.f,2.f*196.2f,0.f)/*/acc/*/; }
+{ return Vector2D(0.f,G,0.f)/*/acc/*/; }
 
 inline float RigidBody::getTeta()
 { return s->getTeta(); }
