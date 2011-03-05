@@ -35,8 +35,8 @@ public:
 	float unitangmov[2];
 	float unitlinmov[2];
 
-	inline Vector2D toLocal(Vector2D &v);
-	inline Vector2D toGlobal(Vector2D &v);
+	inline Vector2D toLocal(const Vector2D &v) const;
+	inline Vector2D toGlobal(const Vector2D &v) const;
 	void updateVelChange(float dt);
 	void awakeIfNeeded();
 	// TODO: for debug
@@ -52,9 +52,9 @@ public:
 	}
 	//
 };
-inline Vector2D Contact::toLocal(Vector2D &v)
+inline Vector2D Contact::toLocal(const Vector2D &v) const
 { return Vector2D(v.dot(normal),v.dot(tangeant)); }
-inline Vector2D Contact::toGlobal(Vector2D &v)
+inline Vector2D Contact::toGlobal(const Vector2D &v) const
 { return Vector2D(v.getX()*normal.getX()+v.getY()*tangeant.getX(),v.getX()*normal.getY()+v.getY()*tangeant.getY()); }
 
 class ContactGenerator

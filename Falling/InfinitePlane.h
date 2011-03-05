@@ -14,19 +14,19 @@ public:
 	float getInertiaMomentum(float m);
 	int getShapeTypeID();
 	void updateAABB();
-	inline Point2D getProjectedPt(Point2D &pt);
-	inline bool isInSolidHalfSpace(Point2D &pt);
-	inline float sqDistToPlane(Point2D &pt);
+	inline Point2D getProjectedPt(const Point2D &pt) const;
+	inline bool isInSolidHalfSpace(const Point2D &pt) const;
+	inline float sqDistToPlane(const Point2D &pt) const;
 	inline Vector2D getNormal() const;
 };
-inline bool InfinitePlane::isInSolidHalfSpace(Point2D &pt)
+inline bool InfinitePlane::isInSolidHalfSpace(const Point2D &pt) const
 { return pt.isLeftTo(pt, spt) >= 0; }
-inline Point2D InfinitePlane::getProjectedPt(Point2D &p)
+inline Point2D InfinitePlane::getProjectedPt(const Point2D &p) const
 {
 	Vector2D ao(pt, p);
 	return pt + (perpdir * (ao * perpdir));
 }
-inline float InfinitePlane::sqDistToPlane(Point2D &p)
+inline float InfinitePlane::sqDistToPlane(const Point2D &p) const
 {
 	Vector2D ao(pt, p);
 	float d = ao * perpdir;

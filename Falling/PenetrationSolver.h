@@ -1,7 +1,7 @@
 #include <vector>
 #include "ContactGenerator.h"
 #include "Shapes.h"
-#include "island.h"
+#include "Island.h"
 
 class PenetrationSolver
 {

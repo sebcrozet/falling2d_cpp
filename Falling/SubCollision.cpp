@@ -1,5 +1,5 @@
 #include "stdafx.h"
 #include "SubCollision.h"																			
 
-SubCollision::SubCollision(Point2D &a, Point2D &b) : ptA(a), ptB(b)
+SubCollision::SubCollision(const Point2D &a, const Point2D &b) : ptA(a), ptB(b)
 { }

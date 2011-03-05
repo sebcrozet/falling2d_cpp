@@ -48,7 +48,7 @@ public:
 	inline float getOmega();
 	inline void addRV(float rv);
 	inline Vector2D getV();
-	inline void addV(Vector2D &v);
+	inline void addV(const Vector2D &v);
 	inline void multV(float d);
 	inline void multO(float d);
 	inline float getTeta();
@@ -93,7 +93,7 @@ inline void RigidBody::addRV(float po)
 { omega += po; }
 inline Vector2D RigidBody::getV()
 { return v; }
-inline void RigidBody::addV(Vector2D &pv)
+inline void RigidBody::addV(const Vector2D &pv)
 { v = v + pv; }
 inline void RigidBody::multV(float d)
 { v = v*d; }

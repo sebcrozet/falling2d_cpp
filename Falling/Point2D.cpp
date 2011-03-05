@@ -3,20 +3,24 @@
 
 Point2D::Point2D(float x, float y):x(x),y(y)
 { }
-Point2D::Point2D(Vector2D &v):x(v.getX()), y(v.getY())
+Point2D::Point2D(const Vector2D &v):x(v.getX()), y(v.getY())
 { }
-bool Point2D::isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3)
+
+bool Point2D::isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3) const
 { return (isLeftTo(p , p2) >= 0.0f) && (isLeftTo(p2 , p3) >= 0.0f) && (isLeftTo(p3 , p) >= 0.0f); }
-bool Point2D::isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3)		   
+
+bool Point2D::isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3) const
 { return (isLeftTo(p , p2) <= 0.0f) && (isLeftTo(p2 , p3) <= 0.0f) && (isLeftTo(p3 , p) <= 0.0f); }	   
-bool Point2D::isInUnorientedTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3)		   
+
+bool Point2D::isInUnorientedTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3) const
 { 
-	float l1 =	isLeftTo(p , p2);  
+	float l1 = isLeftTo(p , p2);
 	if(l1 < 0)
 		return isLeftTo(p2 , p3) < 0 && isLeftTo(p3 , p) < 0;
 	else
 		return l1 != 0 && isLeftTo(p2 , p3) > 0 && isLeftTo(p3 , p) > 0;
 }
+
 float Point2D::intersectSegments(Point2D &p, Point2D &p2, Point2D &p3, Point2D &p4, Point2D *res,float *bparam2)
 {
 	Vector2D s1(p,p2);
@@ -42,7 +46,7 @@ float Point2D::intersectSegments(Point2D &p, Point2D &p2, Point2D &p3, Point2D &
 }
 // view simple algorithm in
 // (source:) http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf
-bool Point2D::pointInPolygon(Point2D pt, Point2D *pts, int n)
+bool Point2D::pointInPolygon(const Point2D &pt, Point2D *pts, int n)
 {
 	float windingnumber = 0; // float but will be an int at the end
 	float x = pt.getX();
@@ -85,5 +89,5 @@ bool Point2D::pointInPolygon(Point2D pt, Point2D *pts, int n)
 			}
 		}
 	}
-	return ((int)windingnumber) & 0x0001; // in polygon if umpair
+	return (((int)windingnumber) % 2) & 0x0001; // in polygon if non even
 }

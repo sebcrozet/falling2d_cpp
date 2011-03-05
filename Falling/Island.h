@@ -4,7 +4,7 @@
 class PenetrationSolver;
 class Island
 {
-	friend PenetrationSolver;
+	friend class PenetrationSolver;
 private:
 	std::vector<Collision *> stackLevels;
 	std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.

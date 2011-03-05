@@ -1,17 +1,17 @@
 #include "stdafx.h" 
 #include "Shapes.h"
 
-void ImplicitShape::addMargin(Vector2D &d, Point2D *pt)
+void ImplicitShape::addMargin(const Vector2D &d, Point2D *pt) const
 { *pt += d * margin; }
 
-int ImplicitShape::getMarginedSupportPoint(Vector2D &d, Point2D *res)
+int ImplicitShape::getMarginedSupportPoint(const Vector2D &d, Point2D *res) const
 {
 	int opt = getSupportPoint(d, res);
 	addMargin(d, res); 
 	return opt;
 }
 
-int ImplicitShape::getMarginedSupportPoint(Vector2D &d, Point2D *res, int optimisationId)
+int ImplicitShape::getMarginedSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const
 {
 	int opt = getSupportPoint(d, res, optimisationId);
 	addMargin(d, res); 

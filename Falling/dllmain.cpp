@@ -1,6 +1,8 @@
 // dllmain.cpp : Définit le point d'entrée pour l'application DLL.
 #include "stdafx.h"
+#include "TunningConstants.h"
 
+#ifdef Falling_WINDOWS
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -16,4 +18,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	return TRUE;
 }
+#else
+void __attribute__((constructor)) DLLload(void)
+{ }
+void __attribute__((detructor)) DLLunload(void)
+{ }
+#endif
 

@@ -14,14 +14,14 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
 	int *holesnbrpts = new int[nbholes];
 	Point2D **holespts = new Point2D*[nbholes];
 	// simplify
-	// nbrPts = nbpts;
-	nbrPts = simplifyToProper(p, nbpts, &points, 0.05f);
+	nbrPts = nbpts;
+	//nbrPts = simplifyToProper(p, nbpts, &points, 0.05f);
 	for(int i = 0; i < nbholes; i++)
 		holesnbrpts[i] = simplify(hpts[i], hnbrpts[i], &(holespts[i]), 0.05f);
 	//scalepts(points, nbrPts, 1000.f);
 	t = GeometryHelper::Transformation2D(Vector2D(),0);
 	// calculate convex decomposition
-	nbrSubShapes = tess.initAndRun(mergetype, points, nbrPts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
+	nbrSubShapes = tess.initAndRun(mergetype, p, nbrPts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
 	//for(int i = 0; i < nbrSubShapes; i++)
 	//	scalepts(subpolys[i], nbptssubpolys[i], 0.001f);
 	// calculate centroid and surface of all subpolygons
@@ -128,9 +128,9 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	{
 		if(chpts.size() >= 2)
 		{
-			if(abs(studiedpt.isLeftTo(chpts[chpts.size()-2], chpts[chpts.size()-1])) > 0.000001f &&
-				abs(studiedpt.isLeftTo(chpts[0], chpts[1])) > 0.000001f &&
-				abs(studiedpt.isLeftTo(chpts[0], chpts[chpts.size()-1])) > 0.000001f) 
+			if(!(studiedpt.isInLine(chpts[chpts.size()-2], chpts[chpts.size()-1])) &&
+			   !(studiedpt.isInLine(chpts[0], chpts[1])) &&
+			   !(studiedpt.isInLine(chpts[0], chpts[chpts.size()-1])))
 				chpts.push_back(studiedpt);
 			else printf("ah voila");
 		}
@@ -156,7 +156,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 			// end todo
 			if(tmp.exactEquals(studiedpt))
 				continue;
-			float lt = tmp.isLeftTo(studiedpt, rp); 
+			float lt = tmp.isLeftTo(studiedpt, rp);
 			if(lt < 0)
 				rp = tmp;	
 			else if(lt == 0)
@@ -220,7 +220,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		{
 			leftset.push_back(rightset[rightset.size()-1]);
 			rightset.pop_back();
-		}
+		}								 
 	}
 	// rego	
 	polyset.clear();
@@ -294,7 +294,7 @@ int Polygon2D::simplify(Point2D *in, int n, Point2D **out,  float tolerence)
     return s;
 }
 
-float Polygon2D::getUnitInertiaMomentum(Point2D *points, int nbpts, Vector2D &axisTranslate)
+float Polygon2D::getUnitInertiaMomentum(Point2D *points, int nbpts, const Vector2D &axisTranslate)
 {									  
 	float num = 0, denum = 0;
 	int l = nbpts, j = l - 1;
@@ -310,7 +310,7 @@ float Polygon2D::getUnitInertiaMomentum(Point2D *points, int nbpts, Vector2D &ax
 	return (denum == 0) ? 0 : abs(num / (6 * denum));
 }
 
-float Polygon2D::getInertiaMomentum(float density)
+float Polygon2D::getInertiaMomentum(float density) const
 { 
 	float totalInertia = 0;
 	for(int i = 0; i < nbrSubShapes; i++)
@@ -318,7 +318,7 @@ float Polygon2D::getInertiaMomentum(float density)
 	return totalInertia;
 }
 
-float Polygon2D::getSurface()
+float Polygon2D::getSurface() const
 {
 	float totalSurface = 0;
 	for(int i = 0; i < nbrSubShapes; i++)
@@ -576,7 +576,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	//
 	nbrPts = n;
 	parent = p; 
-	margin = PROXIMITY_AWARENESS + 0.01f;
+	margin = PROXIMITY_AWARENESS + 0.5f;
 	pts = globalPts;		
 	center = Polygon2D::getCentroid(pts, n);
 	obb = ImplicitPolygon2D::buildOBB(pts, n, this, id);
@@ -585,7 +585,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	unitInertia = Polygon2D::getUnitInertiaMomentum(pts, n, Vector2D(-center.getX(), -center.getY(),0)) * surface;
 }
 
-void ImplicitPolygon2D::translateCentroid(Vector2D &u)
+void ImplicitPolygon2D::translateCentroid(const Vector2D &u)
 {
 	center += u;
 	obb->translate(u);
@@ -604,7 +604,7 @@ float ImplicitPolygon2D::_getBoundingSphereSqRadius()
 	return res;
 }
 
-float ImplicitPolygon2D::getBoundingSphereRadius()
+float ImplicitPolygon2D::getBoundingSphereRadius() const
 { return radius; }
 
 Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
@@ -692,7 +692,7 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 	return pts[ires];
 } 
 
-int ImplicitPolygon2D::naiveClimb(int ibase, int imax, Vector2D &v)
+int ImplicitPolygon2D::naiveClimb(int ibase, int imax, Vector2D &v) const
 {
 	float lastDot = -FLT_MAX, dx = v.getX(), dy = v.getY();
 	int i, ires = ibase;
@@ -711,13 +711,13 @@ int ImplicitPolygon2D::naiveClimb(int ibase, int imax, Vector2D &v)
 }
 
 ////////////////////////////////////////////
-//			 BINARY SEARCH                //
-//									      //
+//			 BINARY SEARCH    //
+//					  //
 // Retrieves s(d) suporting point of      //
 // current convex polygon using binary    //
 // search. Algorithm is O(log(n))         //
 ////////////////////////////////////////////
-int ImplicitPolygon2D::getSupportPoint(Vector2D &od, Point2D *res)
+int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res) const
 {		   
 	Vector2D d = toRotatedInv(od);
 	int ires;
@@ -810,7 +810,7 @@ int ImplicitPolygon2D::getSupportPoint(Vector2D &od, Point2D *res)
 // this algorithm to run in near-constant //
 // time (geometric coherence).            //
 ////////////////////////////////////////////
-int ImplicitPolygon2D::getSupportPoint(Vector2D &od, Point2D *res, int o)
+int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res, int o) const
 {
 	Vector2D d = toRotatedInv(od);
 	int n = tmod(o + 1, nbrPts);

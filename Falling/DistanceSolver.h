@@ -7,7 +7,7 @@
 class EPAsolver;
 class GJKsolver : public CollisionDetector
 {
-	friend EPAsolver;
+	friend class EPAsolver;
 private:
 	float msum, sqmsum;	// margin sum
 	ImplicitShape &A,&B;
@@ -49,9 +49,9 @@ private:
 public:
 	inline float getdist() const;
 
-	SimplexSeg(Point2D &pA1, Point2D &ptB1, Point2D &ptC1, Point2D &ptA2, Point2D &ptB2, Point2D &ptC2);
+	SimplexSeg(const Point2D &pA1, const Point2D &ptB1, const Point2D &ptC1, const Point2D &ptA2, const Point2D &ptB2, const Point2D &ptC2);
 	bool isValid();
-	SimplexSeg *cut(Point2D &ptA3,Point2D &ptB3,Point2D &ptC3);
+	SimplexSeg *cut(const Point2D &ptA3, const Point2D &ptB3, const Point2D &ptC3);
 	bool operator<(SimplexSeg &s2);			   
 	Vector2D getSupportVect();
 	void getABpoints(Point2D *a,Point2D *b);

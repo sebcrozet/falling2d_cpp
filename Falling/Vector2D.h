@@ -31,25 +31,25 @@ public:
 
 	inline void reflect();	 
 	inline void ortho();
-	inline float magnitude();																						 
+	inline float magnitude() const;
 	inline float normalise();
 
-	inline Vector2D reflexion();
-	inline Vector2D direction();
+	inline Vector2D reflexion() const;
+	inline Vector2D direction() const;
 
-	inline float dot(const Vector2D &v);
-	inline float perp(const Vector2D &v);
-	inline Vector2D cross(const Vector2D &v);		
+	inline float dot(const Vector2D &v) const;
+	inline float perp(const Vector2D &v) const;
+	inline Vector2D cross(const Vector2D &v) const;		
 
 	inline void operator+=(const Vector2D &u);
 	inline void operator-=(const Vector2D &u);	
 	inline void operator/=(float f);
-	inline Vector2D operator+(const Vector2D &v);
-	inline Vector2D operator-(const Vector2D &v);
-	inline Vector2D operator^(const Vector2D &v);
-	inline float operator*(const Vector2D &v);   
-	inline Vector2D operator*(float v);	 
-	inline Vector2D operator/(float f);
+	inline Vector2D operator+(const Vector2D &v) const;
+	inline Vector2D operator-(const Vector2D &v) const;
+	inline Vector2D operator^(const Vector2D &v) const;
+	inline float operator*(const Vector2D &v) const;   
+	inline Vector2D operator*(float v) const;	 
+	inline Vector2D operator/(float f) const;
 };
 
 inline float Vector2D::getX() const
@@ -92,7 +92,7 @@ inline float Vector2D::normalise()
 	else
 	{ x/=m;	y/=m; z/=m; return m; }
 }
-inline float Vector2D::magnitude()
+inline float Vector2D::magnitude() const
 { return sqrt(x*x+y*y+z*z); }
 inline void Vector2D::ortho()
 {
@@ -103,18 +103,18 @@ inline void Vector2D::ortho()
 inline bool Vector2D::equals(const Vector2D &v)
 { return ((abs(v.getX() - x))<=0.001 && (abs(v.getY() - y))<=0.001); }
 
-inline Vector2D Vector2D::cross(const Vector2D &v)
+inline Vector2D Vector2D::cross(const Vector2D &v) const
 { return Vector2D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }
-inline Vector2D Vector2D::direction()
+inline Vector2D Vector2D::direction() const
 {																  
 	float m = magnitude();
 	return (m<EPSILON)? Vector2D(0,0):Vector2D(x/m,y/m,z/m);
 }
-inline Vector2D Vector2D::reflexion()
+inline Vector2D Vector2D::reflexion() const
 { return Vector2D(-x,-y,-z); }
-inline float Vector2D::dot(const Vector2D &v)
+inline float Vector2D::dot(const Vector2D &v) const
 { return x*v.x+y*v.y+z*v.z; }
-inline float Vector2D::perp(const Vector2D &v)
+inline float Vector2D::perp(const Vector2D &v) const
 { return x*v.y-y*v.x; }
 
 
@@ -125,18 +125,18 @@ inline void Vector2D::operator -=(const Vector2D &u)
 inline void Vector2D::operator/=(float f)
 { x/=f; y/=f; z/=f; }
 
-inline float Vector2D::operator *(const Vector2D &v)
+inline float Vector2D::operator *(const Vector2D &v) const
 { return x*v.x+y*v.y+z*v.z; }
-inline Vector2D Vector2D::operator *(float v)
+inline Vector2D Vector2D::operator *(float v) const
 { return Vector2D(x*v, y*v,z*v); }	
-inline Vector2D Vector2D::operator/(float f)
+inline Vector2D Vector2D::operator/(float f) const
 { return Vector2D(x / f, y / f, z / f); }
 
-inline Vector2D Vector2D::operator +(const Vector2D &v)
+inline Vector2D Vector2D::operator +(const Vector2D &v) const
 { return Vector2D(x+v.x,y+v.y,z+v.z); }
-inline Vector2D Vector2D::operator -(const Vector2D &v)
+inline Vector2D Vector2D::operator -(const Vector2D &v) const
 { return Vector2D(x-v.x,y-v.y,z-v.z); }	  
-inline Vector2D Vector2D::operator ^(const Vector2D &v)
+inline Vector2D Vector2D::operator ^(const Vector2D &v) const
 { return Vector2D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }
 
 #define VECTOR

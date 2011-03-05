@@ -48,16 +48,16 @@ public:
 	static int simplify(Point2D * in, int n, Point2D **out, float tolerence);
 	static int simplifyToProper(Point2D * in, int n, Point2D **out, float tolerence);
 	void update(float rotationAngle);
-	float getInertiaMomentum(float density);
-	float getSurface();
+	float getInertiaMomentum(float density) const;
+	float getSurface() const;
 	void updateAABB();
-	inline Vector2D getCentroid();
-	inline int getShapeTypeID();
+	inline Vector2D getCentroid() const;
+	inline int getShapeTypeID() const;
 
 	static Point2D getCentroid(Point2D * in, int n);
 	static Point2D getCentroid(Point2D * in, int n, float aire);
 	static float getSurface(Point2D *in, int n);  
-	static float getUnitInertiaMomentum(Point2D *pts, int n, Vector2D &axistranslate);
+	static float getUnitInertiaMomentum(Point2D *pts, int n, const Vector2D &axistranslate);
 	static int buildConvexHull(Point2D *pts, int nbPts, Point2D ** outHull);
 	static int getUncrossedPolygon(Point2D * pts, int nb, Point2D **res);
 };	  
@@ -76,21 +76,21 @@ private:
 	float surface;
 	float unitInertia;
 
-	int naiveClimb(int ibase, int imax,Vector2D &v);
+	int naiveClimb(int ibase, int imax,Vector2D &v) const;
 	float _getBoundingSphereSqRadius();
 public:		   
 
 	ImplicitPolygon2D(Point2D * ptsId, int n, Polygon2D *parent, int id);
 	Point2D rightTgtPt(Point2D &ref);
-	int getSupportPoint(Vector2D &d, Point2D * res);
-	int getSupportPoint(Vector2D &d, Point2D * res, int o);	 
-	float getBoundingSphereRadius();
-	void translateCentroid(Vector2D &);
-	inline Vector2D getCenter();  
-	inline Vector2D getCentroid();
-	inline OBB *getOBB();
-	inline float getUnitInertiaMomentum();
-	inline float getSurface();
+	int getSupportPoint(const Vector2D &d, Point2D * res) const;
+	int getSupportPoint(const Vector2D &d, Point2D * res, int o)const;
+	float getBoundingSphereRadius() const;
+	void translateCentroid(const Vector2D &);
+	inline Vector2D getCenter() const;  
+	inline Vector2D getCentroid() const;
+	inline OBB *getOBB() const;
+	inline float getUnitInertiaMomentum() const;
+	inline float getSurface() const;
 	inline int getNbrPts()
 	{ return nbrPts; }
 	inline Point2D *getPts()
@@ -99,21 +99,21 @@ public:
 	static OBB *buildOBB (Point2D *pts, int n, ImplicitPolygon2D *p, int id);
 };
 
-inline int Polygon2D::getShapeTypeID()
+inline int Polygon2D::getShapeTypeID() const
 { return 2; }
-inline Vector2D Polygon2D::getCentroid()
+inline Vector2D Polygon2D::getCentroid() const
 { return t.getU(); }
 
-inline float ImplicitPolygon2D::getSurface()
+inline float ImplicitPolygon2D::getSurface() const
 { return surface; }
-inline float ImplicitPolygon2D::getUnitInertiaMomentum()
+inline float ImplicitPolygon2D::getUnitInertiaMomentum() const
 { return unitInertia + surface * (center.getX() * center.getX() + center.getY() * center.getY()); }
-inline Vector2D ImplicitPolygon2D::getCenter()
+inline Vector2D ImplicitPolygon2D::getCenter() const
 { return toGlobal(center); }
-inline Vector2D ImplicitPolygon2D::getCentroid()
+inline Vector2D ImplicitPolygon2D::getCentroid() const
 { return center; }
 				  
-inline OBB *ImplicitPolygon2D::getOBB()
+inline OBB *ImplicitPolygon2D::getOBB() const
 { return obb; }
 
 #define ilow(a) a--; if (a < 0) a = nbrPts - 1;

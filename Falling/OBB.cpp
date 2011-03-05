@@ -17,7 +17,7 @@ OBB::OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, float ai
 	}
 }
 
-void OBB::translate(Vector2D &u)
+void OBB::translate(const Vector2D &u)
 {
 	for(int i = 0; i < 4; i++)
 		pts[i] += u;

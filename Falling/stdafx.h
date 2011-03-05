@@ -10,7 +10,6 @@
 #define WIN32_LEAN_AND_MEAN             // Exclure les en-têtes Windows rarement utilisés
 #define _USE_MATH_DEFINES
 // Fichiers d'en-tête Windows :
-#include <windows.h>
 #include <math.h>
 #include <float.h>
 

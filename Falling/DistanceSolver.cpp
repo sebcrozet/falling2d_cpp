@@ -350,7 +350,7 @@ float GJKsolver::solveDist(float* bparam)
 		p.setX(0); p.setY(0);				  
 		updateClosestFeatureSimplexDatas(p, &barycentricParam);
 		vv = p * p;
-		if(vv < FLT_EPSILON)	// origin included in the simplex
+		if(vv <= FLT_EPSILON)	// origin included in the simplex
 		{
 			notMax = false;
 			simplexSize--;// = fullSimplexSize;
@@ -416,7 +416,7 @@ bool simplexSeg_less::operator ()(SimplexSeg *a, SimplexSeg *b) const
 	return *a < *b;
 }
 
-SimplexSeg::SimplexSeg(Point2D &pA1, Point2D &pB1, Point2D &pC1, Point2D &pA2, Point2D &pB2, Point2D &pC2)
+SimplexSeg::SimplexSeg(const Point2D &pA1, const Point2D &pB1, const Point2D &pC1, const Point2D &pA2, const Point2D &pB2, const Point2D &pC2)
 {
 	Vector2D ab(pC1, pC2), ao(-pC1.getX(),-pC1.getY());
 	dist = ab * ao;
@@ -447,7 +447,7 @@ bool SimplexSeg::isValid()
 bool SimplexSeg::operator <(SimplexSeg &s2)
 { return dist > s2.dist; }
 
-SimplexSeg * SimplexSeg::cut(Point2D &ptA3, Point2D &ptB3, Point2D &ptC3)
+SimplexSeg * SimplexSeg::cut(const Point2D &ptA3, const Point2D &ptB3, const Point2D &ptC3)
 {
 	SimplexSeg *res = new SimplexSeg(ptA1, ptB1, ptC1, ptA3, ptB3, ptC3);
 	*this = SimplexSeg(ptA2, ptB2, ptC2, ptA3, ptB3, ptC3);	  
@@ -492,7 +492,7 @@ EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 		if(sg->isValid())
 		{  
 			sd.push(sg);
-			if(sg->getdist() < FLT_EPSILON)
+			if(sg->getdist() <= FLT_EPSILON)
 			{
 				distnull = true;
 				return;
@@ -503,7 +503,7 @@ EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 		if(sg2->isValid())
 		{		
 			sd.push(sg2);
-			if(sg->getdist() < FLT_EPSILON)
+			if(sg->getdist() <= FLT_EPSILON)
 			{
 				distnull = true;
 				return;
@@ -594,13 +594,13 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 			gsolv.A.getMarginedSupportPoint(np, &pa);							 
 			gsolv.B.getMarginedSupportPoint(np.reflexion(), &pb);
 			pc = pa - pb;
-			if(pc.equals(lastpc1) || pc.equals(lastpc2) || loop>20)
+			if(pc.equals(lastpc1) || pc.equals(lastpc2) || loop>20000)
 				break; // EPA wont converge due to imprecision (will always return the same support point). So exit with current approximation!
 			lastpc1 = lastpc2;
 			lastpc2 = pc;
 			Vector2D ab(pc);
 			float dot = (ab * p);
-			stopHull = min(stopHull, dot * dot / dst);
+			stopHull = MIN(stopHull, dot * dot / dst);
 			if(stopHull <= EPSILON_1 * dst)
 				break;
 			SimplexSeg *sg2 = sg->cut(pa, pb, pa - pb);

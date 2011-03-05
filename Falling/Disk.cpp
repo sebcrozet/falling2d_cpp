@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Disk.h"
 
-Disk::Disk(Point2D &pt, float dradius, bool fixed)
+Disk::Disk(const Point2D &pt, float dradius, bool fixed)
 {
 	parent = this;
 	fixedobj = fixed;
@@ -22,26 +22,26 @@ void Disk::updateAABB()
 	aabb_yM = radius + p.getY();
 }
 
-float Disk::getBoundingSphereRadius() 
+float Disk::getBoundingSphereRadius() const
 { return radius; }
 
-float Disk::getSurface()
+float Disk::getSurface() const
 { return (float)M_PI * radius * radius; }
 
-float Disk::getInertiaMomentum(float m)
+float Disk::getInertiaMomentum(float m) const
 { return m * radius * radius / 2; }
 
-Vector2D Disk::getCenter()
+Vector2D Disk::getCenter() const
 { return t.getU(); }
 
-int Disk::getSupportPoint(Vector2D &d, Point2D *res)
+int Disk::getSupportPoint(const Vector2D &d, Point2D *res) const
 {
 	Vector2D v = getCenter();
 	//v += d.direction() * radiuslessM;
 	*res =  Point2D(v.getX(), v.getY()); 
 	return 0; 
 }
-int Disk::getSupportPoint(Vector2D &d, Point2D *res, int optimisationId)
+int Disk::getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const
 {	  
 	Vector2D v = getCenter();
 	//v += d.direction() * radiuslessM;

@@ -25,7 +25,7 @@ public:
 	bool intersectsPlane(InfinitePlane *p);
 	void getMedialAxis(Point2D *center, Point2D *refpt);
 	Point2D getCenter() const;
-	void translate(Vector2D &);
+	void translate(const Vector2D &);
 	inline float getAire() const;
 	inline int getID() const;
 	inline ImplicitShape *getParent() const;
