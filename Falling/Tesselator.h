@@ -27,9 +27,9 @@ struct Edge
 };
 struct Point
 {
+	Point2D pt;
 	DoubleLinkedList<Poly *> *adjlist;
 	bool marked;
-	Point2D pt;
 	Point(const Point2D &pt);
 	Point();
 	~Point();

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GeometryHelper.h"
 
-GeometryHelper::Transformation2D::Transformation2D() : coteta((float)M_PI), siteta(0), teta(0), u(0,0)
+GeometryHelper::Transformation2D::Transformation2D() : teta(0),coteta((float)M_PI), siteta(0),  u(0,0)
 { }
 GeometryHelper::Transformation2D::Transformation2D(const Vector2D &u, float radTeta) : u(u)
 { setTeta(radTeta); }

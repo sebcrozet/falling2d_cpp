@@ -8,8 +8,8 @@ namespace GeometryHelper
    class Transformation2D
    {
    private:
-	   Vector2D u;
 	   float teta, coteta, siteta;
+	   Vector2D u;
 
    public:
 	   Transformation2D();

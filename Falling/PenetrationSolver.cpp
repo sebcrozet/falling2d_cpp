@@ -54,7 +54,8 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 								cl->worstPenetrationAmount = scs[j]->getPenetration();
 							}
 						}		   
-						Collision *toRemove = cl;
+						// TODO: see next TODO
+						//Collision *toRemove = cl;
 						if(cl->sa == worst->s1)
 							cl = cl->nexta;
 						else
@@ -87,9 +88,10 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 							}
 							else// if(scs[j]->s2 == worst->s2)
 							{
-								float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-								scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[1])*scs[j]->normal);
-								scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal);
+								scs[j]->setPenetration(
+									scs[j]->getPenetration() + 
+									(worst->normal*trchange[1])*scs[j]->normal +
+									(Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal);
 							}
 							if(scs[j]->getPenetration() > cl->worstPenetrationAmount)
 							{
@@ -97,7 +99,8 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 								cl->worstPenetrationAmount = scs[j]->getPenetration();
 							}
 						}		
-						Collision *toRemove = cl;
+						//TODO: see next TODO
+						//Collision *toRemove = cl;
 						if(cl->sa == worst->s2)
 							cl = cl->nexta;
 						else
@@ -161,8 +164,7 @@ void PenetrationSolver::solveRelax(std::vector<Contact *> &scs, float relaxRate)
 					else if(scs[j]->s2 == worst->s2)
 					{
 						float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-						scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[1])*scs[j]->normal);
-						scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal);    
+						scs[j]->setPenetration(scs[j]->getPenetration() + m);
 					}
 				}	  
 			}
@@ -213,8 +215,7 @@ void PenetrationSolver::solve(std::vector<Contact *> &scs)
 					else if(scs[j]->s2 == worst->s2)
 					{
 						float m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-						scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[1])*scs[j]->normal);
-						scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal);    
+						scs[j]->setPenetration(scs[j]->getPenetration() + m);
 					}
 				}	  
 			}

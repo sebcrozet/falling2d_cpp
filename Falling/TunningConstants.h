@@ -27,12 +27,13 @@
 	#define FALLINGAPI
 #endif
 
-// diferenciate compiler instead of platforms
+// TODO: diferenciate compiler instead of platforms
+#include <stdlib.h>
 #if defined(Falling_WINDOWS)
 	#include <windows.h>
 	#define MAX(a,b) max((a),(b))
 	#define MIN(a,b) min((a),(b))
-	#define MIN(a,b) abs((a),(b))
+	#define ABS(a) abs((a))
 #else
 	#include <cmath>
 	#include <algorithm>
@@ -42,7 +43,6 @@
 	#define ABS(a) std::abs((a))
 #endif
 
-#include <stdlib.h>
 #define G 9.81f
 #define PIX_PER_METTER 10.f
 #define POINT_EQUALS_ERROR (sqrt(FLT_EPSILON))

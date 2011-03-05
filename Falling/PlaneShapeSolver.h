@@ -23,9 +23,9 @@ public:
 class PlaneShapeSolver : public CollisionDetector
 {
 private:
+	PairManager pm; 
 	Shape *s;
 	InfinitePlane *ip;
-	PairManager pm; 
 
 	void traverseTree(OBBtree *ot, std::vector<OBB *>res);
 	bool _solve(std::vector<SubCollision> &res); // returns whether current class should be destroyed

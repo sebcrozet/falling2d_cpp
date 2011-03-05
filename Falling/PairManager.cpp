@@ -75,7 +75,6 @@ Pair *PairManager::addPair(ushort id1, ushort id2)
 			Pair *newTable;
 			int *newHash, *newNext;
 			// resize & update
-			int omaxp = maxPairs;
 			maxPairs *= 2;			// next power of two
 			int ormax = realmaxPairs;
 			realmaxPairs = (int) (maxPairs * HASH_CHARGE_FACTOR);
@@ -107,8 +106,8 @@ Pair *PairManager::addPair(ushort id1, ushort id2)
 		}	   
 		int test = h & mask;
 		table[nbPairs] = Pair(id1, id2);
-		next[nbPairs] = hashTable[h & mask];
-		hashTable[h & mask] = nbPairs;	
+		next[nbPairs] = hashTable[test];
+		hashTable[test] = nbPairs;	
 		nbPairs++;   
 		return &table[nbPairs - 1];
 	}

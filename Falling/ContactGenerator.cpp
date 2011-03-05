@@ -57,6 +57,7 @@ bool QuarterSpace::getSignificantDualQuarterSpace(QuarterSpace *q[4])
 			order++;
 		}
 	}   
+	return true; // TODO: virify this return value...
 }
 
 

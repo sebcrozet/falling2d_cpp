@@ -1,18 +1,18 @@
 #include "stdafx.h"
 #include "Tesselator.h"
-#pragma region Edge
+//#pragma region Edge
 /*
  * Constructor
  */
 Edge::Edge(Poly *poly1, Poly *poly2) : p1(poly1), p2(poly2)
 { }
-#pragma endregion
+//#pragma endregion
 
-#pragma region Poly
+//#pragma region Poly
 /*
  * Constructor
  */
-Poly::Poly() : parcstate(false), parckey(0)
+Poly::Poly() : parckey(0) ,parcstate(false)
 { }
 /*
  * Destructor
@@ -26,7 +26,7 @@ Poly::~Poly()
 }
 
 
-#pragma region As 
+//#pragma region As 
 void Poly::testAdj()
 {
     //return;
@@ -274,8 +274,8 @@ void Poly::split(Point *splitpt, Poly **oth1, Poly **oth2)
  */
 Poly *Poly::split(Point *splitpt, Point *pt1e, Point *pt2e, Poly **adjsplitted)
 {
-    DoubleLinkedList<Point *> *l1 = 0, *thirdpt, *parc = pts;
-    DoubleLinkedList<Edge *> *ad2, *adjparc = adj;
+    DoubleLinkedList<Point *> *l1 = 0, *thirdpt = 0, *parc = pts;
+    DoubleLinkedList<Edge *> *ad2 = 0, *adjparc = adj;
     int i = 0;
     // search in this
     while(i < 3)
@@ -293,8 +293,8 @@ Poly *Poly::split(Point *splitpt, Point *pt1e, Point *pt2e, Poly **adjsplitted)
     // search poly 2
     Poly *pol2 = ad2->getValue()->getOther(this);
     // find edge and point list pointers corresponding to pt1 and pt2
-    DoubleLinkedList<Point *> *l1o, *thirdo;
-    DoubleLinkedList<Edge *> *ad2o;
+    DoubleLinkedList<Point *> *l1o = 0, *thirdo = 0;
+    DoubleLinkedList<Edge *> *ad2o = 0;
     parc = pol2->pts;
     adjparc = pol2->adj;
     while(i > 0)
@@ -396,10 +396,10 @@ Poly *Poly::testAndSwap(Point *pt)
     }
     else return 0;
 }
-#pragma endregion
+//#pragma endregion
 
 
-#pragma region As peudo-polygon
+//#pragma region As peudo-polygon
 /*
  * split(...)
  * Splits this polygon in two parts.
@@ -425,7 +425,7 @@ Poly *Poly::split(Point *p1, Point *p2)
 	while(true);
     // end todo
     DoubleLinkedList<Point *> *l1 = 0, *l2 = 0, *parc = pts;
-    DoubleLinkedList<Edge *> *ad1, *ad2, *adjparc = adj;
+    DoubleLinkedList<Edge *> *ad1 = 0, *ad2 = 0, *adjparc = adj;
     while(!l1 || !l2)
     {
 	if(parc->getValue() == p1)
@@ -495,7 +495,7 @@ void Poly::mergeNoDelete(Poly *next, Point *p1, Point  *p2)
 {
     // search nodes in chain 1
     DoubleLinkedList<Point *> *l1 = 0, *l2 = 0, *parc = pts;
-    DoubleLinkedList<Edge *> *ad1, *ad2, *adjparc = adj;
+    DoubleLinkedList<Edge *> *ad1 = 0, *ad2 = 0, *adjparc = adj;
     while(!l1 || !l2)
     {
 	if(parc->getValue() == p1)
@@ -513,7 +513,7 @@ void Poly::mergeNoDelete(Poly *next, Point *p1, Point  *p2)
     }
     // search nodes in chain 2
     DoubleLinkedList<Point *> *l1o = 0, *l2o = 0;
-    DoubleLinkedList<Edge *> *ad1o, *ad2o;
+    DoubleLinkedList<Edge *> *ad1o = 0, *ad2o = 0;
     adjparc = next->adj;
     parc = next->pts;
     while(!l1o || !l2o)
@@ -574,10 +574,10 @@ void Poly::mergeNoDelete(Poly *next, Point *p1, Point  *p2)
     testAdj();
     this->testAdj();
 }
-#pragma endregion
-#pragma endregion
+//#pragma endregion
+//#pragma endregion
 
-#pragma region Point
+//#pragma region Point
 /*
  * Constructor.
  */
@@ -600,7 +600,7 @@ Point::~Point()
 }
 
 /* * isInCircumcircle(...)
- * * Determine if a point is in the circumcircle of a given CCW triangle.
+ * * Determine if a point is in the circumcircle of a given CCW triangle.
  * **
  * * Prototype :
  * * isInCircumcircle(
@@ -680,9 +680,9 @@ bool Point::isInCircumcircle(Point *pa, Point *pb, Point *pc, Point *pt)
  {
      adjlist = DoubleLinkedList<Poly *>::RemoveExisting(adjlist, toremove);
  }
-#pragma endregion
+//#pragma endregion
 
-#pragma region Tesselations procedures
+//#pragma region Tesselations procedures
 /*
  * triangleMarching(...)
  * Finds the triangle containing a given (end) point passing through every triangles
@@ -780,8 +780,7 @@ Poly *Tesselator::triangleMarching(Point *basebegin, Point *begin, Point2D &end,
     while(true)
     {
 	//printf("loop...");
-	Poly *lastopppoly = opppoly;
-	// swap p1 and p2 to be in CCW order
+	// swap p1 and p2 to be in CCW order
 	Point *oldp1 = p1;
 	p1 = p2;
 	p2 = oldp1;
@@ -1078,8 +1077,8 @@ void Tesselator::insertEdge(Point *basebegin, Point *begin, Point *end)
     tomerge->triangulate(begin);
     // end of insertion
 }
-#pragma endregion
-#pragma region Main function
+//#pragma endregion
+//#pragma region Main function
 void Tesselator::parcgraph(void(*print)(Poly *))
 {	   
     // parc triangle graph (breadth first search)
@@ -1317,7 +1316,8 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
     // loop on all edges and add them
     for(int i = 0; i < nbholes; i++)
     {
-	int k = nbptsholes[i] - 1;	for (int j = 0; j <	nbptsholes[i]; k = j, j++)
+	int k = nbptsholes[i] - 1;
+	for (int j = 0; j <	nbptsholes[i]; k = j, j++)
 	    insertEdge(ptgraphlist[i][k],ptgraphlist[i][j]);
     }
     int k = nbpts - 1;
@@ -1458,13 +1458,13 @@ void Tesselator::removeExternalTriangles(
 			pol->pts->getprev()->getValue()->pt);
 	    if(Point2D::pointInPolygon(centroid,holespts[i],nbptsholes[i]))
 	    {
-		if(removeMode & 4 != 0)
+		if(removeMode & 4)
 		{
 		    // do not remove
 		    breakcode = true;
 		    remaining.push(pol);
 		}
-		else if (removeMode & 8 != 0)
+		else if (removeMode & 8)
 		{
 		    // remove it
 		    pol->removeFromGraphAndDelete();
@@ -1474,13 +1474,13 @@ void Tesselator::removeExternalTriangles(
 	    }
 	    else
 	    {
-		if(removeMode & (16) != 0)
+		if(removeMode & (16))
 		{
 		    // remove it
 		    pol->removeFromGraphAndDelete();
 		    breakcode = true;
 		}
-		else if(removeMode & 32 != 0)
+		else if(removeMode & 32)
 		{
 		    // do not remove
 		    breakcode = true;
@@ -1492,10 +1492,10 @@ void Tesselator::removeExternalTriangles(
 	    continue;
 	if(inclusiondegree == 0)
 	    pol->removeFromGraphAndDelete();
-	else if(inclusiondegree & 1 != 0)
+	else if((inclusiondegree & 1))
 	{
 	    // odd
-	    if(((removeMode & 2) != 0) || ((removeMode & 32) && !includedinbase))
+	    if((removeMode & 2) || ((removeMode & 32) && !includedinbase))
 		pol->removeFromGraphAndDelete();
 	    else
 		remaining.push(pol);
@@ -1503,7 +1503,7 @@ void Tesselator::removeExternalTriangles(
 	else
 	{
 	    // even
-	    if(removeMode & 1 != 0)
+	    if((removeMode & 1))
 		pol->removeFromGraphAndDelete();
 	    else
 		remaining.push(pol);
@@ -1584,4 +1584,4 @@ int Tesselator::batchTriangles(std::stack<Poly *> &toparcpol, std::stack<Poly *>
     }
     return nbrres;
 }
-#pragma endregion
+//#pragma endregion

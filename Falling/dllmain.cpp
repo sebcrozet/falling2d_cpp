@@ -21,7 +21,5 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #else
 void __attribute__((constructor)) DLLload(void)
 { }
-void __attribute__((detructor)) DLLunload(void)
-{ }
 #endif
 

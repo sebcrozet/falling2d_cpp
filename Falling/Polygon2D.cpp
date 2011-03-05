@@ -3,7 +3,7 @@
 #include "GeometryHelper.h"
 #include <vector>
 
-#pragma region Polygon2D
+//#pragma region Polygon2D
 Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int hnbrpts[], int mergetype, Vector2D position, bool useCentroid, float orientation, float mass, bool isimmediatemass, bool fixed)
 	: ixm(0), ixM(0), iym(0), iyM(0)
 {
@@ -207,7 +207,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	if(rightset.size()==0)
 	{
 		int ls = ((int)leftset.size()) / 2;
-		while(leftset.size() != ls)
+		while((int)leftset.size() != ls)
 		{
 			rightset.push_back(leftset[leftset.size()-1]);
 			leftset.pop_back();
@@ -216,7 +216,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	else if(leftset.size() == 0)
 	{	 
 		int ls = ((int)rightset.size()) / 2;
-		while(rightset.size() != ls)
+		while((int)rightset.size() != ls)
 		{
 			leftset.push_back(rightset[rightset.size()-1]);
 			rightset.pop_back();
@@ -236,12 +236,6 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	int p=n-2, np=n-1, nnp=0;
 	while(nnp<n)
 	{
-		float xa =in[p].getX(),
-		      xc = in[np].getX(),
-		      xb = in[nnp].getX(),
-		      ya = in[p].getY(),
-		      yc = in[np].getY(),
-		      yb = in[nnp].getY();
 		if(!in[nnp].isInLine(in[np], in[p]))
 		{
 			pt[s] = in[np];
@@ -326,7 +320,7 @@ float Polygon2D::getSurface() const
 	return totalSurface;
 }
 
-#pragma region Static methods
+//#pragma region Static methods
 	struct PointWithNext
 	{
 		Point2D pt;
@@ -545,10 +539,10 @@ Point2D Polygon2D::getCentroid(Point2D *in, int n,float aire)
 	}
 	return Point2D(ax / (6 * aire), ay / (6 * aire));
 }
-#pragma endregion
-#pragma endregion
+//#pragma endregion
+//#pragma endregion
 
-#pragma region ImplicitPolygon2D
+//#pragma region ImplicitPolygon2D
 ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, int id) 
 {	
 	/*
@@ -609,9 +603,9 @@ float ImplicitPolygon2D::getBoundingSphereRadius() const
 
 Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 {	   	
-	int a = 0, b = nbrPts - 1, ires;
+	int a = 0, ires;
 	ires = 0;
-	// TODO: remove: brute force test
+	// TODO: remove: brute force test
 	if(pts[a].exactEquals(ref))
 		ires = 1;
 	else
@@ -629,6 +623,8 @@ Point2D ImplicitPolygon2D::rightTgtPt(Point2D &ref)
 	}
 
 	/*
+	int a = 0, b = nbrPts - 1, ires;
+	ires = 0;
 	int aref, bref;
 	if(pts[a].exactEquals(ref))
 		ires = 1;
@@ -726,7 +722,6 @@ int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res) const
 	else
 	{
 		int a = 0, b = nbrPts - 1;
-		float dx = d.getX(), dy = d.getY();
 		Vector2D va = Vector2D(pts[0], pts[1]),
 				 vb = Vector2D(pts[b], pts[0]),
 				 vb_1 = Vector2D(pts[b-1],pts[b]); 
@@ -858,8 +853,8 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 {		
 	int t_p[4];   
 	float t_teta[4];
-	int obbl, obbd;
-	float obblon, obblar;
+	int obbl = 0, obbd = 0;
+	float obblon = 0, obblar = 0;
 	float obbTeta = 0;
 	float teta = 0, minAire = FLT_MAX;
 	float siteta = 0, coteta = 1;
@@ -955,4 +950,4 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 	origin =  opp + repY * obblon - repX * obblar;
 	return new OBB(origin, origin - repY * obblon,opp , origin + repX * obblar, parent, minAire, id);
 }	
-#pragma endregion
+//#pragma endregion

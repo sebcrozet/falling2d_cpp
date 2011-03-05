@@ -58,7 +58,7 @@ template <typename T>
 inline void DoubleLinkedList<T>::setparent(DoubleLinkedList<T> *p)
 { parent = p;	}
 
-#pragma region Constructors
+//#pragma region Constructors
 template <typename T>
 DoubleLinkedList<T>::DoubleLinkedList(T e)
 {
@@ -75,9 +75,9 @@ DoubleLinkedList<T>::DoubleLinkedList(T e, DoubleLinkedList<T> *p, DoubleLinkedL
 	p->next = this;
 	n->parent = this;
 }
-#pragma endregion
+//#pragma endregion
 
-#pragma region Split
+//#pragma region Split
 /* Splits:
    a->b->c->d->e->f->(a)
    To (split at c -> f):
@@ -93,7 +93,7 @@ void DoubleLinkedList<T>::Split(DoubleLinkedList<T> *splitnode, DoubleLinkedList
 	n2 = new DoubleLinkedList<T>(splitnode2->value, splitnode, s2n);
 	// splits are done at creation so its ok
 }
-/* Splits:
+/* Splits:
    a->b->c->d->e->f->(a)
    To (split at c -> f with v1 & v2):
    a->b->c->node(v1)->f'->(a) | c'->d->e->f->node(v2)->(c')
@@ -130,9 +130,9 @@ void DoubleLinkedList<T>::Merge(
 	mergenode2List2->next = mergenode2List1;
 	mergenode2List1->parent = mergenode2List2;
 }
-#pragma endregion
+//#pragma endregion
 
-#pragma region Insert
+//#pragma region Insert
 template <typename T>
 void DoubleLinkedList<T>::InsertAfter(DoubleLinkedList<T> *other)
 {
@@ -167,9 +167,9 @@ DoubleLinkedList<T> * DoubleLinkedList<T>::InsertBefore(T e)
 	InsertBefore(res);
 	return res;
 }
-#pragma endregion
+//#pragma endregion
 
-#pragma region Remove
+//#pragma region Remove
 template <typename T>
 void DoubleLinkedList<T>::Remove(bool destroyValue)
 {
@@ -228,7 +228,7 @@ void DoubleLinkedList<T>::DestroyList()
 		next->Remove();
 	delete this;
 }
-#pragma endregion
+//#pragma endregion
 
 template <typename T>
 DoubleLinkedList<T> *DoubleLinkedList<T>::findExisting(DoubleLinkedList<T> *curr, T val)

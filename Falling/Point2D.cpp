@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "floatTests.h"
 #include "Point2D.h"
 
 Point2D::Point2D(float x, float y):x(x),y(y)
@@ -48,6 +49,9 @@ float Point2D::intersectSegments(Point2D &p, Point2D &p2, Point2D &p3, Point2D &
 // (source:) http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf
 bool Point2D::pointInPolygon(const Point2D &pt, Point2D *pts, int n)
 {
+    //TODO: remove test
+    printf("PIP!\n");
+    // end TODO
 	float windingnumber = 0; // float but will be an int at the end
 	float x = pt.getX();
 	float y = pt.getY();
@@ -68,9 +72,9 @@ bool Point2D::pointInPolygon(const Point2D &pt, Point2D *pts, int n)
 					windingnumber--;
 			}
 		}
-		else if(abs(yi)  < 1.0e-6f && xi > 0)
+		else if(Float::zero(yi) && xi > 0)
 		{
-			if(abs(yi1) >= 1.0e-6f)
+			if(!Float::zero(yi1))
 			{
 				if(yi1 > 0)
 					windingnumber += 0.5f;
@@ -78,9 +82,9 @@ bool Point2D::pointInPolygon(const Point2D &pt, Point2D *pts, int n)
 					windingnumber -= 0.5f; 
 			}
 		}
-		else if(abs(yi1) < 1.0e-6f && xi1 > 0)
+		else if(Float::zero(yi1) && xi1 > 0)
 		{
-			if(abs(yi) >= 1.0e-6f)
+			if(!Float::zero(yi))
 			{
 				if(yi < 0)
 					windingnumber += 0.5f;
@@ -89,5 +93,5 @@ bool Point2D::pointInPolygon(const Point2D &pt, Point2D *pts, int n)
 			}
 		}
 	}
-	return (((int)windingnumber) % 2) & 0x0001; // in polygon if non even
+	return ((((int)windingnumber)) % 2);//& 0x0001); // in polygon if non even
 }

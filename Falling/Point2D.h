@@ -66,8 +66,6 @@ inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2) const
 inline float Point2D::isInLine(const Point2D &p,const Point2D& p2) const
 {
 	float px = p.getX(), py = p.getY();
-	float xx = abs(p.getX() - p2.getX());
-	float yy = abs(p.getY() - p2.getY());
 	float a,b;
 	/*
 	if(x - px == 0)
@@ -85,12 +83,11 @@ inline float Point2D::isInLine(const Point2D &p,const Point2D& p2) const
 		a = /*(p2.getY() - py)/(p2.getX() - px);*/(p2.getX() - px) * (y - py);
 		b = /*(y-py)/(x-px);*/(p2.getY() - py) * (x - px);
 	//}
-	//printf("%f vs %f\n",sqrt((double)FLT_EPSILON) * MAX(abs(a),MAX(abs(b),1.0)), abs(a-b));
-	return abs(a - b) <= sqrt(FLT_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0f));
+	//printf("%f vs %f\n",sqrt((double)FLT_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0)), abs(a-b));
+	return ABS(a - b) <= sqrt(FLT_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0f));
 }						
 inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2, int onsegmentvalue) const
 {
-	float px = p.getX(), py = p.getY();
 	Vector2D cp(p,*this), pp2(p,p2); 
 	float res = pp2.perp(cp);
 	if(res == 0)
@@ -103,7 +100,7 @@ inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2, int onsegment
 }
 
 inline bool Point2D::equals(const Point2D &p) const
-{ return (abs(p.x - x)<0.000001) && (abs(p.y - y)<0.000001); }
+{ return (ABS(p.x - x)<0.000001) && (ABS(p.y - y)<0.000001); }
 
 inline bool Point2D::errorEquals(const Point2D &p) const
 { return (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y) < POINT_EQUALS_ERROR; }

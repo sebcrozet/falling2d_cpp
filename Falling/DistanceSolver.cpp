@@ -2,7 +2,7 @@
 #include "DistanceSolver.h"
 #include <stdlib.h>
 
-#pragma region GJKsolver
+//#pragma region GJKsolver
 GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSize(0)
 {
 	satlastdir = b.getCenter() - a.getCenter();
@@ -16,9 +16,7 @@ bool GJKsolver::canDestroy()
 {
 	Vector2D v = A.getCenter() - B.getCenter();
 	float rr = A.getBoundingSphereRadius() + B.getBoundingSphereRadius() + msum + (float)GJK_DESTROYLIMIT;
-	rr = rr*rr;
-	float vv = v*v;
-	return (v*v > rr);
+	return (v*v > rr * rr);
 }
 
 bool GJKsolver::_solve(std::vector<SubCollision> &res)
@@ -81,7 +79,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 		}
 		else if(simplexSize == 2) 
 		{
-#pragma region Closest point to a line segment
+//#pragma region Closest point to a line segment
 			Vector2D ab = ptsC[1] - ptsC[0];
 			Vector2D ao = ptsC[0].reflexion();
 			*barycentricParam = ab * ao;
@@ -109,11 +107,11 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 					simplexSize = 3;
 				}
 			}
-#pragma endregion
+//#pragma endregion
 		}
 		else 
 		{
-#pragma region Closest point to triangle
+//#pragma region Closest point to triangle
 			// ptsC[0] = A , 1 = B, 2 = C
 			Vector2D ab = ptsC[1] - ptsC[0];
 			Vector2D ac = ptsC[2] - ptsC[0];
@@ -199,7 +197,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 					}
 				}
 			}
-#pragma endregion
+//#pragma endregion
 		}
 }
 	
@@ -263,7 +261,7 @@ bool GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 		p.setX(0); p.setY(0);					  
 		updateClosestFeatureSimplexDatas(p, &barycentricParam);
 		float vv = p * p;
-		float dotp = p*cPoint;
+		//float dotp = p*cPoint;
 		/*if((dotp > 0 && dotp * dotp > sqmsum * vv))	// no itersection
 		{
 			// no intersection
@@ -408,9 +406,9 @@ float GJKsolver::solveDist(float* bparam)
 	return res;
 }
 
-#pragma endregion  // GJKsolver
+//#pragma endregion  // GJKsolver
 		   				
-#pragma region SimplexSeg
+//#pragma region SimplexSeg
 bool simplexSeg_less::operator ()(SimplexSeg *a, SimplexSeg *b) const
 {
 	return *a < *b;
@@ -465,9 +463,9 @@ void SimplexSeg::getABpoints(Point2D *a, Point2D *b)
 	Vector2D abB(ptB1, ptB2);
 	*b = ptB1 + (abB * bCoord);
 }
-#pragma endregion // SimplexSeg
+//#pragma endregion // SimplexSeg
 
-#pragma region EPAsolver
+//#pragma region EPAsolver
 EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 {
 	if(simplex.simplexSize == 1)
@@ -629,4 +627,4 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 	// end free memory
 	return p;
 }
-#pragma endregion  // EPAsolver
+//#pragma endregion  // EPAsolver
