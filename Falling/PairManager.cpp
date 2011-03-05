@@ -34,7 +34,7 @@ PairManager::~PairManager()
 	delete []table;
 }
 
-void PairManager::nop(Pair &p)
+void PairManager::nop(Pair &)
 { } // do nothing
 
 

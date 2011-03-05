@@ -4,7 +4,7 @@
 #include <vector>
 
 //#pragma region Polygon2D
-Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int hnbrpts[], int mergetype, Vector2D position, bool useCentroid, float orientation, float mass, bool isimmediatemass, bool fixed)
+Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int hnbrpts[], int mergetype, Vector2D position, bool useCentroid, float orientation, bool fixed)
 	: ixm(0), ixM(0), iym(0), iyM(0)
 {
 	Tesselator tess;
@@ -15,7 +15,7 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
 	Point2D **holespts = new Point2D*[nbholes];
 	// simplify
 	nbrPts = nbpts;
-	//nbrPts = simplifyToProper(p, nbpts, &points, 0.05f);
+//	nbrPts = simplify(p, nbpts, &points, 25.05f);
 	for(int i = 0; i < nbholes; i++)
 		holesnbrpts[i] = simplify(hpts[i], hnbrpts[i], &(holespts[i]), 0.05f);
 	//scalepts(points, nbrPts, 1000.f);
@@ -180,7 +180,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	{
 		// TODO: remove test
 		Point2D *out;
-		simplifyToProper(ch,chn, &out,0);
+		simplifyToProper(ch,chn, &out);
 		// end todo
 		chull = new ImplicitPolygon2D(ch,chn,this,1);
 	}
@@ -229,7 +229,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 	if(leftset.size()!=0)
 		buildOBBtree(&(oo->l), leftset, id);
 }
-int Polygon2D::simplifyToProper(Point2D *in, int n, Point2D **out,  float tolerence)
+int Polygon2D::simplifyToProper(Point2D *in, int n, Point2D **out)
 {
 	Point2D *pt = new Point2D[n];
 	int s = 0;

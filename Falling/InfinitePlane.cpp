@@ -11,7 +11,7 @@ InfinitePlane::InfinitePlane(Point2D p, Vector2D normal)
 }
 int InfinitePlane::getShapeTypeID()
 { return 100; }
-float InfinitePlane::getInertiaMomentum(float m)
+float InfinitePlane::getInertiaMomentum(float)
 { return FLT_MAX; }
 float InfinitePlane::getSurface()
 { return FLT_MAX; }

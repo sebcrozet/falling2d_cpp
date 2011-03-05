@@ -3,7 +3,7 @@
 
 float FakeShape::getSurface()
 { return 0; }
-float FakeShape::getInertiaMomentum(float m)
+float FakeShape::getInertiaMomentum(float)
 { return 0; }
 int FakeShape::getShapeTypeID()
 { return 0; }

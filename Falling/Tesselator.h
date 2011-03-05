@@ -84,10 +84,8 @@ class Tesselator
 private:
 	Point *currpt;
 	Poly *triangleMarching(Point *begin, Point2D &end, Point **graphpt);
-	Poly *triangleMarching(Point *basebegin, Point *begin, Point2D &end, Point **graphpt);
 	void insertPoint(Point2D &pt, Point **gpoints);
 	void insertEdge(Point *r, Point *l);
-	void insertEdge(Point* baser, Point *r, Point *l);
 	/*
 	 * removeMode:
 	 *	1 -> odd is solid

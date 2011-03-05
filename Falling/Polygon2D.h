@@ -38,15 +38,13 @@ public:
 		Vector2D position, 
 		bool useCentroid, 
 		float orientation, 
-		float mass, 
-		bool isimmediatemass, 
 		bool fixed
 		);
 	~Polygon2D();
 
 	static void scalepts(Point2D *in, int n, float scalefactor);
 	static int simplify(Point2D * in, int n, Point2D **out, float tolerence);
-	static int simplifyToProper(Point2D * in, int n, Point2D **out, float tolerence);
+	static int simplifyToProper(Point2D * in, int n, Point2D **out);
 	void update(float rotationAngle);
 	float getInertiaMomentum(float density) const;
 	float getSurface() const;

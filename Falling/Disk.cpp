@@ -34,14 +34,14 @@ float Disk::getInertiaMomentum(float m) const
 Vector2D Disk::getCenter() const
 { return t.getU(); }
 
-int Disk::getSupportPoint(const Vector2D &d, Point2D *res) const
+int Disk::getSupportPoint(const Vector2D &, Point2D *res) const
 {
 	Vector2D v = getCenter();
 	//v += d.direction() * radiuslessM;
 	*res =  Point2D(v.getX(), v.getY()); 
 	return 0; 
 }
-int Disk::getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const
+int Disk::getSupportPoint(const Vector2D &, Point2D *res, int) const
 {	  
 	Vector2D v = getCenter();
 	//v += d.direction() * radiuslessM;

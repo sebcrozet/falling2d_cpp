@@ -93,7 +93,7 @@ void RigidBody::setAwake(bool awake)
 
 RigidBody *RigidBody::build_polygonalBody(Point2D *pts,int n, bool fixed,float m,Vector2D pos,float teta)
 {
-	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, 1, pos, true, teta, 10, false, fixed);
+	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, 1, pos, true, teta, fixed);
 	return new RigidBody(pp,m*pp->getSurface(),pp->getCentroid(),teta);
 }
 

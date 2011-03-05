@@ -7,7 +7,7 @@ PixelPerfectShape::PixelPerfectShape(int dw, int dx, bool (*isSolidPixel)(float,
 
 float PixelPerfectShape::getSurface()
 { return dh * dw * 4; }
-float PixelPerfectShape::getInertiaMomentum(float m)
+float PixelPerfectShape::getInertiaMomentum(float)
 { return 0; }
 int PixelPerfectShape::getShapeTypeID()
 { return 20; }

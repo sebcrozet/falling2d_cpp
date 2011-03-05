@@ -52,7 +52,7 @@ void Poly::testAdj()
     do
     {
 	Poly *o = adjparc->getValue()->getOther(this);
-	if(o != 0)
+	if(o)
 	{
 	    DoubleLinkedList<Point *> *oparc = o->pts;
 	    Point *l1 = 0, *l2 = 0;
@@ -632,7 +632,7 @@ bool Point::isInCircumcircle(Point *pa, Point *pb, Point *pc, Point *pt)
 	  g = cx - dx,
 	  h = cy - dy,
 	  i = (cx*cx  - dx*dx) + (cy*cy - dy*dy);
-    return a*(e*i - f*h) - d*(b*i-c*h) + g*(b*f-e*c) > 0;
+    return a*(e*i - f*h) - d*(b*i-c*h) + g*(b*f-e*c) > 0.f;
 }
 
 /*
@@ -700,12 +700,8 @@ bool Point::isInCircumcircle(Point *pa, Point *pb, Point *pc, Point *pt)
  * Returns a pointer to the polygon containing (end) point.
  * If end already existed, 0 is returned.
  */
-Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
-{
-    return triangleMarching(begin, begin, end, graphpt);
-}
 
-Poly *Tesselator::triangleMarching(Point *basebegin, Point *begin, Point2D &end, Point **graphpt)
+Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 {
     if(begin->pt.errorEquals(end))
     {
@@ -748,19 +744,19 @@ Poly *Tesselator::triangleMarching(Point *basebegin, Point *begin, Point2D &end,
 	float bl2 = p2->pt.isLeftTo(begin->pt, end);
 	float dotl1 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p1->pt));
 	float dotl2 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p2->pt));
-	if(p1->pt.isInLine(begin->pt, end) && dotl1 > 0)
+	if(p1->pt.isInLine(begin->pt, end) && dotl1 > 0.f)
 	{
 	    // point of triangle in the same line
 	    printf("(1) Rec with: %f , % f \n\r", p1->pt.getX(), p1->pt.getY());
-	    return triangleMarching(begin,p1, end, graphpt);
+	    return triangleMarching(p1, end, graphpt);
 	}
-	else if(p2->pt.isInLine(begin->pt, end) && dotl2 > 0)
+	else if(p2->pt.isInLine(begin->pt, end) && dotl2 > 0.f)
 	{
 	    // point of triangle in the same line
 	    printf("(2) Rec with: %f , % f \n\r", p2->pt.getX(), p2->pt.getY());
-	    return triangleMarching(begin,p2, end, graphpt);
+	    return triangleMarching(p2, end, graphpt);
 	}
-	else if(l1 < 0 && l2 > 0)
+	else if(l1 < 0.f && l2 > 0.f)
 	{
 	    break;
 	}
@@ -804,9 +800,9 @@ Poly *Tesselator::triangleMarching(Point *basebegin, Point *begin, Point2D &end,
 	if(thirdpt->pt.isInLine(begin->pt, end))
 	{
 	    printf("(3) Rec with: %f , % f \n\r", thirdpt->pt.getX(), thirdpt->pt.getY());
-	    return triangleMarching(begin, thirdpt, end, graphpt);
+	    return triangleMarching(thirdpt, end, graphpt);
 	}
-	else if(lt > 0)
+	else if(lt > 0.f)
 	{	  
 	    opppoly = poly->getOppositeEdgeAndAdjascent(p1, &p1, &p2)->getOther(poly);
 	}
@@ -967,9 +963,6 @@ void Tesselator::insertPoint(Point2D &point, Point **gpoints)
 }
 // Edge insertion
 void Tesselator::insertEdge(Point *begin, Point *end)
-{ insertEdge(begin,begin,end); }
-
-void Tesselator::insertEdge(Point *basebegin, Point *begin, Point *end)
 {
     // find merged polygon
     if(begin == end)
@@ -997,27 +990,27 @@ void Tesselator::insertEdge(Point *basebegin, Point *begin, Point *end)
 	float dotl2 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p2->pt));
 	//printf("l1 -> %f ||", l1);
 	//printf("l2 -> %f ||", l2);
-	if(p1->pt.isInLine(begin->pt, end->pt) && dotl1 > 0)
+	if(p1->pt.isInLine(begin->pt, end->pt) && dotl1 > 0.f)
 	{
 	    // point of triangle in the same line
 	    if(p1->marked)
 		printf("(0) Accepted a marked point: %p. Dot: %f\n", p1, dotl1);
 	    else
 		printf("Accepted a non-marked point.");
-	    insertEdge(begin, p1, end);
+	    insertEdge(p1, end);
 	    return;
 	}
-	else if(p2->pt.isInLine(begin->pt, end->pt) && dotl2 > 0)
+	else if(p2->pt.isInLine(begin->pt, end->pt) && dotl2 > 0.f)
 	{
 	    // point of triangle in the same line
 	    if(p2->marked)
 		printf("(1) Accepted a marked point: %p. Dot: %f\n", p2, dotl2);
 	    else
 		printf("Accepted a non-marked point.");
-	    insertEdge(begin, p2, end);
+	    insertEdge(p2, end);
 	    return;
 	}
-	else if(l1 < 0 && l2 > 0)
+	else if(l1 < 0.f && l2 > 0.f)
 	{
 	    break;
 	}
@@ -1053,11 +1046,11 @@ void Tesselator::insertEdge(Point *basebegin, Point *begin, Point *end)
 		printf("(3) Accepted a marked point: %p.\n", thirdpt);
 	    else
 		printf("Accepted a non-marked point.");
-	    insertEdge(begin, thirdpt, end);
+	    insertEdge(thirdpt, end);
 	    end = thirdpt;
 	    break;
 	}
-	else if(lt > 0)
+	else if(lt > 0.f)
 	{	  
 	    //printf("merge > 0");
 	    opppoly = poly->getOppositeEdgeAndAdjascent(p1, &p1, &p2)->getOther(poly);
@@ -1165,10 +1158,10 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	}
     }
     // scale the rectangle (to be sure no point will touch its external edges
-    mx -= 10;
-    my -= 10;
-    Mx += 10;
-    My += 10;
+    mx -= 10.f;
+    my -= 10.f;
+    Mx += 10.f;
+    My += 10.f;
     // create fake rectangle
     // (allocate four edges and points)
     Poly *p = new Poly();
@@ -1288,7 +1281,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	    float bparam1, bparam2;
 	    Point2D inter;
 	    bparam1 = Point2D::intersectSegments(pts[ptsm1], pts[i], pts[p],pts[o], &inter, &bparam2);
-	    if(bparam1 != -1 && bparam1 != 0.f && bparam2 != 0.f && bparam1!= 1.f && bparam2!=1.f)
+	    if(bparam1 != -1.f && bparam1 != 0.f && bparam2 != 0.f && bparam1!= 1.f && bparam2!=1.f)
 	    {
 		nbinter++;
 		Point *useless;
@@ -1433,7 +1426,7 @@ void Tesselator::removeExternalTriangles(
 	bool includedinbase = Point2D::pointInPolygon(centroid,pts,nbpts);
 	if(!includedinbase)
 	{
-	    if(true)//removeMode & 24 != 0)
+	    if(removeMode & 24)
 	    {
 		// remove this triangle
 		pol->removeFromGraphAndDelete();
@@ -1442,7 +1435,7 @@ void Tesselator::removeExternalTriangles(
 	}
 	else
 	{
-	    if(true)//removeMode & 4 != 0)
+	    if(removeMode & 4)
 	    {
 		remaining.push(pol);
 		continue;
