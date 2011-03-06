@@ -1,4 +1,4 @@
-AM_CXXFLAGS = @AM_CXXFLAGS@ -I$(top_srcdir)/Falling -O0 -Wall -Wextra -Werror 
+AM_CXXFLAGS = @AM_CXXFLAGS@ -I$(top_srcdir)/Falling -O2 -Wall -Wextra -Werror
 lib_LIBRARIES = libfalling.a
 libfalling_adir =  $(includedir)/libfalling_adir
 libfalling_a_HEADERS = stdafx.h SubCollision.h targetver.h TunningConstants.h Vector2D.h Point2D.h Tesselator.h VitessSolver.h Island.h RigidBody.h SAPsolver.h Shapes.h OBB.h OBBtree.h PairManager.h PenetrationSolver.h PixelPerfectShape.h PixelPerfectSolver.h PlaneShapeSolver.h Polygon2D.h Primitives.h DiskBoxSolver.h DiskDiskSolver.h Disk.h DistanceSolver.h DoubleLinkedList.h FakeShape.h Falling.h floatTests.h GenericSolver.h GeometryHelper.h ImpulseSolver.h InfinitePlane.h CollisionArbiter.h CollisionDetector.h ContactGenerator.h AABB.h BoundingVolumes.h BoxBoxSolver.h

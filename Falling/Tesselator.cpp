@@ -29,7 +29,7 @@ Poly::~Poly()
 //#pragma region As 
 void Poly::testAdj()
 {
-    //return;
+    return;
     DoubleLinkedList<Edge *> *adjparc = this->adj;
     DoubleLinkedList<Point *> *parc = this->pts;
     // test if not degenerate
@@ -1143,7 +1143,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
     }
     for(int i = 0; i < nbholes; i++)
     {
-	for (int j = 0; j <	nbptsholes[i]; j++)
+	for (int j = 0; j < nbptsholes[i]; j++)
 	{
 	    float x= holespts[i][j].getX();
 	    float y = holespts[i][j].getY();
@@ -1210,7 +1210,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
     for(int i = 0; i < nbholes; i++)
     {
 	int k = nbptsholes[i] - 1;
-	for (int j = 0; j <	nbptsholes[i]; k = j, j++)
+	for (int j = 0; j <nbptsholes[i]; k = j, j++)
 	{
 	    // check intersections with other holes
 	    for(int l = i + 1; l < nbholes; l++)
@@ -1272,11 +1272,11 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	}
     }
     int ptsm1 = nbpts - 1;
-    for(int i = 0; i< nbpts; ptsm1 = i, i++)
+    for(int i = 0; i< nbpts - 1; ptsm1 = i, i++)
     {
 	// check self-intersections
-	int p = i + 2;
-	for(int o = i + 3; o < nbpts - 1; p = o, o++)
+	int p = i + 1;
+	for(int o = i + 2; o < (i == 0 ? nbpts - 1 : nbpts); p = o, o++)
 	{
 	    float bparam1, bparam2;
 	    Point2D inter;
@@ -1290,7 +1290,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 		printf("Intersection found: bparam2: %f\n", bparam2);
 		if((!inter.isInLine(pts[ptsm1],pts[i])) || (!inter.isInLine(pts[p],pts[o])))
 		{
-		    printf("CORRUPTED NO PRECISION\n");
+		    printf("CORRUPTED INTERSECTION\n");
 		    //Sleep(5000);
 		    /*
 		       while(true)

@@ -49,9 +49,6 @@ float Point2D::intersectSegments(Point2D &p, Point2D &p2, Point2D &p3, Point2D &
 // (source:) http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf
 bool Point2D::pointInPolygon(const Point2D &pt, Point2D *pts, int n)
 {
-    //TODO: remove test
-    printf("PIP!\n");
-    // end TODO
     float windingnumber = 0.f; // float but will be an int at the end
     float x = pt.getX();
     float y = pt.getY();

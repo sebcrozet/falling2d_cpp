@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #define ZERO_EPSILON Float::sqFloatEps 
 
-static struct Float
+struct Float
 {
 	static float sqFloatEps;
 	static inline bool equal(float a, float b)
