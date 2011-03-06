@@ -69,7 +69,7 @@ void Contact::updateVelChange(float t)
 	if(s2nfixed)
 		vFromAcc -= s2nfixed->getParent()->getAcc() * t * normal;
 	float fakerest = 0.2f;
-	if(abs(closingVelocity.getX()) < 0.1f)
+	if(ABS(closingVelocity.getX()) < 0.1f)
 		fakerest = 0;
 	desiredVelocityChange = -closingVelocity.getX() - fakerest /* restitution */ * (closingVelocity.getX() - vFromAcc);
 }

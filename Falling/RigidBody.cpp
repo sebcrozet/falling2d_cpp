@@ -59,7 +59,7 @@ bool RigidBody::updateMovementStabilisationState()
 		loopCursor = 0;
 	else
 		loopCursor++;
-	if((totalDPos * totalDPos < 4.f && abs(totalDTeta) < 0.01))
+	if((totalDPos * totalDPos < 4.f && ABS(totalDTeta) < 0.01))
 		return true;
 	return false; 
 }  

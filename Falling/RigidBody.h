@@ -70,7 +70,7 @@ public:
 		consumedDeltaTeta += dt;
 		// TODO :  remove validity test
 		if(consumedDeltaTeta*dTeta < 0
-			|| abs(consumedDeltaTeta) > abs(dTeta))
+			|| ABS(consumedDeltaTeta) > ABS(dTeta))
 			dTeta = dTeta;
 		//
 	}

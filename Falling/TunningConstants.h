@@ -28,20 +28,19 @@
 #endif
 
 // TODO: diferenciate compiler instead of platforms
-#include <stdlib.h>
 #if defined(Falling_WINDOWS)
 	#include <windows.h>
-	#define MAX(a,b) max((a),(b))
-	#define MIN(a,b) min((a),(b))
-	#define ABS(a) abs((a))
+	#undef min
+	#undef max
 #else
 	#include <cmath>
-	#include <algorithm>
 	#include <string.h>
-	#define MAX(a,b) std::max((a),(b))
-	#define MIN(a,b) std::min((a),(b))
-	#define ABS(a) std::abs((a))
 #endif
+#include <stdlib.h>
+#include <algorithm>
+#define MAX(a,b) std::max((a),(b))
+#define MIN(a,b) std::min((a),(b))
+#define ABS(a) std::abs((a))
 
 #define G 9.81f
 #define PIX_PER_METTER 10.f

@@ -76,7 +76,7 @@ inline void Vector2D::print()
 }
 
 inline bool Vector2D::isNull()
-{ return abs(x) < EPSILON && abs(y) < EPSILON; }
+{ return ABS(x) < EPSILON && ABS(y) < EPSILON; }
 inline bool Vector2D::isCollinear(const Vector2D &v)
 { return cross(v).isNull(); }
 inline bool Vector2D::isOrthogonal(const Vector2D &v)
@@ -101,7 +101,7 @@ inline void Vector2D::ortho()
 	y = xx;
 }
 inline bool Vector2D::equals(const Vector2D &v)
-{ return ((abs(v.getX() - x))<=0.001 && (abs(v.getY() - y))<=0.001); }
+{ return ((ABS(v.getX() - x))<=0.001 && (ABS(v.getY() - y))<=0.001); }
 
 inline Vector2D Vector2D::cross(const Vector2D &v) const
 { return Vector2D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }

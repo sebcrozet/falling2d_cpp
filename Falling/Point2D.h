@@ -83,7 +83,7 @@ inline float Point2D::isInLine(const Point2D &p,const Point2D& p2) const
 		a = /*(p2.getY() - py)/(p2.getX() - px);*/(p2.getX() - px) * (y - py);
 		b = /*(y-py)/(x-px);*/(p2.getY() - py) * (x - px);
 	//}
-	//printf("%f vs %f\n",sqrt((double)FLT_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0)), abs(a-b));
+	//printf("%f vs %f\n",sqrt((double)FLT_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0)), ABS(a-b));
 	return ABS(a - b) <= sqrt(FLT_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0f));
 }						
 inline float Point2D::isLeftTo(const Point2D &p,const Point2D& p2, int onsegmentvalue) const

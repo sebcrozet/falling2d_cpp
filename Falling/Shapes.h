@@ -125,7 +125,7 @@ inline bool Shape::AABBvsAABB(float xm, float xM, float ym, float yM)
 inline void Shape::rotate(float dteta)
 {
 	setMoved(true);
-	if(abs(dteta) > 0.5)
+	if(ABS(dteta) > 0.5)
 		dteta = dteta;
 	t.addTeta(dteta);
 }

@@ -270,7 +270,7 @@ int Polygon2D::simplify(Point2D *in, int n, Point2D **out,  float tolerence)
 		      ya = in[p].getY(),
 		      yc = in[np].getY(),
 		      yb = in[nnp].getY();
-		if(abs(xa*yc-xa*yb+xb*ya-xb*yc+xc*yb-xc*ya) > 2.f * tolerence)
+		if(ABS(xa*yc-xa*yb+xb*ya-xb*yc+xc*yb-xc*ya) > 2.f * tolerence)
 		{
 			pt[s] = in[np];
 			s++;
@@ -301,7 +301,7 @@ float Polygon2D::getUnitInertiaMomentum(Point2D *points, int nbpts, const Vector
 		num += f * (pn1.dot(pn1) + pn1.dot(pn) + pn.dot(pn));
 		j = i;
 	}
-	return (denum == 0) ? 0 : abs(num / (6 * denum));
+	return (denum == 0) ? 0 : ABS(num / (6 * denum));
 }
 
 float Polygon2D::getInertiaMomentum(float density) const
@@ -518,7 +518,7 @@ float Polygon2D::getSurface(Point2D *in, int n)
 		a += in[j].getX() * in[i].getY() - in[j].getY() * in[i].getX();
 		j = i;
 	}
-	return abs(a / 2);
+	return ABS(a / 2);
 }
 
 Point2D Polygon2D::getCentroid(Point2D *in, int n)
@@ -888,8 +888,8 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 	{
 		Vector2D ud = Vector2D(pts[t_p[0]],pts[t_p[1]]);
 		Vector2D rl = Vector2D(pts[t_p[2]],pts[t_p[3]]);
-		float lon = abs(ud.dot(calipers[3]));
-		float lar = abs(rl.dot(calipers[0]));
+		float lon = ABS(ud.dot(calipers[3]));
+		float lar = ABS(rl.dot(calipers[0]));
 		float naire = lon * lar;
 		if(naire < minAire)
 		{
@@ -938,7 +938,7 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 	else
 	{
 		Vector2D dl = Vector2D(pts[obbl],pts[obbd]);
-		float dotp	= abs(repY * dl);
+		float dotp	= ABS(repY * dl);
  		origin = pts[obbl] + (repY * dotp);
 	}
 	float m = parent->getMargin();
