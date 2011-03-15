@@ -8,17 +8,17 @@ namespace GeometryHelper
    class Transformation2D
    {
    private:
-	   float teta, coteta, siteta;
+	   Real teta, coteta, siteta;
 	   Vector2D u;
 
    public:
 	   Transformation2D();
 	   Transformation2D(const Transformation2D &t);
-	   Transformation2D(const Vector2D &u, float teta);
+	   Transformation2D(const Vector2D &u, Real teta);
 
-	   inline void setTeta(float t);
-	   inline void addTeta(float t);
-	   inline float getTeta() const;
+	   inline void setTeta(Real t);
+	   inline void addTeta(Real t);
+	   inline Real getTeta() const;
 	   inline void setU(const Vector2D &nu);
 	   inline void addU(const Vector2D &nu);
 	   inline Vector2D getU() const;
@@ -39,7 +39,7 @@ namespace GeometryHelper
 	   inline Point2D translateinv(const Point2D &x) const;
    };
 }
-inline void GeometryHelper::Transformation2D::setTeta(float t)
+inline void GeometryHelper::Transformation2D::setTeta(Real t)
 {
 	teta = t; coteta = cos(t); siteta = sin(t);
 	// TODO: remove that
@@ -49,9 +49,9 @@ inline void GeometryHelper::Transformation2D::setTeta(float t)
 		setTeta(0);
 	//
 }
-inline void GeometryHelper::Transformation2D::addTeta(float t)
+inline void GeometryHelper::Transformation2D::addTeta(Real t)
 { setTeta(teta + t); }
-inline float GeometryHelper::Transformation2D::getTeta() const
+inline Real GeometryHelper::Transformation2D::getTeta() const
 { return teta; }
 inline void GeometryHelper::Transformation2D::setU(const Vector2D &v)
 { u = v; }
@@ -75,42 +75,42 @@ inline Point2D GeometryHelper::Transformation2D::translateinv(const Point2D &x) 
 { return x - u; }
 inline Vector2D GeometryHelper::Transformation2D::rotate(const Vector2D &x) const
 {
-	float X = x.getX(), Y = x.getY();
+	Real X = x.getX(), Y = x.getY();
 	return Vector2D(X * coteta + Y * siteta, Y * coteta - X * siteta);
 }
 inline Point2D GeometryHelper::Transformation2D::rotate(const Point2D &x) const
 {
-	float X = x.getX(), Y = x.getY();
+	Real X = x.getX(), Y = x.getY();
 	return Point2D(X * coteta + Y * siteta, Y * coteta - X * siteta);
 }
 inline Vector2D GeometryHelper::Transformation2D::rotateinv(const Vector2D &x) const
 {
-	float X = x.getX(), Y = x.getY();
+	Real X = x.getX(), Y = x.getY();
 	return Vector2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 inline Point2D GeometryHelper::Transformation2D::rotateinv(const Point2D &x) const
 {
-	float X = x.getX(), Y = x.getY();
+	Real X = x.getX(), Y = x.getY();
 	return Point2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 inline Vector2D GeometryHelper::Transformation2D::transform(const Vector2D &x) const
 {
-	float X = x.getX(), Y = x.getY();
+	Real X = x.getX(), Y = x.getY();
 	return Vector2D(X * coteta + Y * siteta + u.getX(), Y * coteta - X * siteta  + u.getY());
 }
 inline Point2D GeometryHelper::Transformation2D::transform(const Point2D &x) const
 {
-	float X = x.getX(), Y = x.getY();
+	Real X = x.getX(), Y = x.getY();
 	return Point2D(X * coteta + Y * siteta + u.getX(), Y * coteta - X * siteta  + u.getY());
 }
 inline Vector2D GeometryHelper::Transformation2D::transforminv(const Vector2D &x) const
 {
-	float X = x.getX() - u.getX(), Y = x.getY() - u.getY();
+	Real X = x.getX() - u.getX(), Y = x.getY() - u.getY();
 	return Vector2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 inline Point2D GeometryHelper::Transformation2D::transforminv(const Point2D &x) const
 {
-	float X = x.getX() - u.getX(), Y = x.getY()  - u.getY();
+	Real X = x.getX() - u.getX(), Y = x.getY()  - u.getY();
 	return Point2D(X * coteta - Y * siteta, Y * coteta + X * siteta);
 }
 #define GHELP

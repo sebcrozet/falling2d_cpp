@@ -2,7 +2,7 @@
 #ifndef SHAPE
 #include "GeometryHelper.h"
 #include "AABB.h"
-#define PROXIMITY_AWARENESS 1.f
+#define PROXIMITY_AWARENESS 1.0
 
 struct Collision;
 class RigidBody;
@@ -19,7 +19,7 @@ protected:
 	RigidBody *parentBody;
 	OBBtree *otree;
 	GeometryHelper::Transformation2D t;
-	float aabb_xm, aabb_xM, aabb_ym, aabb_yM;
+	Real aabb_xm, aabb_xM, aabb_ym, aabb_yM;
 	bool fixedobj;
 	bool moved;
 
@@ -34,8 +34,8 @@ public:
 	inline void setStackLevel(int level);
 	inline int getStackLevel() const;
 	//
-	virtual float getSurface() const = 0;
-	virtual float getInertiaMomentum(float m) const = 0;
+	virtual Real getSurface() const = 0;
+	virtual Real getInertiaMomentum(Real m) const = 0;
 	virtual int getShapeTypeID() const = 0;
 	virtual void updateAABB() = 0;
 
@@ -43,13 +43,13 @@ public:
 	inline void setParent(RigidBody *r);
 
 	void updateAABB(EndPoint *xm, EndPoint *xM, EndPoint *ym, EndPoint *yM);
-	inline void rotate(float dteta);
+	inline void rotate(Real dteta);
 	inline void translate(Vector2D du);
 
 	inline OBBtree *getOtree() const;
 	inline int getAABBid() const;
 	inline void setAABBid(int id);
-	inline bool AABBvsAABB(float xm, float xM, float ym, float yM);
+	inline bool AABBvsAABB(Real xm, Real xM, Real ym, Real yM);
 	inline bool isFixed() const;
 	inline Vector2D toRotatedInv(const Vector2D &v) const;
 	inline Vector2D toRotated(const Vector2D &v) const;
@@ -66,8 +66,8 @@ public:
 	inline Point2D *getLocalPoint() const;
 	inline Vector2D getPos() const;
 	inline void setPos(Vector2D &p);
-	inline float getTeta() const;
-	inline void setTeta(float nteta);
+	inline Real getTeta() const;
+	inline void setTeta(Real nteta);
 	inline bool getMoved() const;
 	inline void setMoved(bool m);
 };
@@ -89,9 +89,9 @@ inline void Shape::setParent(RigidBody *p)
 
 inline Vector2D Shape::getPos() const
 { return t.getU(); }
-inline float Shape::getTeta() const
+inline Real Shape::getTeta() const
 { return t.getTeta(); }
-inline void Shape::setTeta(float nteta)
+inline void Shape::setTeta(Real nteta)
 {
 	setMoved(true);
 	t.setTeta(nteta);
@@ -115,14 +115,14 @@ inline int Shape::getAABBid() const
 { return aabbid; }
 inline void Shape::setAABBid(int id)
 { aabbid = id; }
-inline bool Shape::AABBvsAABB(float xm, float xM, float ym, float yM)
+inline bool Shape::AABBvsAABB(Real xm, Real xM, Real ym, Real yM)
 {
 	if(xM < aabb_xm || xm > aabb_xM) return false;
 	if(yM < aabb_ym || ym > aabb_yM) return false;
 	return true;
 }
 
-inline void Shape::rotate(float dteta)
+inline void Shape::rotate(Real dteta)
 {
 	setMoved(true);
 	if(ABS(dteta) > 0.5)
@@ -164,11 +164,11 @@ inline Vector2D Shape::toTranslatedInv(const Vector2D &v) const
 class FALLINGAPI ImplicitShape
 {
 protected:
-	float margin;
+	Real margin;
 	Shape *parent;
 public:
-	inline float getMargin() const;
-	virtual float getBoundingSphereRadius() const = 0;
+	inline Real getMargin() const;
+	virtual Real getBoundingSphereRadius() const = 0;
 	virtual Vector2D getCenter() const = 0;
 	virtual int getSupportPoint(const Vector2D &d, Point2D *res) const = 0;
 	virtual int getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const = 0;  // utile pour tous ou seulement les polygones?
@@ -187,7 +187,7 @@ public:
 	inline Vector2D toTranslatedInv(const Vector2D &p) const;
 	inline Point2D toTranslated(const Point2D &p) const;
 };
-inline float ImplicitShape::getMargin() const
+inline Real ImplicitShape::getMargin() const
 { return margin; }
 
 inline Point2D ImplicitShape::toGlobal(const Point2D &v) const

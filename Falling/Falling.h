@@ -15,7 +15,7 @@ private:
 	std::stack<RigidBody *> addWaitingQueue;
 
 	void dumpAddDelete();
-	void checkSleeps(float dt);
+	void checkSleeps(Real dt);
 public:	
 	World();
 	~World();
@@ -24,7 +24,7 @@ public:
 	// end: for debug
 	void addObject(RigidBody *s);
 	void removeObject(RigidBody *s);
-	void solve(float dt);
+	void solve(Real dt);
 
 	void notifyObjectMoved(RigidBody *s);
 };

@@ -18,7 +18,7 @@ struct Collision
 	Collision *preva,*prevb,*nexta,*nextb;
 	Collision *nextlvlptr,*prevlvlptr;
 	Contact *worstContact;
-	float worstPenetrationAmount;
+	Real worstPenetrationAmount;
 	int collisionStackLevel;   
 	QuarterSpace *liberty1,*liberty2;
 

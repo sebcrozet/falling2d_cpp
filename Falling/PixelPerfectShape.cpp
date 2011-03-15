@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "PixelPerfectShape.h"
 
-PixelPerfectShape::PixelPerfectShape(int dw, int dx, bool (*isSolidPixel)(float, float))
+PixelPerfectShape::PixelPerfectShape(int dw, int dx, bool (*isSolidPixel)(Real, Real))
 : dw(dw), dh(dx), isSolid(isSolidPixel)
 { fixedobj = true; }
 
-float PixelPerfectShape::getSurface()
+Real PixelPerfectShape::getSurface()
 { return dh * dw * 4; }
-float PixelPerfectShape::getInertiaMomentum(float)
+Real PixelPerfectShape::getInertiaMomentum(Real)
 { return 0; }
 int PixelPerfectShape::getShapeTypeID()
 { return 20; }

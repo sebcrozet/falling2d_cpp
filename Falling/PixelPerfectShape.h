@@ -7,11 +7,11 @@ class PixelPerfectShape : public Shape
 {
 private:
 	int dw, dh; // demi-w / h
-	bool (*isSolid) (float x, float y);
+	bool (*isSolid) (Real x, Real y);
 public:		  
-	PixelPerfectShape(int dw, int dx, bool (*isSolidPixel)(float, float));
-	float getSurface();
-	float getInertiaMomentum(float m); 
+	PixelPerfectShape(int dw, int dx, bool (*isSolidPixel)(Real, Real));
+	Real getSurface();
+	Real getInertiaMomentum(Real m); 
 	int getShapeTypeID();
 	void updateAABB();
 	inline bool isSolidPoint(int x, int y);

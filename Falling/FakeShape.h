@@ -5,8 +5,8 @@
 class FakeShape : public Shape
 {
 	// Every function do not do anything
-	float getSurface();
-	float getInertiaMomentum(float m); 
+	Real getSurface();
+	Real getInertiaMomentum(Real m); 
 	int getShapeTypeID();
 	void updateAABB();
 };

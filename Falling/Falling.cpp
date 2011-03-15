@@ -43,7 +43,7 @@ void World::notifyObjectMoved(RigidBody *s)
 	ca.notifyObjectMoved(s->getShape()); 
 }
 
-void World::checkSleeps(float dt)
+void World::checkSleeps(Real dt)
 {
 	for(unsigned int i = 0;i < objs.size();i++)
 		if(!objs[i]->isSleeping())
@@ -52,9 +52,10 @@ void World::checkSleeps(float dt)
 
 
 // return type should be void
-void World::solve(float dt)
+void World::solve(Real dt)
 {
 	// add and remove objects now
+	// TODO : uncomment the Sleep function
 	//checkSleeps(dt);
 	dumpAddDelete();
 	VitessSolver::integrate(objs,dt);
@@ -72,7 +73,7 @@ void World::solve(float dt)
 			//printf("NBR ISLS ==>  %i\n",isls.size());
 				while(!isls.empty())
 				{
-					// TODO: ce transfert de pile est très moche!
+					// TODO:  avoid this horrible stack transfert
 					isls2.push(isls.top());
 					isls.top()->calculateStackLevels();
 					isls.pop();

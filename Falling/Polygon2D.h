@@ -37,25 +37,25 @@ public:
 		int mergetype, 
 		Vector2D position, 
 		bool useCentroid, 
-		float orientation, 
+		Real orientation, 
 		bool fixed
 		);
 	~Polygon2D();
 
-	static void scalepts(Point2D *in, int n, float scalefactor);
-	static int simplify(Point2D * in, int n, Point2D **out, float tolerence);
+	static void scalepts(Point2D *in, int n, Real scalefactor);
+	static int simplify(Point2D * in, int n, Point2D **out, Real tolerence);
 	static int simplifyToProper(Point2D * in, int n, Point2D **out);
-	void update(float rotationAngle);
-	float getInertiaMomentum(float density) const;
-	float getSurface() const;
+	void update(Real rotationAngle);
+	Real getInertiaMomentum(Real density) const;
+	Real getSurface() const;
 	void updateAABB();
 	inline Vector2D getCentroid() const;
 	inline int getShapeTypeID() const;
 
 	static Point2D getCentroid(Point2D * in, int n);
-	static Point2D getCentroid(Point2D * in, int n, float aire);
-	static float getSurface(Point2D *in, int n);  
-	static float getUnitInertiaMomentum(Point2D *pts, int n, const Vector2D &axistranslate);
+	static Point2D getCentroid(Point2D * in, int n, Real aire);
+	static Real getSurface(Point2D *in, int n);  
+	static Real getUnitInertiaMomentum(Point2D *pts, int n, const Vector2D &axistranslate);
 	static int buildConvexHull(Point2D *pts, int nbPts, Point2D ** outHull);
 	static int getUncrossedPolygon(Point2D * pts, int nb, Point2D **res);
 };	  
@@ -70,25 +70,25 @@ private:
 	Point2D *pts, center;
 	int nbrPts;
 	OBB *obb;
-	float radius;
-	float surface;
-	float unitInertia;
+	Real radius;
+	Real surface;
+	Real unitInertia;
 
 	int naiveClimb(int ibase, int imax,Vector2D &v) const;
-	float _getBoundingSphereSqRadius();
+	Real _getBoundingSphereSqRadius();
 public:		   
 
 	ImplicitPolygon2D(Point2D * ptsId, int n, Polygon2D *parent, int id);
 	Point2D rightTgtPt(Point2D &ref);
 	int getSupportPoint(const Vector2D &d, Point2D * res) const;
 	int getSupportPoint(const Vector2D &d, Point2D * res, int o)const;
-	float getBoundingSphereRadius() const;
+	Real getBoundingSphereRadius() const;
 	void translateCentroid(const Vector2D &);
 	inline Vector2D getCenter() const;  
 	inline Vector2D getCentroid() const;
 	inline OBB *getOBB() const;
-	inline float getUnitInertiaMomentum() const;
-	inline float getSurface() const;
+	inline Real getUnitInertiaMomentum() const;
+	inline Real getSurface() const;
 	inline int getNbrPts()
 	{ return nbrPts; }
 	inline Point2D *getPts()
@@ -102,9 +102,9 @@ inline int Polygon2D::getShapeTypeID() const
 inline Vector2D Polygon2D::getCentroid() const
 { return t.getU(); }
 
-inline float ImplicitPolygon2D::getSurface() const
+inline Real ImplicitPolygon2D::getSurface() const
 { return surface; }
-inline float ImplicitPolygon2D::getUnitInertiaMomentum() const
+inline Real ImplicitPolygon2D::getUnitInertiaMomentum() const
 { return unitInertia + surface * (center.getX() * center.getX() + center.getY() * center.getY()); }
 inline Vector2D ImplicitPolygon2D::getCenter() const
 { return toGlobal(center); }

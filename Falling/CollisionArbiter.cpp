@@ -162,7 +162,7 @@ Collision *Collision::inPlaceSortList(Collision *lbegin)
 	while(curr != lend) // lend is a spetial case (handled separately)
 	{
 		next = curr->nextlvlptr;
-		float currpen = curr->worstPenetrationAmount;
+		Real currpen = curr->worstPenetrationAmount;
 		while(true) // see stop condition in the next if statement
 		{
 			if(curr->prevlvlptr == lend) // it's a doubly-linked list (so, detect circularity to stop sorting)
@@ -190,7 +190,7 @@ Collision *Collision::inPlaceSortList(Collision *lbegin)
 	}
 	// handle lend case
 	Collision *newend = curr->prevlvlptr;
-	float currpen = curr->worstPenetrationAmount;
+	Real currpen = curr->worstPenetrationAmount;
 		while(true) // see stop condition in the next if statment
 		{
 			if(curr->prevlvlptr->worstPenetrationAmount < currpen)

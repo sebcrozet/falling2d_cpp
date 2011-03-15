@@ -20,33 +20,33 @@ struct Contact
 	Shape *s2;
 	Shape *s2nfixed;
 private:
-	float penetration;
+	Real penetration;
 public:
 	Point2D absoluteContactPoint;
 	Vector2D relContactPoint[2];
 	Vector2D normal, tangeant;
 	Vector2D closingVelocity;
-	float desiredVelocityChange;
-	float totalInertia;
-	float dvel,dvely;
-	float lin1,lin2;
-	float angin[2];
-	float linin[2];
-	float unitangmov[2];
-	float unitlinmov[2];
+	Real desiredVelocityChange;
+	Real totalInertia;
+	Real dvel,dvely;
+	Real lin1,lin2;
+	Real angin[2];
+	Real linin[2];
+	Real unitangmov[2];
+	Real unitlinmov[2];
 
 	inline Vector2D toLocal(const Vector2D &v) const;
 	inline Vector2D toGlobal(const Vector2D &v) const;
-	void updateVelChange(float dt);
+	void updateVelChange(Real dt);
 	void awakeIfNeeded();
 	// TODO: for debug
-	inline void setPenetration(float p) 
+	inline void setPenetration(Real p) 
 	{
 		penetration = p;
 		if(!(penetration == penetration))
 			penetration = 0;
 	}
-	inline float getPenetration()
+	inline Real getPenetration()
 	{
 		return penetration;
 	}
@@ -61,8 +61,8 @@ class ContactGenerator
 {
 private:
 public:
-	static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,float dt);
-	static void DeduceContactsDatasOldAlgorithm(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,float dt);
+	static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
+	static void DeduceContactsDatasOldAlgorithm(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
 };
 #define CGEN
 #endif

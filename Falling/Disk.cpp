@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "Disk.h"
 
-Disk::Disk(const Point2D &pt, float dradius, bool fixed)
+Disk::Disk(const Point2D &pt, Real dradius, bool fixed)
 {
 	parent = this;
 	fixedobj = fixed;
 	radius = dradius + PROXIMITY_AWARENESS;
-	margin = radius;//0.04f;
+	margin = radius;//0.04;
 	radiuslessM = 0;//radius - margin;
 	t = GeometryHelper::Transformation2D(Vector2D (pt), 0);
 	obb = new OBB(Point2D(-radius, radius),Point2D(radius, radius),Point2D(radius, -radius),Point2D(-radius, -radius), this, radius * radius, 0);
@@ -22,13 +22,13 @@ void Disk::updateAABB()
 	aabb_yM = radius + p.getY();
 }
 
-float Disk::getBoundingSphereRadius() const
+Real Disk::getBoundingSphereRadius() const
 { return radius; }
 
-float Disk::getSurface() const
-{ return (float)M_PI * radius * radius; }
+Real Disk::getSurface() const
+{ return (Real)M_PI * radius * radius; }
 
-float Disk::getInertiaMomentum(float m) const
+Real Disk::getInertiaMomentum(Real m) const
 { return m * radius * radius / 2; }
 
 Vector2D Disk::getCenter() const

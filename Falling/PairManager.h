@@ -4,7 +4,7 @@
 typedef unsigned short ushort;	 
 typedef unsigned int uint;
  
-#define HASH_CHARGE_FACTOR 0.8f
+#define HASH_CHARGE_FACTOR 0.8
 struct Pair
 {
 	ushort id1;

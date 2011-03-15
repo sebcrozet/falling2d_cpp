@@ -5,17 +5,17 @@
 
 struct Float
 {
-	static float sqFloatEps;
-	static inline bool equal(float a, float b)
+	static Real sqFloatEps;
+	static inline bool equal(Real a, Real b)
 	{
-		float aa = ABS(a), bb =  ABS(b);
-		return aa - bb <= MAX(aa, MAX(bb, 1.f)) * ZERO_EPSILON;
+		Real aa = ABS(a), bb =  ABS(b);
+		return aa - bb <= MAX(aa, MAX(bb, 1.0)) * ZERO_EPSILON;
 	}
 
-	static inline bool negativeOrZero(float a)
-	{ return a < MAX(a, 1.f) * ZERO_EPSILON; }
+	static inline bool negativeOrZero(Real a)
+	{ return a < MAX(a, 1.0) * ZERO_EPSILON; }
 
-	static inline bool zero(float a)
+	static inline bool zero(Real a)
 	{ return negativeOrZero(ABS(a)); }
 
 	static int sumSign(int n, ...);

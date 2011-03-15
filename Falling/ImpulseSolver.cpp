@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "ImpulseSolver.h"
 
-void ImpulseSolver::solve(std::vector<Contact *> &scs,float dt)
+void ImpulseSolver::solve(std::vector<Contact *> &scs,Real dt)
 {
 	for(unsigned int i = 0;i < scs.size()*10;i++)
 	{
 		Vector2D rch[2];
 		Vector2D vch[2];
 		Contact *worst = 0;
-		float worstV = 0.01f;
+		Real worstV = 0.01;
 		for(unsigned int j=0;j<scs.size();j++)
 		{
-			if(scs[j]->getPenetration() > -0.001f && scs[j]->desiredVelocityChange > worstV)
+			if(scs[j]->getPenetration() > -0.001 && scs[j]->desiredVelocityChange > worstV)
 			{   
 				worstV = scs[j]->desiredVelocityChange;
 				worst = scs[j];
@@ -65,7 +65,7 @@ void ImpulseSolver::solve(std::vector<Contact *> &scs,float dt)
 
 void ImpulseSolver::applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch)
 {
-	Vector2D impulse = c->toGlobal(Vector2D(c->desiredVelocityChange/(c->dvel),-(0.5f*c->closingVelocity.getY())/(c->dvely),0));
+	Vector2D impulse = c->toGlobal(Vector2D(c->desiredVelocityChange/(c->dvel),-(0.5*c->closingVelocity.getY())/(c->dvely),0));
 	vch[0] = (impulse) * c->s1->getParent()->getInvM();
 	rch[0] = ((c->relContactPoint[0] ^ impulse) * c->s1->getParent()->getInvI()); 
 	c->s1->getParent()->addV(vch[0]);
@@ -80,14 +80,14 @@ void ImpulseSolver::applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch)
 }
 
 
-void ImpulseSolver::solveRelax(std::vector<Contact *> &scs,float dt)
+void ImpulseSolver::solveRelax(std::vector<Contact *> &scs,Real dt)
 {
 	for(unsigned int i = 0;i < scs.size() * 1000;i++)
 	{
 		Vector2D rch[2];
 		Vector2D vch[2];
 		Contact *worst = 0;
-		float worstV = 0.01;
+		Real worstV = 0.01;
 		for(unsigned int ji=0;ji<scs.size();ji++)
 		{
 				worst=scs[ji];
@@ -137,7 +137,7 @@ void ImpulseSolver::solveRelax(std::vector<Contact *> &scs,float dt)
 
 void ImpulseSolver::applyVelocityChangeRelax(Contact *c,Vector2D *rch,Vector2D *vch)
 {
-	Vector2D impulse = c->toGlobal(Vector2D(((c->desiredVelocityChange)<0.5f?c->desiredVelocityChange:0.5f)/c->dvel,0,0));
+	Vector2D impulse = c->toGlobal(Vector2D(((c->desiredVelocityChange)<0.5?c->desiredVelocityChange:0.5)/c->dvel,0,0));
 	vch[0] = (impulse) * c->s1->getParent()->getInvM();
 	rch[0] = ((c->relContactPoint[0] ^ impulse) * c->s1->getParent()->getInvI()); 
 	c->s1->getParent()->addV(vch[0]);

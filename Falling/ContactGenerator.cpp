@@ -63,13 +63,13 @@ bool QuarterSpace::getSignificantDualQuarterSpace(QuarterSpace *q[4])
 
 ////
 
-void Contact::updateVelChange(float t)
+void Contact::updateVelChange(Real t)
 {
-	float vFromAcc = s1->getParent()->getAcc() * t * normal;
+	Real vFromAcc = s1->getParent()->getAcc() * t * normal;
 	if(s2nfixed)
 		vFromAcc -= s2nfixed->getParent()->getAcc() * t * normal;
-	float fakerest = 0.2f;
-	if(ABS(closingVelocity.getX()) < 0.1f)
+	Real fakerest = 0.2;
+	if(ABS(closingVelocity.getX()) < 0.1)
 		fakerest = 0;
 	desiredVelocityChange = -closingVelocity.getX() - fakerest /* restitution */ * (closingVelocity.getX() - vFromAcc);
 }
@@ -88,7 +88,7 @@ void Contact::awakeIfNeeded()
 }
 
 
-void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,float dt)
+void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,Real dt)
 {
 	for(unsigned int i=0; i<collisions.size();i++)
 	{
@@ -97,7 +97,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 			continue; // do not overwrite cached datas
 		int max = c->c.size();
 		c->worstContact = 0;
-		c->worstPenetrationAmount = 0.01f;
+		c->worstPenetrationAmount = 0.01;
 		if(max)
 		{
 			c->cnts = new Contact *[max];
@@ -109,7 +109,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 				cnt->s2 = c->sb;
 				cnt->absoluteContactPoint= Point2D::getMiddle(sc.ptA,sc.ptB);
 				cnt->normal = Vector2D(sc.ptA,sc.ptB);
-				cnt->setPenetration(cnt->normal.normalise() - 2.f * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
+				cnt->setPenetration(cnt->normal.normalise() - 2.0 * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
 				if(cnt->s1->isFixed())// || */cnt->s1->getStackLevel() < cnt->s2->getStackLevel())
 				{
 					if(!cnt->s1->isFixed())
@@ -150,7 +150,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 				}
 				else if(cnt->s2nfixed)
 				{
-					float lin2nfixed = (cnt->toLocal(Vector2D(0,0,cnt->s2nfixed->getParent()->getOmega()).cross(cnt->relContactPoint[1]) + cnt->s2nfixed->getParent()->getV())).magnitude();
+					Real lin2nfixed = (cnt->toLocal(Vector2D(0,0,cnt->s2nfixed->getParent()->getOmega()).cross(cnt->relContactPoint[1]) + cnt->s2nfixed->getParent()->getV())).magnitude();
 					cnt->closingVelocity = lin1 - lin2nfixed;
 				}
 				else cnt->closingVelocity = lin1;
@@ -170,7 +170,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 					dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * cnt->s2nfixed->getParent()->getInvI())^cnt->relContactPoint[1];
 					cnt->dvely += dvely * cnt->tangeant + cnt->s2nfixed->getParent()->getInvM();
 				}
-				cnt->totalInertia = 1.0f / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.f));
+				cnt->totalInertia = 1.0 / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.0));
 				cnt->unitlinmov[0] = cnt->linin[0] * cnt->totalInertia;
 				cnt->unitangmov[0] = (((cnt->relContactPoint[0] ^ cnt->normal) * ra->getInvI()).getZ())*cnt->totalInertia;
 				if(rb)
@@ -238,7 +238,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 
 
 
-void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,float dt)
+void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,Real dt)
 {
 	for(unsigned int i=0; i<collisions.size();i++)
 	{
@@ -247,7 +247,7 @@ void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> 
 			continue; // do not overwrite cached datas
 		int max = c->c.size();
 		c->worstContact = 0;
-		c->worstPenetrationAmount = 0.01f;
+		c->worstPenetrationAmount = 0.01;
 		if(max)
 		{
 			c->cnts = new Contact *[max];
@@ -259,7 +259,7 @@ void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> 
 				cnt->s2 = c->sb;
 				cnt->absoluteContactPoint= Point2D::getMiddle(sc.ptA,sc.ptB);
 				cnt->normal = Vector2D(sc.ptA,sc.ptB);
-				cnt->setPenetration(cnt->normal.normalise() -2.f * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
+				cnt->setPenetration(cnt->normal.normalise() -2.0 * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
 				if(cnt->s1->isFixed())
 				{
 					cnt->s2nfixed = 0;
@@ -308,7 +308,7 @@ void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> 
 					dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * cnt->s2nfixed->getParent()->getInvI())^cnt->relContactPoint[1];
 					cnt->dvely += dvely * cnt->tangeant + cnt->s2nfixed->getParent()->getInvM();
 				}
-				cnt->totalInertia = 1.0f / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.f));
+				cnt->totalInertia = 1.0 / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.0));
 				cnt->unitlinmov[0] = cnt->linin[0] * cnt->totalInertia;
 				cnt->unitangmov[0] = (((cnt->relContactPoint[0] ^ cnt->normal) * ra->getInvI()).getZ())*cnt->totalInertia;
 				if(rb)

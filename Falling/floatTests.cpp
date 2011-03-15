@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "floatTests.h"
 
-float Float::sqFloatEps = sqrt(FLT_EPSILON);
+Real Float::sqFloatEps = sqrt(MACHINE_EPSILON);
 
 int Float::sumSign(int n, ...)
 {

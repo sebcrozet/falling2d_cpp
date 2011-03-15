@@ -20,8 +20,8 @@ private:
 
 	void updateBoxCollisionPairs(AABB &b);
 	void updateAddedBoxCollisionPairs(AABB &);
-	void updateEndPointMax(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, int xyid);
-	void updateEndPointMin(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, bool sens, int xyid);
+	void updateEndPointMax(std::vector<EndPoint> &list,int *im, Real xm, Real xM, Real ym, Real yM, int xyid);
+	void updateEndPointMin(std::vector<EndPoint> &list,int *im, Real xm, Real xM, Real ym, Real yM, bool sens, int xyid);
 
 public:
 	void removePair(Pair *);

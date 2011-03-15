@@ -15,7 +15,7 @@ GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSi
 bool GJKsolver::canDestroy()
 {
 	Vector2D v = A.getCenter() - B.getCenter();
-	float rr = A.getBoundingSphereRadius() + B.getBoundingSphereRadius() + msum + (float)GJK_DESTROYLIMIT;
+	Real rr = A.getBoundingSphereRadius() + B.getBoundingSphereRadius() + msum + (Real)GJK_DESTROYLIMIT;
 	return (v*v > rr * rr);
 }
 
@@ -30,10 +30,10 @@ bool GJKsolver::_solve(std::vector<SubCollision> &res)
 	return canDestroy();
 }
 
-float GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
+Real GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
 {
-	float bparam;
-	float dist = solveDist(&bparam);
+	Real bparam;
+	Real dist = solveDist(&bparam);
 	if(dist != -1)
 	{
 		if(dist != 0)
@@ -53,7 +53,7 @@ float GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
 			*pA += ab * A.getMargin();
 			*pB += ab * (-B.getMargin());	
 			ab = Vector2D(*pA, *pB);
-			float nnn = ab.magnitude();
+			Real nnn = ab.magnitude();
 			nnn++;
 		   //printf("%f\n",bparam);
 		}
@@ -69,7 +69,7 @@ float GJKsolver::getPenDepth(Point2D *pA, Point2D *pB)
 }
 
 
-void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentricParam)
+void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, Real * barycentricParam)
 {
 	if(simplexSize == 1)
 		{
@@ -90,7 +90,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 			}
 			else
 			{
-				float sq = ab * ab;
+				Real sq = ab * ab;
 				if(*barycentricParam >= sq)
 				{
 					*barycentricParam = 0;
@@ -116,8 +116,8 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 			Vector2D ab = ptsC[1] - ptsC[0];
 			Vector2D ac = ptsC[2] - ptsC[0];
 			Vector2D ap = ptsC[0].reflexion();
-			float d1 = ab * ap;
-			float d2 = ac * ap;
+			Real d1 = ab * ap;
+			Real d2 = ac * ap;
 			if(d1 <= 0 && d2 <= 0)
 			{
 				*barycentricParam = 0;
@@ -127,8 +127,8 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 			else
 			{
 				Vector2D bp = ptsC[1].reflexion();
-				float d3 = ab * bp;
-				float d4 = ac * bp;
+				Real d3 = ab * bp;
+				Real d4 = ac * bp;
 				if(d3 >= 0 && d4 <= d3)
 				{   
 					*barycentricParam = 0;
@@ -141,7 +141,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 				}
 				else
 				{
-					float vc = d1*d4 - d3*d2;
+					Real vc = d1*d4 - d3*d2;
 					if(vc <= 0 && d1 >= 0 && d3 <= 0)
 					{
 						*barycentricParam = d1 / (d1 - d3);
@@ -150,8 +150,8 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 					else
 					{
 						Vector2D cp = ptsC[2].reflexion();
-						float d5 = ab * cp;
-						float d6 = ac * cp;
+						Real d5 = ab * cp;
+						Real d6 = ac * cp;
 						if(d6 >= 0 && d5 <= d6)
 						{				  
 							*barycentricParam = 0;
@@ -164,7 +164,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 						}
 						else
 						{	// ac
-							float vb = d5*d2 - d1*d6;
+							Real vb = d5*d2 - d1*d6;
 							if(vb <= 0 && d2 >= 0 && d6 <= 0)
 							{	
 								*barycentricParam = d2 / (d2 - d6);
@@ -177,7 +177,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 							else
 							{
 								// bc
-								float va = d3 * d6 - d5 * d4;
+								Real va = d3 * d6 - d5 * d4;
 								if(va<=0 && (d4-d3)>=0 && (d5-d6)>=0)
 								{	   
 									//*barycentricParam = d2 / (d2 - d6);
@@ -187,7 +187,7 @@ void  GJKsolver::updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentr
 									swapPts(dirs[0], dirs[2]);	
 									ptsA[0] = ptsA[2];	
 									ptsB[0] = ptsB[2];
-									*barycentricParam = 1.f- *barycentricParam;
+									*barycentricParam = 1.0- *barycentricParam;
 
 								}
 								else
@@ -226,7 +226,7 @@ bool GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 	Vector2D p(0, 1);
 	simplexSize = 1;
 	int fullSimplexSize = simplexSize;
-	float barycentricParam;
+	Real barycentricParam;
 	do
 	{
 		Vector2D cPoint;
@@ -260,15 +260,15 @@ bool GJKsolver::gjk_buildMarginedSimplexWithOrigin()
 		optidsB[id] = optid2;
 		p.setX(0); p.setY(0);					  
 		updateClosestFeatureSimplexDatas(p, &barycentricParam);
-		float vv = p * p;
-		//float dotp = p*cPoint;
+		Real vv = p * p;
+		//Real dotp = p*cPoint;
 		/*if((dotp > 0 && dotp * dotp > sqmsum * vv))	// no itersection
 		{
 			// no intersection
 			simplexSize--;// = fullSimplexSize;
 			return;
 		}*/
-		if(vv < FLT_EPSILON)	// origin included in the simplex
+		if(vv < MACHINE_EPSILON)	// origin included in the simplex
 		{
 			notIn = false;
 			simplexSize--;// = fullSimplexSize;
@@ -327,14 +327,14 @@ void GJKsolver::recomputeSimplex()
 	}
 }
 
-float GJKsolver::solveDist(float* bparam)
+Real GJKsolver::solveDist(Real* bparam)
 {
 	bool notMax = true;		
-	float barycentricParam = 0;
+	Real barycentricParam = 0;
 	Vector2D p = satlastdir;
 	int iter = 0;
-	float vv = FLT_MAX;
-	float res = 0;
+	Real vv = MACHINE_MAX;
+	Real res = 0;
 	/*
 	dirs[0] = Vector2D(-1);
 	simplexSize = 1;
@@ -348,7 +348,7 @@ float GJKsolver::solveDist(float* bparam)
 		p.setX(0); p.setY(0);				  
 		updateClosestFeatureSimplexDatas(p, &barycentricParam);
 		vv = p * p;
-		if(vv <= FLT_EPSILON)	// origin included in the simplex
+		if(vv <= MACHINE_EPSILON)	// origin included in the simplex
 		{
 			notMax = false;
 			simplexSize--;// = fullSimplexSize;
@@ -372,7 +372,7 @@ float GJKsolver::solveDist(float* bparam)
 				break;
 			}
 		}
-		float dotp = p*cPoint;
+		Real dotp = p*cPoint;
 		if((dotp > 0 && dotp * dotp > sqmsum * vv))	// no itersection
 		{
 			// no intersection
@@ -420,7 +420,7 @@ SimplexSeg::SimplexSeg(const Point2D &pA1, const Point2D &pB1, const Point2D &pC
 	dist = ab * ao;
 	if(dist >= 0)
 	{
-		float p = ab * ab;
+		Real p = ab * ab;
 		if(dist > p)
 			dist = -1;
 		else
@@ -490,7 +490,7 @@ EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 		if(sg->isValid())
 		{  
 			sd.push(sg);
-			if(sg->getdist() <= FLT_EPSILON)
+			if(sg->getdist() <= MACHINE_EPSILON)
 			{
 				distnull = true;
 				return;
@@ -501,7 +501,7 @@ EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 		if(sg2->isValid())
 		{		
 			sd.push(sg2);
-			if(sg->getdist() <= FLT_EPSILON)
+			if(sg->getdist() <= MACHINE_EPSILON)
 			{
 				distnull = true;
 				return;
@@ -516,7 +516,7 @@ EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 		sg2 = sg->cut(pa, pb, pa - pb);
 		if(sg->isValid())
 		{
-			if(sg->getdist() < FLT_EPSILON)
+			if(sg->getdist() < MACHINE_EPSILON)
 			{
 				distnull = true;
 				return;
@@ -527,7 +527,7 @@ EPAsolver::EPAsolver(GJKsolver &simplex) : gsolv(simplex)
 			delete sg;
 		if(sg2->isValid())
 		{
-			if(sg->getdist() < FLT_EPSILON)
+			if(sg->getdist() < MACHINE_EPSILON)
 			{
 				distnull = true;
 				return;
@@ -577,7 +577,7 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 	else
 	{	
 		SimplexSeg * sg;
-		float stopHull = FLT_MAX;
+		Real stopHull = MACHINE_MAX;
 		Point2D lastpc1, lastpc2;
 		int loop = 0;
 		do
@@ -585,19 +585,19 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 			loop++;
 			sg = sd.top();
 			sd.pop();
-			float dst = sg->getdist();
+			Real dst = sg->getdist();
 			p = sg->getSupportVect();
 			Point2D pa, pb, pc;
 			Vector2D np = p.direction();
 			gsolv.A.getMarginedSupportPoint(np, &pa);							 
 			gsolv.B.getMarginedSupportPoint(np.reflexion(), &pb);
 			pc = pa - pb;
-			if(pc.equals(lastpc1) || pc.equals(lastpc2) || loop>20000)
+			if(pc.errorEquals(lastpc1) || pc.errorEquals(lastpc2) || loop>20000)
 				break; // EPA wont converge due to imprecision (will always return the same support point). So exit with current approximation!
 			lastpc1 = lastpc2;
 			lastpc2 = pc;
 			Vector2D ab(pc);
-			float dot = (ab * p);
+			Real dot = (ab * p);
 			stopHull = MIN(stopHull, dot * dot / dst);
 			if(stopHull <= EPSILON_1 * dst)
 				break;

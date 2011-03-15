@@ -7,21 +7,21 @@ class Disk : public ImplicitShape, public Shape
 {
 private:
 	OBB *obb;
-	float radiuslessM, radius;
+	Real radiuslessM, radius;
 public:
-	Disk(const Point2D &pt, float radius, bool fixed);
-	float getSurface() const;
-	float getInertiaMomentum(float m) const;
+	Disk(const Point2D &pt, Real radius, bool fixed);
+	Real getSurface() const;
+	Real getInertiaMomentum(Real m) const;
 	Vector2D getCenter() const;
 	int getSupportPoint(const Vector2D &d, Point2D *res) const;
 	int getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const;
-	float getBoundingSphereRadius() const;
+	Real getBoundingSphereRadius() const;
 	void updateAABB();
 	inline int getShapeTypeID() const;
-	inline float getRadius() const;
+	inline Real getRadius() const;
 };
 
-inline float Disk::getRadius() const
+inline Real Disk::getRadius() const
 { return radius; }
 inline int Disk::getShapeTypeID() const
 { return 1; }

@@ -29,7 +29,6 @@ Poly::~Poly()
 //#pragma region As 
 void Poly::testAdj()
 {
-    return;
     DoubleLinkedList<Edge *> *adjparc = this->adj;
     DoubleLinkedList<Point *> *parc = this->pts;
     // test if not degenerate
@@ -615,7 +614,7 @@ Point::~Point()
  *	*/
 bool Point::isInCircumcircle(Point *pa, Point *pb, Point *pc, Point *pt)
 {
-    float ax =pa->pt.getX(),
+    Real ax =pa->pt.getX(),
 	  ay = pa->pt.getY(),
 	  bx =pb->pt.getX(),
 	  by = pb->pt.getY(),
@@ -623,7 +622,7 @@ bool Point::isInCircumcircle(Point *pa, Point *pb, Point *pc, Point *pt)
 	  cy = pc->pt.getY(),
 	  dx = pt->pt.getX(),
 	  dy = pt->pt.getY();
-    float a = ax - dx,
+    Real a = ax - dx,
 	  b = ay - dy,
 	  c = (ax*ax  - dx*dx) + (ay*ay - dy*dy),
 	  d = bx - dx,
@@ -632,7 +631,7 @@ bool Point::isInCircumcircle(Point *pa, Point *pb, Point *pc, Point *pt)
 	  g = cx - dx,
 	  h = cy - dy,
 	  i = (cx*cx  - dx*dx) + (cy*cy - dy*dy);
-    return a*(e*i - f*h) - d*(b*i-c*h) + g*(b*f-e*c) > 0.f;
+    return a*(e*i - f*h) - d*(b*i-c*h) + g*(b*f-e*c) > 0.;
 }
 
 /*
@@ -738,25 +737,25 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 		return poly;
 	    }
 	}
-	float l1 = p1->pt.isLeftTo(begin->pt, end); 
-	float l2 = p2->pt.isLeftTo(begin->pt, end);
-	float bl1 = p1->pt.isLeftTo(begin->pt, end); 
-	float bl2 = p2->pt.isLeftTo(begin->pt, end);
-	float dotl1 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p1->pt));
-	float dotl2 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p2->pt));
-	if(p1->pt.isInLine(begin->pt, end) && dotl1 > 0.f)
+	Real l1 = p1->pt.isLeftTo(begin->pt, end); 
+	Real l2 = p2->pt.isLeftTo(begin->pt, end);
+	Real bl1 = p1->pt.isLeftTo(begin->pt, end); 
+	Real bl2 = p2->pt.isLeftTo(begin->pt, end);
+	Real dotl1 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p1->pt));
+	Real dotl2 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p2->pt));
+	if(p1->pt.isInLine(begin->pt, end) && dotl1 > 0.0)
 	{
 	    // point of triangle in the same line
 	    printf("(1) Rec with: %f , % f \n\r", p1->pt.getX(), p1->pt.getY());
 	    return triangleMarching(p1, end, graphpt);
 	}
-	else if(p2->pt.isInLine(begin->pt, end) && dotl2 > 0.f)
+	else if(p2->pt.isInLine(begin->pt, end) && dotl2 > 0.0)
 	{
 	    // point of triangle in the same line
 	    printf("(2) Rec with: %f , % f \n\r", p2->pt.getX(), p2->pt.getY());
 	    return triangleMarching(p2, end, graphpt);
 	}
-	else if(l1 < 0.f && l2 > 0.f)
+	else if(l1 < 0.0 && l2 > 0.0)
 	{
 	    break;
 	}
@@ -781,7 +780,7 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 	p1 = p2;
 	p2 = oldp1;
 	Point *thirdpt = poly->getOppositePoint(p1,p2);
-	float lt = thirdpt->pt.isLeftTo(begin->pt, end); 
+	Real lt = thirdpt->pt.isLeftTo(begin->pt, end); 
 	// verify if we are not in the good triangle
 	if(end.isInCCWTriangle(p1->pt,p2->pt,thirdpt->pt))
 	{
@@ -802,7 +801,7 @@ Poly *Tesselator::triangleMarching(Point *begin, Point2D &end, Point **graphpt)
 	    printf("(3) Rec with: %f , % f \n\r", thirdpt->pt.getX(), thirdpt->pt.getY());
 	    return triangleMarching(thirdpt, end, graphpt);
 	}
-	else if(lt > 0.f)
+	else if(lt > 0.0)
 	{	  
 	    opppoly = poly->getOppositeEdgeAndAdjascent(p1, &p1, &p2)->getOther(poly);
 	}
@@ -983,34 +982,34 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 	    return;
 	}
 
-	float l1 = p1->pt.isLeftTo(begin->pt, end->pt); 
-	float l2 = p2->pt.isLeftTo(begin->pt, end->pt);
+	Real l1 = p1->pt.isLeftTo(begin->pt, end->pt); 
+	Real l2 = p2->pt.isLeftTo(begin->pt, end->pt);
 
-	float dotl1 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p1->pt));
-	float dotl2 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p2->pt));
+	Real dotl1 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p1->pt));
+	Real dotl2 = Vector2D(begin->pt, end->pt).dot(Vector2D(begin->pt,p2->pt));
 	//printf("l1 -> %f ||", l1);
 	//printf("l2 -> %f ||", l2);
-	if(p1->pt.isInLine(begin->pt, end->pt) && dotl1 > 0.f)
+	if(p1->pt.isInLine(begin->pt, end->pt) && dotl1 > 0.0)
 	{
 	    // point of triangle in the same line
 	    if(p1->marked)
 		printf("(0) Accepted a marked point: %p. Dot: %f\n", p1, dotl1);
 	    else
-		printf("Accepted a non-marked point.");
+		printf("Accepted a non-marked point: %f ... %f\n", p1->pt.getX(), p1->pt.getY());
 	    insertEdge(p1, end);
 	    return;
 	}
-	else if(p2->pt.isInLine(begin->pt, end->pt) && dotl2 > 0.f)
+	else if(p2->pt.isInLine(begin->pt, end->pt) && dotl2 > 0.0)
 	{
 	    // point of triangle in the same line
 	    if(p2->marked)
 		printf("(1) Accepted a marked point: %p. Dot: %f\n", p2, dotl2);
 	    else
-		printf("Accepted a non-marked point.");
+		printf("Accepted a non-marked point: %f ... %f\n", p2->pt.getX(), p2->pt.getY());
 	    insertEdge(p2, end);
 	    return;
 	}
-	else if(l1 < 0.f && l2 > 0.f)
+	else if(l1 < 0.0 && l2 > 0.0)
 	{
 	    break;
 	}
@@ -1038,7 +1037,7 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 	    // cannot be equal to p1 or p2
 	    break;
 
-	float lt = thirdpt->pt.isLeftTo(begin->pt, end->pt); 
+	Real lt = thirdpt->pt.isLeftTo(begin->pt, end->pt); 
 	//printf("lt -> %f ||", lt);
 	if(thirdpt->pt.isInLine(begin->pt, end->pt))
 	{
@@ -1050,7 +1049,7 @@ void Tesselator::insertEdge(Point *begin, Point *end)
 	    end = thirdpt;
 	    break;
 	}
-	else if(lt > 0.f)
+	else if(lt > 0.0)
 	{	  
 	    //printf("merge > 0");
 	    opppoly = poly->getOppositeEdgeAndAdjascent(p1, &p1, &p2)->getOther(poly);
@@ -1124,14 +1123,14 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
     // find bounding box and insert
     // 4 virtual points (create a polygon
     // and split its diagonal)
-    float mx = FLT_MAX;
-    float Mx = -FLT_MAX;
-    float my = FLT_MAX;
-    float My = -FLT_MAX;
+    Real mx = MACHINE_MAX;
+    Real Mx = -MACHINE_MAX;
+    Real my = MACHINE_MAX;
+    Real My = -MACHINE_MAX;
     for(int i = 0; i< nbpts; i++)
     {
-	float x= pts[i].getX();
-	float y = pts[i].getY();
+	Real x= pts[i].getX();
+	Real y = pts[i].getY();
 	if(x < mx)
 	    mx = x;
 	if(x > Mx)
@@ -1145,8 +1144,8 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
     {
 	for (int j = 0; j < nbptsholes[i]; j++)
 	{
-	    float x= holespts[i][j].getX();
-	    float y = holespts[i][j].getY();
+	    Real x= holespts[i][j].getX();
+	    Real y = holespts[i][j].getY();
 	    if(x < mx)
 		mx = x;
 	    if(x > Mx)
@@ -1158,10 +1157,10 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	}
     }
     // scale the rectangle (to be sure no point will touch its external edges
-    mx -= 10.f;
-    my -= 10.f;
-    Mx += 10.f;
-    My += 10.f;
+    mx -= 10.0;
+    my -= 10.0;
+    Mx += 10.0;
+    My += 10.0;
     // create fake rectangle
     // (allocate four edges and points)
     Poly *p = new Poly();
@@ -1218,7 +1217,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 		int n = nbptsholes[l] - 1;
 		for(int m = 0; m < nbptsholes[l]; n = m, m++)
 		{
-		    float bparam1, bparam2;
+		    Real bparam1, bparam2;
 		    Point2D inter;
 		    bparam1 = Point2D::intersectSegments(holespts[i][k], holespts[i][j], holespts[l][n],holespts[l][m], &inter, &bparam2);
 		    if(bparam1 != -1)
@@ -1237,7 +1236,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	    int n = nbpts - 1;
 	    for(int m = 0; m < nbpts; n = m, m++)
 	    {
-		float bparam1, bparam2;
+		Real bparam1, bparam2;
 		Point2D inter;
 		bparam1 = Point2D::intersectSegments(holespts[i][k], holespts[i][j], pts[n],pts[m], &inter, &bparam2);
 		if(bparam1 != -1)
@@ -1255,7 +1254,7 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	    int p = j + 2;
 	    for(int o = j + 3; o < nbptsholes[i] - 1; p = o, o++)
 	    {
-		float bparam1, bparam2;
+		Real bparam1, bparam2;
 		Point2D inter;
 		bparam1 = Point2D::intersectSegments(holespts[i][k], holespts[i][j], holespts[i][p],holespts[i][o], &inter, &bparam2);
 		if(bparam1 != -1)
@@ -1278,10 +1277,10 @@ int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *hol
 	int p = i + 1;
 	for(int o = i + 2; o < (i == 0 ? nbpts - 1 : nbpts); p = o, o++)
 	{
-	    float bparam1, bparam2;
+	    Real bparam1, bparam2;
 	    Point2D inter;
 	    bparam1 = Point2D::intersectSegments(pts[ptsm1], pts[i], pts[p],pts[o], &inter, &bparam2);
-	    if(bparam1 != -1.f && bparam1 != 0.f && bparam2 != 0.f && bparam1!= 1.f && bparam2!=1.f)
+	    if(bparam1 != -1.0 && bparam1 != 0.0 && bparam2 != 0.0 && bparam1!= 1.0 && bparam2!=1.0)
 	    {
 		nbinter++;
 		Point *useless;
@@ -1419,8 +1418,9 @@ void Tesselator::removeExternalTriangles(
 	// calculate the triangle's centroid
 	Point2D centroid = 
 	    Point2D::getMiddle(
-		    Point2D::getMiddle(pol->pts->getValue()->pt, pol->pts->getnext()->getValue()->pt),
-		    pol->pts->getprev()->getValue()->pt);
+		    pol->pts->getprev()->getValue()->pt,
+		    pol->pts->getnext()->getValue()->pt);
+	centroid =  pol->pts->getValue()->pt + (centroid - pol->pts->getValue()->pt)*(2./3.);
 	// determine degree of inclusion of the point
 	int inclusiondegree = 0;
 	bool includedinbase = Point2D::pointInPolygon(centroid,pts,nbpts);
@@ -1545,10 +1545,10 @@ int Tesselator::batchTriangles(std::stack<Poly *> &toparcpol, std::stack<Poly *>
 			while(opt->getValue() != currpt->getValue())
 			    opt = opt->getnext();
 			// see if merge with triangle is possible. Make only proper polygons
-			if(currpt->getValue()->pt.isLeftTo(currpt->getprev()->getValue()->pt, opt->getnext()->getValue()->pt) <  0.f
+			if(currpt->getValue()->pt.isLeftTo(currpt->getprev()->getValue()->pt, opt->getnext()->getValue()->pt) <  0.0
 				&&
 				currpt->getnext()->getValue()->pt.isLeftTo(opt->getprev()->getprev()->getValue()->pt,
-				    currpt->getnext()->getnext()->getValue()->pt) < 0.f) 
+				    currpt->getnext()->getnext()->getValue()->pt) < 0.0) 
 			{
 			    // ok, merge and retry
 			    pol->mergeNoDelete(pp, currpt->getValue(), currpt->getnext()->getValue());

@@ -9,7 +9,7 @@ class GJKsolver : public CollisionDetector
 {
 	friend class EPAsolver;
 private:
-	float msum, sqmsum;	// margin sum
+	Real msum, sqmsum;	// margin sum
 	ImplicitShape &A,&B;
 	int optidsA[3],
 		optidsB[3];
@@ -21,18 +21,18 @@ private:
 	int simplexSize;
 	
 	bool ISAsolve();
-	float solveDist(float* bparam);
+	Real solveDist(Real* bparam);
 	void recomputeSimplex();
-	void updateClosestFeatureSimplexDatas(Vector2D &p, float * barycentricParam);
+	void updateClosestFeatureSimplexDatas(Vector2D &p, Real * barycentricParam);
 	bool gjk_buildMarginedSimplexWithOrigin();
 
 	bool _solve(std::vector<SubCollision> &res);
 	inline void swapPts(Vector2D &a, Vector2D &b);
 public:
 	GJKsolver(ImplicitShape &a,ImplicitShape &b);
-	float getSeparatingDistance();
-	float getClosestPoints(Point2D *pA, Point2D *pB);
-	float getPenDepth(Point2D *pA, Point2D *pB);
+	Real getSeparatingDistance();
+	Real getClosestPoints(Point2D *pA, Point2D *pB);
+	Real getPenDepth(Point2D *pA, Point2D *pB);
 	bool canDestroy();
 };
 
@@ -42,12 +42,12 @@ inline void GJKsolver::swapPts(Vector2D &a, Vector2D &b)
 class SimplexSeg
 {
 private:
-	float bCoord;
-	float dist;
+	Real bCoord;
+	Real dist;
 	Point2D ptA1, ptB1, ptC1, ptA2, ptB2, ptC2;
 	Vector2D v;
 public:
-	inline float getdist() const;
+	inline Real getdist() const;
 
 	SimplexSeg(const Point2D &pA1, const Point2D &ptB1, const Point2D &ptC1, const Point2D &ptA2, const Point2D &ptB2, const Point2D &ptC2);
 	bool isValid();
@@ -82,7 +82,7 @@ public:
 #define EPSILON_ FLT_EPSILON * 1000
 #define EPSILON_1 (1 + EPSILON_)  * (1 + EPSILON_)
 
-inline float SimplexSeg::getdist() const
+inline Real SimplexSeg::getdist() const
 { return dist; }
 #define _GJKSOLVER_H
 #endif

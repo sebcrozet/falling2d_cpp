@@ -2,11 +2,11 @@
 #include "RigidBody.h"
 #include "Tesselator.h"
 
-RigidBody::RigidBody(Shape *sh,float m,Vector2D pos,float teta)
+RigidBody::RigidBody(Shape *sh,Real m,Vector2D pos,Real teta)
 {				
 	nbrValues = 0;
 	sleeping = false;
-	movment = SLEEPLIMIT * 2.f;
+	movment = SLEEPLIMIT * 2.0;
 	s = sh;
 	s->setParent(this);
 	setTeta(teta);
@@ -16,15 +16,15 @@ RigidBody::RigidBody(Shape *sh,float m,Vector2D pos,float teta)
 	reinitStabilisationDetector();
 }
 
-void RigidBody::updateSleepState(float dt)
+void RigidBody::updateSleepState(Real dt)
 {
 	// detect low velocities
-	float currm = v * v + omega * omega;
-	float bias = pow(BIAS,dt);
+	Real currm = v * v + omega * omega;
+	Real bias = pow(BIAS,dt);
 	bool movstab = updateMovementStabilisationState();
 	movment = (bias*movment) + (1-bias) * currm;
-	if(movment > 10.f*SLEEPLIMIT)
-		movment = 10.f*SLEEPLIMIT;
+	if(movment > 10.0*SLEEPLIMIT)
+		movment = 10.0*SLEEPLIMIT;
 	/*else*/ if(movstab)
 		setAwake(false);
 	// TODO: detect low movments
@@ -59,7 +59,7 @@ bool RigidBody::updateMovementStabilisationState()
 		loopCursor = 0;
 	else
 		loopCursor++;
-	if((totalDPos * totalDPos < 4.f && ABS(totalDTeta) < 0.01))
+	if((totalDPos * totalDPos < 4.0 && ABS(totalDTeta) < 0.01))
 		return true;
 	return false; 
 }  
@@ -79,7 +79,7 @@ void RigidBody::setAwake(bool awake)
 	if(awake)
 	{
 		sleeping = false;
-		movment = SLEEPLIMIT * 2.f;
+		movment = SLEEPLIMIT * 2.0;
 		//reinitStabilisationDetector();
 	}
 	else
@@ -91,13 +91,13 @@ void RigidBody::setAwake(bool awake)
 	}
 }
 
-RigidBody *RigidBody::build_polygonalBody(Point2D *pts,int n, bool fixed,float m,Vector2D pos,float teta)
+RigidBody *RigidBody::build_polygonalBody(Point2D *pts,int n, bool fixed,Real m,Vector2D pos,Real teta)
 {
 	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, 1, pos, true, teta, fixed);
 	return new RigidBody(pp,m*pp->getSurface(),pp->getCentroid(),teta);
 }
 
-RigidBody *RigidBody::build_circularBody(Point2D &pt, float radius, bool fixed,float m,Vector2D pos,float teta)
+RigidBody *RigidBody::build_circularBody(Point2D &pt, Real radius, bool fixed,Real m,Vector2D pos,Real teta)
 {
 	Disk * pp=new Disk(pt, radius, fixed);
 	return new RigidBody(pp,m*pp->getSurface(), pos, teta);

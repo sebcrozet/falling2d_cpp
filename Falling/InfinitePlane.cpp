@@ -11,10 +11,10 @@ InfinitePlane::InfinitePlane(Point2D p, Vector2D normal)
 }
 int InfinitePlane::getShapeTypeID()
 { return 100; }
-float InfinitePlane::getInertiaMomentum(float)
-{ return FLT_MAX; }
-float InfinitePlane::getSurface()
-{ return FLT_MAX; }
+Real InfinitePlane::getInertiaMomentum(Real)
+{ return MACHINE_MAX; }
+Real InfinitePlane::getSurface()
+{ return MACHINE_MAX; }
 void InfinitePlane::updateAABB()
 {
 	if(dir.getX() == 0)
@@ -22,36 +22,36 @@ void InfinitePlane::updateAABB()
 		if(dir.getY() < 0)
 		{
 			aabb_ym = pt.getY();
-			aabb_yM = FLT_MAX / 2;
+			aabb_yM = MACHINE_MAX / 2;
 		}
 		else
 		{
 			aabb_yM = pt.getY();
-			aabb_ym = -FLT_MAX / 2;
+			aabb_ym = -MACHINE_MAX / 2;
 		}
-		aabb_xm = - FLT_MAX / 2;
-		aabb_xM = FLT_MAX / 2;
+		aabb_xm = - MACHINE_MAX / 2;
+		aabb_xM = MACHINE_MAX / 2;
 	}
 	else if(dir.getY() == 0)
 	{
 		if(dir.getX() < 0)
 		{
 			aabb_xm = pt.getX();
-			aabb_xM = FLT_MAX / 2;
+			aabb_xM = MACHINE_MAX / 2;
 		}
 		else
 		{
 			aabb_xM = pt.getX();
-			aabb_xm = - FLT_MAX / 2;
+			aabb_xm = - MACHINE_MAX / 2;
 		}
-		aabb_ym = - FLT_MAX / 2;
-		aabb_yM = FLT_MAX / 2;
+		aabb_ym = - MACHINE_MAX / 2;
+		aabb_yM = MACHINE_MAX / 2;
 	}
 	else
 	{
-		aabb_ym = - FLT_MAX / 2;
-		aabb_yM = FLT_MAX / 2;
-		aabb_xm = - FLT_MAX / 2;
-		aabb_xM = FLT_MAX / 2;
+		aabb_ym = - MACHINE_MAX / 2;
+		aabb_yM = MACHINE_MAX / 2;
+		aabb_xm = - MACHINE_MAX / 2;
+		aabb_xM = MACHINE_MAX / 2;
 	}
 }

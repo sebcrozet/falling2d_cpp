@@ -11,5 +11,5 @@ void AABB::update()
 EndPoint::EndPoint() : parentid(-1), value(0)
 { }
 
-EndPoint::EndPoint(float v, bool isMax, int parent) : value(v)
+EndPoint::EndPoint(Real v, bool isMax, int parent) : value(v)
 { parentid = (parent << 1) | (isMax & 1); }

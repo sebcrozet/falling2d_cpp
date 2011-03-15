@@ -11,10 +11,10 @@ bool DiskDiskSolver::_solve(std::vector<SubCollision> &resl)
 {
 	// ignore OBB tree, direct result is available
 	Vector2D p1 = d1->getCenter(), p2 = d2->getCenter();
-	float r1 = d1->getRadius(), r2 = d2->getRadius();
-	float sr = r1 + r2;
+	Real r1 = d1->getRadius(), r2 = d2->getRadius();
+	Real sr = r1 + r2;
 	Vector2D dp = p2 - p1;
-	float sqd = dp * dp;
+	Real sqd = dp * dp;
 	if(sqd > sr * sr)
 		return canDestroy(); // no collision
 	else

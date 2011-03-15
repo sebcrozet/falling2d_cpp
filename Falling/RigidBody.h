@@ -2,42 +2,42 @@
 #include "TunningConstants.h"
 #include "Polygon2D.h"
 #include "Disk.h"
-#define SLEEPLIMIT 2.f
-#define BIAS 0.6f
+#define SLEEPLIMIT 2.0
+#define BIAS 0.6
 #define NBRLOOPSTABILISATION 50
 class FALLINGAPI RigidBody
 {
 private:
-	float omega;
+	Real omega;
 	Vector2D v;
-	float invM;
-	float invI;
+	Real invM;
+	Real invI;
 	Vector2D acc;
 	// sleep datas
 	bool sleeping;
-	float movment;
+	Real movment;
 	//
 	// position stabilisation detector
 	int nbrValues;
-	float tetas[NBRLOOPSTABILISATION];
+	Real tetas[NBRLOOPSTABILISATION];
 	Vector2D poss[NBRLOOPSTABILISATION];
-	float lastTeta;
+	Real lastTeta;
 	Vector2D lastPos;	 
 	Vector2D totalDPos;
-	float totalDTeta;
+	Real totalDTeta;
 	int loopCursor;
 	//
-	float dTeta;
-	float consumedDeltaTeta;
+	Real dTeta;
+	Real consumedDeltaTeta;
 
 	Shape *s;
 
-	RigidBody(Shape *s,float m,Vector2D pos,float teta = 0);   
+	RigidBody(Shape *s,Real m,Vector2D pos,Real teta = 0);   
 	void reinitStabilisationDetector();
 public:
 	//Do not export these function!
 	inline Shape *getShape();
-	void updateSleepState(float dt);
+	void updateSleepState(Real dt);
 	bool updateMovementStabilisationState();
 	//
 	void setAwake(bool awake);
@@ -45,27 +45,27 @@ public:
 
 	inline Vector2D getPos();
 	inline void setPos(Vector2D);
-	inline float getOmega();
-	inline void addRV(float rv);
+	inline Real getOmega();
+	inline void addRV(Real rv);
 	inline Vector2D getV();
 	inline void addV(const Vector2D &v);
-	inline void multV(float d);
-	inline void multO(float d);
-	inline float getTeta();
-	inline void setTeta(float teta);
-	inline float getM();
-	inline float getInvM();
-	inline void setM(float mass);
-	inline void setMWithDensity(float rho);
-	inline float getI();  
-	inline float getInvI();
-	inline float getA();
-	inline void setDeltaTeta(float dt)
+	inline void multV(Real d);
+	inline void multO(Real d);
+	inline Real getTeta();
+	inline void setTeta(Real teta);
+	inline Real getM();
+	inline Real getInvM();
+	inline void setM(Real mass);
+	inline void setMWithDensity(Real rho);
+	inline Real getI();  
+	inline Real getInvI();
+	inline Real getA();
+	inline void setDeltaTeta(Real dt)
 	{
-		consumedDeltaTeta = 0.f; // reinit consumed rotation (for penetration resolution)
+		consumedDeltaTeta = 0.0; // reinit consumed rotation (for penetration resolution)
 		dTeta = dt; 
 	}							  
-	inline void addConsumedTeta(float dt)
+	inline void addConsumedTeta(Real dt)
 	{ 
 		consumedDeltaTeta += dt;
 		// TODO :  remove validity test
@@ -74,58 +74,58 @@ public:
 			dTeta = dTeta;
 		//
 	}
-	inline float getConsumedDeltaTeta()
+	inline Real getConsumedDeltaTeta()
 	{ return consumedDeltaTeta; }
-	inline float getDeltaTeta()
+	inline Real getDeltaTeta()
 	{ return dTeta; }
 	inline Vector2D getAcc();
 
 	// Rigid Body builder
-	static RigidBody *build_circularBody(Point2D &pt, float radius, bool fixed,float m,Vector2D pos,float teta);
-	static RigidBody *build_polygonalBody(Point2D *pts,int n, bool fixed,float m,Vector2D pos,float teta);
+	static RigidBody *build_circularBody(Point2D &pt, Real radius, bool fixed,Real m,Vector2D pos,Real teta);
+	static RigidBody *build_polygonalBody(Point2D *pts,int n, bool fixed,Real m,Vector2D pos,Real teta);
 };
 inline bool RigidBody::isSleeping()
 { return sleeping; }
 
-inline float RigidBody::getOmega()
+inline Real RigidBody::getOmega()
 { return omega; }
-inline void RigidBody::addRV(float po)
+inline void RigidBody::addRV(Real po)
 { omega += po; }
 inline Vector2D RigidBody::getV()
 { return v; }
 inline void RigidBody::addV(const Vector2D &pv)
 { v = v + pv; }
-inline void RigidBody::multV(float d)
+inline void RigidBody::multV(Real d)
 { v = v*d; }
-inline void RigidBody::multO(float d)
+inline void RigidBody::multO(Real d)
 { omega = omega*d; }
 inline Vector2D RigidBody::getAcc()
-{ return Vector2D(0.f,G,0.f)/*/acc/*/; }
+{ return Vector2D(0.0,G,0.0)/*/acc/*/; }
 
-inline float RigidBody::getTeta()
+inline Real RigidBody::getTeta()
 { return s->getTeta(); }
-inline void RigidBody::setTeta(float teta)
+inline void RigidBody::setTeta(Real teta)
 { s->setTeta(teta); }
 inline Vector2D RigidBody::getPos()
 { return s->getPos(); }
 inline void RigidBody::setPos(Vector2D pos)
 { s->setPos(pos); }
 
-inline float RigidBody::getM()
+inline Real RigidBody::getM()
 { return 1/invM; }
-inline float RigidBody::getInvM()
+inline Real RigidBody::getInvM()
 { return invM; }
-inline void RigidBody::setM(float mass)
-{ invM = 1.0f / mass; invI = 1.0f / s->getInertiaMomentum(mass / s->getSurface()); }
-inline void RigidBody::setMWithDensity(float density)
-{ invM = 1.0f / (density * s->getSurface()); invI = 1.0f / s->getInertiaMomentum(density); }
+inline void RigidBody::setM(Real mass)
+{ invM = 1.0 / mass; invI = 1.0 / s->getInertiaMomentum(mass / s->getSurface()); }
+inline void RigidBody::setMWithDensity(Real density)
+{ invM = 1.0 / (density * s->getSurface()); invI = 1.0 / s->getInertiaMomentum(density); }
 
-inline float RigidBody::getI()
-{ return 1.0f/invI; }
-inline float RigidBody::getInvI()
+inline Real RigidBody::getI()
+{ return 1.0/invI; }
+inline Real RigidBody::getInvI()
 { return invI; }
 
-inline float RigidBody::getA()
+inline Real RigidBody::getA()
 { return s->getSurface(); }
 
 inline Shape *RigidBody::getShape()

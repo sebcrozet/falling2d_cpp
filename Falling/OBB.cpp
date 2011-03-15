@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OBB.h"
 
-OBB::OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, float aire, int id) : parent(parent), aire(aire), obbid(id) 
+OBB::OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, Real aire, int id) : parent(parent), aire(aire), obbid(id) 
 {
 	pts[0] = Vector2D(a);
 	pts[1] = Vector2D(b);
@@ -33,9 +33,9 @@ bool OBB::intersects2axis(OBB *o)
 	for(int i = 0; i < 2; i++)
 	{
 		Vector2D ax = parent->toRotated(axis[i]);
-		float dot = parent->toTranslatedInv(o->parent->toGlobal(o->pts[0])) * ax;
-		float dotMin = dot;
-		float dotMax = dot;
+		Real dot = parent->toTranslatedInv(o->parent->toGlobal(o->pts[0])) * ax;
+		Real dotMin = dot;
+		Real dotMax = dot;
 
 		for(int j = 1; j < 4; j++)
 		{

@@ -6,10 +6,10 @@ SAPsolver::SAPsolver(void (*cb_addobj)(Pair *, Shape *, Shape *), bool (*cb_remo
 {
 	pm.setDeletecallback(cb_deleteobj);
 	// insert sentinels
-	epx.push_back(EndPoint(-FLT_MAX, false, 0));
-	epx.push_back(EndPoint(FLT_MAX, true, 0));
-	epy.push_back(EndPoint(-FLT_MAX, false, 0));
-	epy.push_back(EndPoint(FLT_MAX, true, 0));
+	epx.push_back(EndPoint(-MACHINE_MAX, false, 0));
+	epx.push_back(EndPoint(MACHINE_MAX, true, 0));
+	epy.push_back(EndPoint(-MACHINE_MAX, false, 0));
+	epy.push_back(EndPoint(MACHINE_MAX, true, 0));
 }
 
 SAPsolver::~SAPsolver()
@@ -30,7 +30,7 @@ void SAPsolver::removePair(Pair *p)
 
 void SAPsolver::updateBoxCollisionPairs(AABB &b)
 {
-	float xm = epx[b.mins[0]].getValue(),
+	Real xm = epx[b.mins[0]].getValue(),
 		xM = epx[b.maxs[0]].getValue(),
 		ym = epy[b.mins[1]].getValue(),
 		yM = epy[b.maxs[1]].getValue();
@@ -62,7 +62,7 @@ void SAPsolver::updateBoxCollisionPairs(AABB &b)
 	}
 }
 
-void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, int xyid)
+void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, Real xm, Real xM, Real ym, Real yM, int xyid)
 {
 	int i = *im;
 	EndPoint en = list[i];
@@ -130,7 +130,7 @@ void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, float xm,
 	}
 }
 
-void SAPsolver::updateEndPointMin(std::vector<EndPoint> &list,int *im, float xm, float xM, float ym, float yM, bool sens, int xyid)
+void SAPsolver::updateEndPointMin(std::vector<EndPoint> &list,int *im, Real xm, Real xM, Real ym, Real yM, bool sens, int xyid)
 {
 	int i = *im;
 	EndPoint en = list[i];
@@ -268,9 +268,9 @@ void SAPsolver::updateAddedBoxCollisionPairs(AABB &b)
 	// insert in epy without collision handling
 	int i = b.maxs[1];
 	EndPoint e = epy[i];
-	float yM = e.getValue();
+	Real yM = e.getValue();
 	EndPoint em = epy[i - 1];
-	float ym = em.getValue();
+	Real ym = em.getValue();
 	// inert max and reuse i as upper bound for min index
 	while(epy[i - 2].getValue() > e.getValue())
 	{
@@ -301,9 +301,9 @@ void SAPsolver::updateAddedBoxCollisionPairs(AABB &b)
 		// no collision handling with xM (causes only removals)
 		i = b.maxs[0];
 		e = epx[i];
-		float xM = e.getValue();
+		Real xM = e.getValue();
 		em = epx[i - 1];
-		float xm = em.getValue();
+		Real xm = em.getValue();
 		while(epx[i - 2].getValue() > e.getValue())
 		{
 			epx[i] = epx[i - 2];
