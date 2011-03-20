@@ -1,3 +1,5 @@
+#ifndef __FALLING_FLOAT_TESTS
+
 #include "stdafx.h"
 #include "TunningConstants.h"
 #include <stdarg.h>
@@ -9,7 +11,7 @@ struct Float
 	static inline bool equal(Real a, Real b)
 	{
 		Real aa = ABS(a), bb =  ABS(b);
-		return aa - bb <= MAX(aa, MAX(bb, 1.0)) * ZERO_EPSILON;
+		return ABS(a - b) <= MAX(aa, MAX(bb, 1.0)) * ZERO_EPSILON;
 	}
 
 	static inline bool negativeOrZero(Real a)
@@ -20,3 +22,5 @@ struct Float
 
 	static int sumSign(int n, ...);
 };
+#define __FALLING_FLOAT_TESTS
+#endif

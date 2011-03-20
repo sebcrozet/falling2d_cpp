@@ -48,3 +48,9 @@ int Disk::getSupportPoint(const Vector2D &, Point2D *res, int) const
 	*res =  Point2D(v.getX(), v.getY()); 
 	return 0; 
 }
+
+bool Disk::containsPoint(const Point2D &pt) const
+{
+    Vector2D v(getCenter(), pt);
+    return  v * v <= radius * radius;
+}

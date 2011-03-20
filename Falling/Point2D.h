@@ -1,5 +1,6 @@
 #ifndef POINT
 #include "TunningConstants.h"
+#include "floatTests.h"
 #include "Vector2D.h"
 
 typedef struct Point2D Point2D;
@@ -69,7 +70,7 @@ inline Real Point2D::isInLine(const Point2D &p,const Point2D& p2) const
     Real a,b;
     a = (p2.getX() - px) * (y - py);
     b = (p2.getY() - py) * (x - px);
-    return ABS(a - b) <= sqrt(MACHINE_EPSILON) * MAX(ABS(a),MAX(ABS(b),1.0));
+    return Float::equal(a , b);
     /*
     Vector2D pp2(p,p2);
     Vector2D ppo(p,*this);

@@ -40,6 +40,7 @@ public:
 	void updateSleepState(Real dt);
 	bool updateMovementStabilisationState();
 	//
+	bool containsPoint(const Point2D &pt) const;
 	void setAwake(bool awake);
 	inline bool isSleeping();
 
@@ -78,6 +79,12 @@ public:
 	{ return consumedDeltaTeta; }
 	inline Real getDeltaTeta()
 	{ return dTeta; }
+	inline bool isFixed() const
+	{ return s->isFixed(); }
+	inline void setFixed(bool fixed)
+	{
+	    s->setFixed(fixed);
+	}
 	inline Vector2D getAcc();
 
 	// Rigid Body builder

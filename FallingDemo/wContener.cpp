@@ -58,7 +58,6 @@ void wContener::addChild(
 	int mD
 	)
 {
-
     // insert the object at the good place
     // according to its zOrder
     if(w->getZOrder() == -1)
@@ -173,9 +172,16 @@ void wContener::updatePositions()
 	for(int i = 0; i < filsgrid.size(); i++)
 	{
 	    wWidget *wdg = filsgrid[i]->w;
-	    wdg->setSize(rect.GetWidth() - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL, -1);
+	    wdg->setSize(
+		    rect.GetWidth() - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL, 
+		    -1
+		    );
 	    Rect rc = wdg->getRect();
-	    wdg->setX(rect.Left + (rect.GetWidth() - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL)/2.f - rc.GetWidth()/2.f + paddingRL + filsgrid[i]->mL);
+	    wdg->setX(
+		    rect.Left 
+		    + (rect.GetWidth() - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL)/2.f 
+		    - rc.GetWidth()/2.f + paddingRL + filsgrid[i]->mL
+		    );
 	}
     }
     if(im == wContener::alignLeftRight)
@@ -183,7 +189,10 @@ void wContener::updatePositions()
 	for(int i = 0; i < filsgrid.size(); i++)
 	{
 	    wWidget *wdg = filsgrid[i]->w;
-	    wdg->setSize(-1 , rect.GetHeight() - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD);
+	    wdg->setSize(
+		    -1 , 
+		    rect.GetHeight() - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD
+		    );
 	    Rect rc = wdg->getRect();
 	    wdg->setY(rect.Top + (rect.GetHeight() - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD) / 2.f - rc.GetHeight() / 2.f + paddingUD + filsgrid[i]->mU);
 	}
@@ -213,7 +222,6 @@ void wContener::updateSize()
 	}
 	neww += 2*paddingRL;
 	wWidget::setSize(neww, -1);
-	printf("New width is %f\n", neww);
     }
     if(AND(wm, wContener::wrapH))
     {
@@ -231,7 +239,6 @@ void wContener::updateSize()
 	    }
 	}
 	newh += 2*paddingUD;
-	printf("New h is %f\n", newh);
 	wWidget::setSize(-1, newh);
     }
 

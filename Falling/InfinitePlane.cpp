@@ -9,11 +9,11 @@ InfinitePlane::InfinitePlane(Point2D p, Vector2D normal)
 	spt = p + perpdir;
 	fixedobj = true;
 }
-int InfinitePlane::getShapeTypeID()
+int InfinitePlane::getShapeTypeID() const
 { return 100; }
-Real InfinitePlane::getInertiaMomentum(Real)
+Real InfinitePlane::getInertiaMomentum(Real) const
 { return MACHINE_MAX; }
-Real InfinitePlane::getSurface()
+Real InfinitePlane::getSurface() const
 { return MACHINE_MAX; }
 void InfinitePlane::updateAABB()
 {
@@ -54,4 +54,9 @@ void InfinitePlane::updateAABB()
 		aabb_xm = - MACHINE_MAX / 2;
 		aabb_xM = MACHINE_MAX / 2;
 	}
+}
+
+bool InfinitePlane::containsPoint(const Point2D &pt) const
+{
+    return pt.isLeftTo(perpdir, spt);
 }

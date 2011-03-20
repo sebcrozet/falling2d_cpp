@@ -63,6 +63,7 @@ bool RigidBody::updateMovementStabilisationState()
 		return true;
 	return false; 
 }  
+
 void RigidBody::reinitStabilisationDetector()
 {
 	lastTeta = getTeta();
@@ -91,14 +92,33 @@ void RigidBody::setAwake(bool awake)
 	}
 }
 
-RigidBody *RigidBody::build_polygonalBody(Point2D *pts,int n, bool fixed,Real m,Vector2D pos,Real teta)
+RigidBody *RigidBody::build_polygonalBody(
+	Point2D *pts,
+	int n, 
+	bool fixed,
+	Real m,
+	Vector2D pos,
+	Real teta
+	)
 {
 	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, 1, pos, true, teta, fixed);
 	return new RigidBody(pp,m*pp->getSurface(),pp->getCentroid(),teta);
 }
 
-RigidBody *RigidBody::build_circularBody(Point2D &pt, Real radius, bool fixed,Real m,Vector2D pos,Real teta)
+RigidBody *RigidBody::build_circularBody(
+	Point2D &pt, 
+	Real radius, 
+	bool fixed,
+	Real m,
+	Vector2D pos,
+	Real teta
+	)
 {
 	Disk * pp=new Disk(pt, radius, fixed);
 	return new RigidBody(pp,m*pp->getSurface(), pos, teta);
+}
+
+bool RigidBody::containsPoint(const Point2D &pt) const
+{
+    return s->containsPoint(pt);
 }

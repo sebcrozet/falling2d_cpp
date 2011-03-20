@@ -1,7 +1,6 @@
 #ifndef POLYGON	    
 #define DEBUGMOD
 #include "Primitives.h"
-#include "BoundingVolumes.h"
 #include "Shapes.h"
 #include "GeometryHelper.h"
 #include "OBBtree.h"
@@ -10,7 +9,7 @@
 #include <vector>
 
 class ImplicitPolygon2D;
-class FALLINGAPI Polygon2D	: public Shape
+class FALLINGAPI Polygon2D : public Shape
 {	  
 #ifdef DEBUGMOD
 public:
@@ -46,11 +45,13 @@ public:
 	static int simplify(Point2D * in, int n, Point2D **out, Real tolerence);
 	static int simplifyToProper(Point2D * in, int n, Point2D **out);
 	void update(Real rotationAngle);
-	Real getInertiaMomentum(Real density) const;
-	Real getSurface() const;
-	void updateAABB();
 	inline Vector2D getCentroid() const;
-	inline int getShapeTypeID() const;
+
+	virtual int getShapeTypeID() const;
+	virtual Real getInertiaMomentum(Real density) const;
+	virtual Real getSurface() const;
+	virtual void updateAABB();
+	virtual bool containsPoint(const Point2D &pt) const;
 
 	static Point2D getCentroid(Point2D * in, int n);
 	static Point2D getCentroid(Point2D * in, int n, Real aire);
@@ -79,12 +80,15 @@ private:
 public:		   
 
 	ImplicitPolygon2D(Point2D * ptsId, int n, Polygon2D *parent, int id);
-	Point2D rightTgtPt(Point2D &ref);
-	int getSupportPoint(const Vector2D &d, Point2D * res) const;
-	int getSupportPoint(const Vector2D &d, Point2D * res, int o)const;
-	Real getBoundingSphereRadius() const;
+
+	virtual int getSupportPoint(const Vector2D &d, Point2D * res) const;
+	virtual int getSupportPoint(const Vector2D &d, Point2D * res, int o)const;
+	virtual Vector2D getCenter() const;  
+	virtual Real getBoundingSphereRadius() const;
+
 	void translateCentroid(const Vector2D &);
-	inline Vector2D getCenter() const;  
+	Point2D rightTgtPt(Point2D &ref);
+
 	inline Vector2D getCentroid() const;
 	inline OBB *getOBB() const;
 	inline Real getUnitInertiaMomentum() const;
@@ -106,8 +110,6 @@ inline Real ImplicitPolygon2D::getSurface() const
 { return surface; }
 inline Real ImplicitPolygon2D::getUnitInertiaMomentum() const
 { return unitInertia + surface * (center.getX() * center.getX() + center.getY() * center.getY()); }
-inline Vector2D ImplicitPolygon2D::getCenter() const
-{ return toGlobal(center); }
 inline Vector2D ImplicitPolygon2D::getCentroid() const
 { return center; }
 				  

@@ -10,14 +10,16 @@ private:
 public:
 	InfinitePlane(Point2D p, Vector2D normal);
 
-	Real getSurface();
-	Real getInertiaMomentum(Real m);
-	int getShapeTypeID();
-	void updateAABB();
 	inline Point2D getProjectedPt(const Point2D &pt) const;
 	inline bool isInSolidHalfSpace(const Point2D &pt) const;
 	inline Real sqDistToPlane(const Point2D &pt) const;
 	inline Vector2D getNormal() const;
+
+	virtual Real getSurface() const;
+	virtual Real getInertiaMomentum(Real m) const;
+	virtual int getShapeTypeID() const;
+	virtual void updateAABB();
+	virtual bool containsPoint(const Point2D &pt) const;
 };
 inline bool InfinitePlane::isInSolidHalfSpace(const Point2D &pt) const
 { return pt.isLeftTo(pt, spt) >= 0; }

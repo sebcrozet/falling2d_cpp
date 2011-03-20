@@ -33,7 +33,7 @@ void Poly::testAdj()
     DoubleLinkedList<Point *> *parc = this->pts;
     // test if not degenerate
     if(this->pts->getnext() == this->pts->getprev())
-	while(true); // loop indefinitly
+	assert(false);
     // test if double point situation occurs in pseudo-polygon
     parc = this->pts;
     do
@@ -419,9 +419,9 @@ Poly *Poly::split(Point *p1, Point *p2)
 {
     // TODO: remove test
     if(pts->getnext()->getnext()->getnext() == pts)
-	while(true);
+	assert(false);
     if(pts->getnext()->getnext() == pts)
-	while(true);
+	assert(false);
     // end todo
     DoubleLinkedList<Point *> *l1 = 0, *l2 = 0, *parc = pts;
     DoubleLinkedList<Edge *> *ad1 = 0, *ad2 = 0, *adjparc = adj;
@@ -896,7 +896,7 @@ void Poly::triangulate(Point *basep1)
     {
 	//printf("splitl\n");
 	if(this->pts->getnext()->getnext()->getnext() == this->pts)
-	    while(true);
+	    assert(false);
 	this->split(curr->getValue(), l->getValue())->triangulate(l->getValue());
 	this->testAdj();
     }

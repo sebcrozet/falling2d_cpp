@@ -50,6 +50,8 @@
 	for(int j = 0; j < nbptssubpolys[i]; j++)
 	    subpolys[i][j] = subpolys[i][j] - totalCentroid;
     }
+    for(int i = 0; i < nbrPts; i++)
+	points[i] = points[i] - totalCentroid;
     // build obb tree
     buildOBBtree();
     // adjust position
@@ -65,6 +67,12 @@ void Polygon2D::scalepts(Point2D *pts, int n, Real scalefactor)
     {
 	pts[i] = pts[i] * scalefactor;
     }
+}
+
+bool Polygon2D::containsPoint(const Point2D &pt) const
+{
+    printf("%f ... %f\n", t.transforminv(pt).getX(), t.transforminv(pt).getY());
+    return Point2D::pointInPolygon(t.transforminv(pt), points, nbrPts);
 }
 
 void Polygon2D::updateAABB()
@@ -149,7 +157,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
 		    break;
 	    }
 	    if(iii == polyset[i]->nbrPts && Point2D::pointInPolygon(studiedpt, polyset[i]->pts, polyset[i]->nbrPts))
-		while(true);
+		assert(false);
 	    // end TODO
 	    Point2D tmp = polyset[i]->rightTgtPt(studiedpt); 
 	    // TODO: remove test
@@ -231,18 +239,30 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
     if(leftset.size()!=0)
 	buildOBBtree(&(oo->l), leftset, id);
 }
+
 int Polygon2D::simplifyToProper(Point2D *in, int n, Point2D **out)
 {
     Point2D *pt = new Point2D[n];
     int s = 0;
     int p=n-2, np=n-1, nnp=0;
-    while(nnp<n)
+    int limit = n;
+    while(nnp<limit)
     {
-	if(!in[nnp].isInLine(in[np], in[p]))
+	if(!in[np].isInLine(in[nnp], in[p]))
 	{
 	    pt[s] = in[np];
 	    s++;
 	    p = np;
+	}
+	else
+	{
+	    if(np == limit - 1)
+	    {
+		limit --;
+		p--;
+		np--;
+		continue;
+	    }
 	}
 	np = nnp;	 
 	nnp++;
@@ -560,7 +580,7 @@ ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, in
 	    Real param;
 	    if(Point2D::intersectSegments(globalPts[j], globalPts[i], globalPts[k], globalPts[k+1], &useless, &param) != -1)
 	    {
-		while(true);
+		assert(false);
 	    }
 	}
     }
@@ -947,4 +967,7 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
     origin =  opp + repY * obblon - repX * obblar;
     return new OBB(origin, origin - repY * obblon,opp , origin + repX * obblar, parent, minAire, id);
 }	
+
+Vector2D ImplicitPolygon2D::getCenter() const
+{ return toGlobal(center); }
 //#pragma endregion

@@ -1,8 +1,8 @@
 #ifndef VECTOR
 #include "TunningConstants.h"
-#include <float.h>
+#include "floatTests.h"
 #include <stdio.h>
-#define EPSILON	 FLT_EPSILON
+#define EPSILON	MACHINE_EPSILON 
 typedef struct Vector2D Vector2D;
 struct FALLINGAPI Point2D;
 struct FALLINGAPI Vector2D
@@ -101,7 +101,7 @@ inline void Vector2D::ortho()
 	y = xx;
 }
 inline bool Vector2D::equals(const Vector2D &v)
-{ return ((ABS(v.getX() - x))<=0.001 && (ABS(v.getY() - y))<=0.001); }
+{ return (Float::equal(v.getX() , x) && Float::equal(v.getY() , y)); }
 
 inline Vector2D Vector2D::cross(const Vector2D &v) const
 { return Vector2D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x); }

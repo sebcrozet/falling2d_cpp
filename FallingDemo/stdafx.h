@@ -7,11 +7,13 @@
 
 #include "targetver.h"
 
-#define WIN32_LEAN_AND_MEAN             // Exclure les en-têtes Windows rarement utilisés
-#define _USE_MATH_DEFINES
-// Fichiers d'en-tête Windows :
-#include <math.h>
-#include <float.h>
-#include <assert.h>
+#include <stdio.h>
+#include <vector>
+#include <SFML/Window.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics.hpp>
+
+
+
 
 // TODO : faites référence ici aux en-têtes supplémentaires nécessaires au programme

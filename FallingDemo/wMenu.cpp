@@ -1,25 +1,46 @@
 #include "stdafx.h"
 #include "wMenu.h"
 
-wMenuItem::wMenuItem(std::string path1, std::string path2, int type) : 
-    wContener(0,0,0,0,true,-2,0,0,wContener::alignLeftRight, wContener::wrapBoth), 
-    toogled(false), highlighted(false), onItemClicked(0), onItemPushed(0), onItemReleased(0),
-    sw(0), greycolor(200)
+wMenuItem::wMenuItem(std::string path1, std::string path2, int type, int group, int id, bool toogled, bool locked, bool itemOrientation) : 
+    wContener(0,0,0,0,true,-2,0,0,(path1 == "SE" && !itemOrientation)?wContener::alignTopBottom:wContener::alignLeftRight, wContener::wrapBoth), 
+    toogled(toogled), 
+    highlighted(false), 
+    onItemClicked(0), 
+    onItemPushed(0), 
+    onItemReleased(0),
+    sw(0), 
+    greycolor(200), 
+    userdata(0), 
+    itemtype(type), 
+    checkbox(AND_LETTER(type,'?')), 
+    locked(locked),
+    checkgroup(group), 
+    id(id),
+    orientation(itemOrientation)
 { 
-    if(AND(type,2))
+    if(AND_LETTER(type,';'))
     {
 	wContener::addChild(
-		new wImage(0,0, 20, 20, path1),
+		new wImage(
+		    0, 
+		    0, 
+		    (path1 == "SE")?2 : 20, 
+		    (path1 == "SE")?1 : 20, 
+		    path1, 
+		    (path1 == "SE")?(itemOrientation ? wImage::STRETCH_H : wImage::STRETCH_W) : wImage::STRETCH_NONE),
 		false,
-		4, (type == 3)?9:4, 4, 4
+		(path1 == "SE")?0:4,
+		(path1 == "SE")?0:AND_LETTER(type,':')? 9 : 4, 
+		(path1 == "SE")?0:4, 
+		(path1 == "SE")?0:4
 		);
     }
-    if(AND(type,1))
+    if(AND_LETTER(type,':'))
     {
 	wContener::addChild(
-		new wLabel(0,0,(type == 3)?path2:path1,15),
+		new wLabel(0, 0, AND_LETTER(type,';')?path2 : path1, 15),
 		false,
-		0, 0, 0, 0
+		2, 2, 0, 0
 		);
     }
     else
@@ -33,9 +54,19 @@ void wMenuItem::close()
     // TODO: free SFML's ressources
 }
 
+void wMenuItem::groupUnselect()
+{
+    if(toogled)
+    {
+	if(sw)
+	    sw->setVisible(false);
+	toogled = false;
+    }
+}
+
 void wMenuItem::expand(bool coll)
 {
-    if(sw)
+    if((!checkbox || coll)&& sw)
 	sw->setVisible(coll);
     //toogled = coll;
 }
@@ -48,6 +79,8 @@ bool wMenuItem::setSize(float w, float h)
 
 bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)
 {
+    if(locked)
+	return false;
     if(!wContener::interpretEvent(ev, mx, my) && (!sw || !sw->getIsVisible() || !sw->interpretEvent(ev, mx, my)))
     {
 	if(ev.Type == sf::Event::MouseMoved)
@@ -64,28 +97,39 @@ bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)
 	{
 	    if(wWidget::contains(mx, my))
 	    {
-		toogled = true;
-		if(onItemPushed)
-		    onItemPushed();
+		if(!toogled)
+		{
+		    toogled = true;
+		    if(onItemClicked)
+			onItemClicked(id, userdata);
+		}
+		else if(checkbox && !checkgroup)
+		{
+		    if(sw)
+			sw->setVisible(false);
+		    toogled = false;
+		    if(onItemReleased)
+			onItemReleased(id, userdata);
+		}
 		return true;
 	    }
-	    else
+	    else if(!checkbox && !checkgroup)
 	    {
 		if(toogled)
 		{
 		    toogled = false;
 		    if(onItemReleased)
-			onItemReleased();
+			onItemReleased(id, userdata);
 		}
 	    }
 	}
 	else if(ev.Type == sf::Event::MouseButtonReleased)
 	{
-	    if(toogled)
+	    if(!checkbox && !checkgroup && toogled)
 	    {
-		//toogled = false;
+		toogled = false;
 		if(onItemReleased)
-		    onItemReleased();
+		    onItemReleased(id, userdata);
 	    }
 	}
 	return false;
@@ -102,31 +146,34 @@ void wMenuItem::update(float dt)
 void wMenuItem::draw(sf::RenderWindow &rw)
 {
     // draw back
-    if(toogled)
-	greycolor = 10;
-    else
+    if(!locked)
     {
-	if(highlighted)
-	{
-	    greycolor-=40;
-	    if(greycolor < 60)
-		greycolor = 60;
-	}
+	if(toogled)
+	    greycolor = 10;
 	else
 	{
-	    greycolor+=20;
-	    if (greycolor > 200)
-		greycolor = 200;
+	    if(highlighted)
+	    {
+		greycolor-=40;
+		if(greycolor < 60)
+		    greycolor = 60;
+	    }
+	    else
+	    {
+		greycolor+=20;
+		if (greycolor > 200)
+		    greycolor = 200;
+	    }
 	}
-    }
-    rw.Draw(
-	    sf::Shape::Rectangle(
-		wWidget::rect.Left, 
-		wWidget::rect.Top, 
-		wWidget::rect.Right, 
-		wWidget::rect.Bottom, 
-		sf::Color(greycolor,greycolor,greycolor,100), 2, sf::Color(greycolor,greycolor,greycolor,200))
-	    );
+	rw.Draw(
+		sf::Shape::Rectangle(
+		    wWidget::rect.Left, 
+		    wWidget::rect.Top, 
+		    wWidget::rect.Right, 
+		    wWidget::rect.Bottom, 
+		    sf::Color(greycolor,greycolor,greycolor,100), 2, sf::Color(greycolor,greycolor,greycolor,200))
+	       );
+    } // else do not draw the rounding rectangle but only the content
     // draw text & image
     if(sw && sw->getIsVisible())
 	sw->draw(rw);
@@ -154,7 +201,7 @@ void wMenuItem::setSubChildPopupMenu(bool orient, wWidget *mb)
     {
 	addChild
 	    (
-	     new wImage(0, 0, 10, 10, "TR"),
+	     new wImage(0, 0, 10, 10, "TR", wImage::STRETCH_NONE),
 	     false,
 	     10, 2, 0, 0
 	    );
@@ -163,7 +210,7 @@ void wMenuItem::setSubChildPopupMenu(bool orient, wWidget *mb)
     {
 	addChild
 	    (
-	     new wImage(0, 0, 10, 10, "TD"),
+	     new wImage(0, 0, 10, 10, "TD", wImage::STRETCH_NONE),
 	     false,
 	     10, 2, 0, 0
 	    );
@@ -196,12 +243,13 @@ wMenuBar::wMenuBar(int x, int y, bool orientation, bool visible)
 wMenuBar *wMenuBar::fromFileDescriptor(
 	std::string filePath, 
 	bool orientation, 
-	wContener *(*callback)(std::string))
+	void *userdata,
+	void (*itemCreated)(void *,wMenuItem*))
 {
     std::string descr;
-    // open file and extract the string descriptor
+    // TODO: open file and extract the string descriptor
     // construct menu
-    return wMenuBar::fromStringDescriptor(descr,orientation,callback);
+    return wMenuBar::fromStringDescriptor(descr,orientation,userdata, itemCreated);
 }
 /* Parses a string descripting a full menu bar
  ** Format:
@@ -230,14 +278,17 @@ wMenuBar *wMenuBar::fromFileDescriptor(
 wMenuBar *wMenuBar::fromStringDescriptor(
 	std::string descr,
 	bool orientation, 
-	wContener *(*callback)(std::string))
+	void *userdata,
+	void (*itemCreated)(void *userdata, wMenuItem *))
 {
     std::stack<wMenuBar *> stbars;
     int l = descr.size();
+    int chgrp = 0;
     int subitemlevel = 0;
     int lastLevel = -1;
     int mode = 0;
     int itemtype = 0;
+    int itemid = 0;
     int firstpathbegin = 0;
     int firstpathend = 0;
     int secondpathbegin = 0; // the 'second path' ends before the \n
@@ -256,10 +307,15 @@ wMenuBar *wMenuBar::fromStringDescriptor(
 	    // new line:
 	    // create sub-item (a menu bar containing one menu item...
 	    // create a new sub-menu bar
-	    printf("%i ... %i \n", subitemlevel, lastLevel);
 	    if(subitemlevel > lastLevel)
 	    {
-		wMenuBar *nmb = new wMenuBar(0, 0, orientation && stbars.empty(), orientation && stbars.empty());
+		wMenuBar *nmb = new wMenuBar
+		    (
+		     0, 
+		     0, 
+		     orientation && stbars.empty(), 
+		     orientation && stbars.empty()
+		    );
 		if(lastLevel > -1)
 		{
 		    ((wMenuItem *)stbars.top()->getLastChild())->setSubChildPopupMenu
@@ -285,18 +341,30 @@ wMenuBar *wMenuBar::fromStringDescriptor(
 	    wMenuBar *mbar = stbars.top();
 	    lastmi = 
 		    new wMenuItem(
-			descr.substr(firstpathbegin, (itemtype == 1 ? i - 1:firstpathend)-firstpathbegin + 1),
-			itemtype == 3 ? descr.substr(secondpathbegin, i - secondpathbegin) : "",
-			itemtype
+			descr.substr(
+			    firstpathbegin, 
+			    ((AND_LETTER(itemtype, (':')) && !AND_LETTER(itemtype, ':')) ? i - 1:firstpathend) - firstpathbegin + 1
+			    ),
+			(AND_LETTER(itemtype, ':') && AND_LETTER(itemtype, ';')) ? descr.substr(secondpathbegin, i - secondpathbegin) : "",
+			itemtype,
+			chgrp,
+			itemid,
+			(AND_LETTER(itemtype, '@')),
+			(AND_LETTER(itemtype, '=')),
+			(orientation && subitemlevel == 0)
 			);
 	    mbar->addChild(
 		    lastmi,false ,
 		    5, 5, 5, 5
 		    );
+	    if(itemCreated)
+		itemCreated(userdata,lastmi);
 
 	    // and reinit search
+	    itemid = 0;
 	    ignorespaces = true;
 	    lastLevel = subitemlevel;
+	    chgrp = 0;
 	    subitemlevel = 0;
 	    mode = 0;
 	    itemtype = 0;
@@ -328,6 +396,8 @@ wMenuBar *wMenuBar::fromStringDescriptor(
 	}
 	else if(mode == 1)
 	{
+	    if(descr[i] == '_')
+		continue; // ignore underscores
 	    if(descr[i] == ' ')
 	    {
 		if(ignorespaces)
@@ -336,34 +406,15 @@ wMenuBar *wMenuBar::fromStringDescriptor(
 		mode++;
 		ignorespaces = true;
 	    }
-	    else if(descr[i] == 'T' || descr[i] == 't')
+	    else if(descr[i] >= ':' && descr[i] <= '@')
 	    {
-		if(itemtype == 2)
-		    itemtype = 3;
-		else if(itemtype)
-		    error = true;
-		else
-		    itemtype = 1;
+		itemtype |= (1 << (descr[i] - ':'));
 		ignorespaces = false;
 	    }
-	    else if(descr[i] == 'I' || descr[i] == 'i')
-	    {
-		if(itemtype == 1)
-		    itemtype = 3;
-		else if(itemtype)
-		    error = true;
-		else
-		    itemtype = 2;
-		ignorespaces = false;
-	    }
-	    else if(descr[i] == 'O' || descr[i] == 'o')
-	    {
-		if(itemtype)
-		    error = true;
-		else
-		    itemtype = 4;
-		ignorespaces = false;
-	    }
+	    else if (descr[i] >= 'A' && descr[i] <= 'Z')
+		chgrp += descr[i];
+	    else if(descr[i] >= '0' && descr[i] <= '9')
+		itemid = itemid * 10 + (descr[i] - '0');
 	    else
 		error = true;
 	}
@@ -374,7 +425,7 @@ wMenuBar *wMenuBar::fromStringDescriptor(
 		if(ignorespaces)
 		    continue;
 	    }
-	    if(itemtype == 1 || itemtype == 2)
+	    if(AND_LETTER(itemtype, ':') ^ AND_LETTER(itemtype, ';'))
 	    {
 		if(descr[i] != ' ')
 		{
@@ -387,7 +438,7 @@ wMenuBar *wMenuBar::fromStringDescriptor(
 		    firstpathend = i;
 		}
 	    }
-	    else if(itemtype == 3)
+	    else if(AND_LETTER(itemtype, ':') && AND_LETTER(itemtype, ';'))
 	    {
 		if(descr[i] != ' ')
 		{
@@ -450,6 +501,14 @@ bool wMenuBar::interpretEvent(sf::Event &ev, float mx, float my)
 		{
 		    interpret = true;
 		    ((wMenuItem *)fils[i])->expand(true);
+		    if(((wMenuItem *)fils[i])->getGroup())
+		    {
+			for(int j = 0; j < fils.size(); j++)
+			{
+			    if(j != i && ((wMenuItem *)fils[i])->getGroup() == ((wMenuItem *)fils[j])->getGroup())
+				((wMenuItem *)fils[j])->groupUnselect();
+			}
+		    }
 		}
 		else
 		    ((wMenuItem *)fils[i])->expand(false);
@@ -458,3 +517,4 @@ bool wMenuBar::interpretEvent(sf::Event &ev, float mx, float my)
     }
     return interpret;
 }
+

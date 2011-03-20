@@ -10,15 +10,20 @@ private:
 	Real radiuslessM, radius;
 public:
 	Disk(const Point2D &pt, Real radius, bool fixed);
-	Real getSurface() const;
-	Real getInertiaMomentum(Real m) const;
-	Vector2D getCenter() const;
-	int getSupportPoint(const Vector2D &d, Point2D *res) const;
-	int getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const;
-	Real getBoundingSphereRadius() const;
-	void updateAABB();
-	inline int getShapeTypeID() const;
 	inline Real getRadius() const;
+
+	// Implicit shape methods
+	virtual Real getBoundingSphereRadius() const;
+	virtual Vector2D getCenter() const;
+	virtual int getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const;
+	virtual int getSupportPoint(const Vector2D &d, Point2D *res) const;
+
+	// Shape methods
+	virtual inline int getShapeTypeID() const;
+	virtual Real getSurface() const;
+	virtual Real getInertiaMomentum(Real m) const;
+	virtual void updateAABB();
+	virtual bool containsPoint(const Point2D &pt) const;
 };
 
 inline Real Disk::getRadius() const

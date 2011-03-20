@@ -1,8 +1,6 @@
-#define DEBUGMOD
 #ifndef SHAPE
 #include "GeometryHelper.h"
 #include "AABB.h"
-#define PROXIMITY_AWARENESS 1.0
 
 struct Collision;
 class RigidBody;
@@ -38,6 +36,7 @@ public:
 	virtual Real getInertiaMomentum(Real m) const = 0;
 	virtual int getShapeTypeID() const = 0;
 	virtual void updateAABB() = 0;
+	virtual bool containsPoint(const Point2D &) const = 0;
 
 	inline RigidBody *getParent() const;
 	inline void setParent(RigidBody *r);
@@ -51,6 +50,8 @@ public:
 	inline void setAABBid(int id);
 	inline bool AABBvsAABB(Real xm, Real xM, Real ym, Real yM);
 	inline bool isFixed() const;
+	inline void setFixed(bool fixed)
+	{ fixedobj = fixed; }
 	inline Vector2D toRotatedInv(const Vector2D &v) const;
 	inline Vector2D toRotated(const Vector2D &v) const;
 	inline Point2D toRotatedInv(const Point2D &v) const;
@@ -79,18 +80,22 @@ inline int Shape::getStackLevel() const
 
 inline void Shape::setCollisionList(Collision *l, Collision *tail)
 { collisions = l; collisionsTail = tail; }
+
 inline Collision *Shape::getCollisionList() const
 { return collisions; }
 
 inline RigidBody *Shape::getParent() const
 { return parentBody; }
+
 inline void Shape::setParent(RigidBody *p)
 { parentBody = p; }
 
 inline Vector2D Shape::getPos() const
 { return t.getU(); }
+
 inline Real Shape::getTeta() const
 { return t.getTeta(); }
+
 inline void Shape::setTeta(Real nteta)
 {
 	setMoved(true);
@@ -125,8 +130,6 @@ inline bool Shape::AABBvsAABB(Real xm, Real xM, Real ym, Real yM)
 inline void Shape::rotate(Real dteta)
 {
 	setMoved(true);
-	if(ABS(dteta) > 0.5)
-		dteta = dteta;
 	t.addTeta(dteta);
 }
 inline void Shape::translate(Vector2D du)
