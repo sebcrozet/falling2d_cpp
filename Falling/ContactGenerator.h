@@ -18,7 +18,6 @@ struct Contact
 	// TODO: see if there are no ureless datas here
 	Shape *s1;
 	Shape *s2;
-	Shape *s2nfixed;
 private:
 	Real penetration;
 public:

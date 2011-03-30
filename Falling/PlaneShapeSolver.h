@@ -13,8 +13,9 @@ private:
 	ImplicitShape &is;
 	InfinitePlane &p;
 	int optid;
+	ContactBackup lastContactDatas;
 
-	bool _solve(std::vector<SubCollision> &res);
+	bool _solve(std::vector<ContactBackup *> &res);
 public:
 	PlaneImplicitShapeDistanceSolver(InfinitePlane &ip, ImplicitShape &is);
 	bool canDestroy();
@@ -27,8 +28,8 @@ private:
 	Shape *s;
 	InfinitePlane *ip;
 
-	void traverseTree(OBBtree *ot, std::vector<OBB *>res);
-	bool _solve(std::vector<SubCollision> &res); // returns whether current class should be destroyed
+	void traverseTree(OBBtree *ot, std::vector<OBB *> &res);
+	bool _solve(std::vector<ContactBackup *> &res); // returns whether current class should be destroyed
 	static void pairDeleted(Pair &p);
 public:
 	PlaneShapeSolver(InfinitePlane *p, Shape *s);

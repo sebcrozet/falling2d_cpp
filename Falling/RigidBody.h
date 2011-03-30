@@ -88,6 +88,7 @@ public:
 	inline Vector2D getAcc();
 
 	// Rigid Body builder
+	static RigidBody *build_planarBody(const Point2D &origin, const Vector2D &normal);
 	static RigidBody *build_circularBody(Point2D &pt, Real radius, bool fixed,Real m,Vector2D pos,Real teta);
 	static RigidBody *build_polygonalBody(Point2D *pts,int n, bool fixed,Real m,Vector2D pos,Real teta);
 };

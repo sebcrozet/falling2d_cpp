@@ -6,13 +6,14 @@
 #include "PlaneShapeSolver.h"
 #include "FakeShape.h"
 #include "RigidBody.h"
+#include "ContactBatch.h"
 
 struct Contact;
 struct QuarterSpace;
 struct Collision
 {
 	Shape *sa, *sb;
-	std::vector<SubCollision> c;
+	std::vector<ContactBackup *> c;
 	Contact **cnts; // Contact *[]
 	CollisionDetector *cd;	 // Specific collision solver
 	Collision *preva,*prevb,*nexta,*nextb;

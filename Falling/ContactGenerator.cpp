@@ -66,27 +66,27 @@ bool QuarterSpace::getSignificantDualQuarterSpace(QuarterSpace *q[4])
 void Contact::updateVelChange(Real t)
 {
     Real vFromAcc = s1->getParent()->getAcc() * t * normal;
-    if(s2nfixed)
-	vFromAcc -= s2nfixed->getParent()->getAcc() * t * normal;
+    if(s2)
+	vFromAcc -= s2->getParent()->getAcc() * t * normal;
     Real fakerest = 0.4;
     if(ABS(closingVelocity.getX()) < 0.1)
     {
-	fakerest = 0;
+		fakerest = 0;
     }
     desiredVelocityChange = -closingVelocity.getX() - fakerest /* restitution */ * (closingVelocity.getX() - vFromAcc);
 }
 
 void Contact::awakeIfNeeded()
 {
-    if(!s2nfixed) return;
+    if(!s2) return;
     bool s1sl = s1->getParent()->isSleeping();
-    bool s2sl = s2nfixed->getParent()->isSleeping();
+    bool s2sl = s2->getParent()->isSleeping();
     if(s1sl || s2sl)
     {
 	if(s1sl) // s2 not sleeping
 	    s1->getParent()->setAwake(true);
 	if(s2sl)
-	    s2nfixed->getParent()->setAwake(true);
+	    s2->getParent()->setAwake(true);
     }
 }
 
@@ -107,41 +107,47 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 	    for(int j=0;j<max;j++)
 	    {
 		// TODO do not make a copy of the SubCollision structure!
-		SubCollision sc = c->c[j];   
 		// end TODO
 		Contact *cnt = new Contact();
+		Point2D absA = c->sa->toGlobal(c->c[j]->relPtA);
+		Point2D absB = c->sb->toGlobal(c->c[j]->relPtB);
 		cnt->s1 = c->sa;
 		cnt->s2 = c->sb;
-		cnt->absoluteContactPoint= Point2D::getMiddle(sc.ptA,sc.ptB);
-		cnt->normal = Vector2D(sc.ptA,sc.ptB);
-		cnt->setPenetration(cnt->normal.normalise() - 2.0 * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
+		cnt->absoluteContactPoint= Point2D::getMiddle(absA, absB);
+		cnt->normal = c->c[j]->normal;
+		cnt->setPenetration(c->c[j]->depth - 2.0 * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
 		if(cnt->s1->isFixed())// || */cnt->s1->getStackLevel() < cnt->s2->getStackLevel())
 		{
-		    if(!cnt->s1->isFixed())
-			cnt->s2nfixed = cnt->s1;
+		    /*if(!cnt->s1->isFixed())
+			cnt->s2 = cnt->s1;
 		    else
-			cnt->s2nfixed = 0;
+			cnt->s2 = 0;
+			*/
 		    cnt->s1 = cnt->s2;
 		    cnt->s2 = 0;
 		    cnt->normal.reflect();
 		}
 		else if(cnt->s2->isFixed())//|| */cnt->s1->getStackLevel() > cnt->s2->getStackLevel())
 		{
+			/*
 		    if(!cnt->s2->isFixed())
-			cnt->s2nfixed = cnt->s2;
+			cnt->s2 = cnt->s2;
 		    else 
-			cnt->s2nfixed = 0;
+			cnt->s2 = 0;
+			*/
 		    cnt->s2 = 0;
 		}
+		/*
 		else
-		    cnt->s2nfixed = cnt->s2;
+		    cnt->s2 = cnt->s2;
+			*/
 		// get tangeant
 		cnt->tangeant = Vector2D(-cnt->normal.getY(),cnt->normal.getX());
 		// now calculate closing velocity
 		cnt->relContactPoint[0] = cnt->s1->toTranslatedInv(cnt->absoluteContactPoint);
-		if(cnt->s2nfixed)
+		if(cnt->s2)
 		    cnt->relContactPoint[1] = 
-			cnt->s2nfixed->toTranslatedInv(cnt->absoluteContactPoint);
+			cnt->s2->toTranslatedInv(cnt->absoluteContactPoint);
 		RigidBody *ra = cnt->s1->getParent();
 		Vector2D lin1 = 
 		    cnt->toLocal(Vector2D(0,0,ra->getOmega()).cross(cnt->relContactPoint[0]) 
@@ -158,9 +164,9 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 		    cnt->lin2 = lin2.magnitude();
 		    cnt->closingVelocity = lin1 - lin2;
 		}
-		else if(cnt->s2nfixed)
+		else if(cnt->s2)
 		{
-		    Real lin2nfixed = (cnt->toLocal(Vector2D(0,0,cnt->s2nfixed->getParent()->getOmega()).cross(cnt->relContactPoint[1]) + cnt->s2nfixed->getParent()->getV())).magnitude();
+		    Real lin2nfixed = (cnt->toLocal(Vector2D(0,0,cnt->s2->getParent()->getOmega()).cross(cnt->relContactPoint[1]) + cnt->s2->getParent()->getV())).magnitude();
 		    cnt->closingVelocity = lin1 - lin2nfixed;
 		}
 		else cnt->closingVelocity = lin1;
@@ -171,14 +177,14 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 		cnt->dvel = cnt->angin[0] + cnt->linin[0];
 		Vector2D dvely = ((cnt->relContactPoint[0] ^ cnt->tangeant) * ra->getInvI())^cnt->relContactPoint[0];
 		cnt->dvely = dvely * cnt->tangeant + ra->getInvM();
-		if(cnt->s2nfixed)
+		if(cnt->s2)
 		{																							 
-		    dvel = ((cnt->relContactPoint[1] ^ cnt->normal) * cnt->s2nfixed->getParent()->getInvI())^cnt->relContactPoint[1];
+		    dvel = ((cnt->relContactPoint[1] ^ cnt->normal) * cnt->s2->getParent()->getInvI())^cnt->relContactPoint[1];
 		    cnt->angin[1] = dvel * cnt->normal;
-		    cnt->linin[1] = cnt->s2nfixed->getParent()->getInvM();							  
+		    cnt->linin[1] = cnt->s2->getParent()->getInvM();							  
 		    cnt->dvel += cnt->angin[1] + cnt->linin[1];
-		    dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * cnt->s2nfixed->getParent()->getInvI())^cnt->relContactPoint[1];
-		    cnt->dvely += dvely * cnt->tangeant + cnt->s2nfixed->getParent()->getInvM();
+		    dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * cnt->s2->getParent()->getInvI())^cnt->relContactPoint[1];
+		    cnt->dvely += dvely * cnt->tangeant + cnt->s2->getParent()->getInvM();
 		}
 		cnt->totalInertia = 1.0 / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.0));
 		cnt->unitlinmov[0] = cnt->linin[0] * cnt->totalInertia;
@@ -250,6 +256,7 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
 
 void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,Real dt)
 {
+	/*
     for(unsigned int i=0; i<collisions.size();i++)
     {
 	Collision *c = collisions[i];
@@ -272,24 +279,24 @@ void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> 
 		cnt->setPenetration(cnt->normal.normalise() -2.0 * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
 		if(cnt->s1->isFixed())
 		{
-		    cnt->s2nfixed = 0;
+		    cnt->s2 = 0;
 		    cnt->s1 = cnt->s2;
 		    cnt->s2 = 0;
 		    cnt->normal.reflect();
 		}
 		else if(cnt->s2->isFixed())
 		{
-		    cnt->s2nfixed = 0;
+		    cnt->s2 = 0;
 		    cnt->s2 = 0;
 		}
 		else
-		    cnt->s2nfixed = cnt->s2;
+		    cnt->s2 = cnt->s2;
 		// get tangeant
 		cnt->tangeant = Vector2D(-cnt->normal.getY(),cnt->normal.getX());
 		// now calculate closing velocity
 		cnt->relContactPoint[0] = cnt->s1->toTranslatedInv(cnt->absoluteContactPoint);
-		if(cnt->s2nfixed)
-		    cnt->relContactPoint[1] = cnt->s2nfixed->toTranslatedInv(cnt->absoluteContactPoint);
+		if(cnt->s2)
+		    cnt->relContactPoint[1] = cnt->s2->toTranslatedInv(cnt->absoluteContactPoint);
 		RigidBody *ra = cnt->s1->getParent();
 		Vector2D lin1 = cnt->toLocal(Vector2D(0,0,ra->getOmega()).cross(cnt->relContactPoint[0]) + ra->getV());
 		Vector2D lin2;
@@ -309,14 +316,14 @@ void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> 
 		cnt->dvel = cnt->angin[0] + cnt->linin[0];
 		Vector2D dvely = ((cnt->relContactPoint[0] ^ cnt->tangeant) * ra->getInvI())^cnt->relContactPoint[0];
 		cnt->dvely = dvely * cnt->tangeant + ra->getInvM();
-		if(cnt->s2nfixed)
+		if(cnt->s2)
 		{																							 
-		    dvel = ((cnt->relContactPoint[1] ^ cnt->normal) * cnt->s2nfixed->getParent()->getInvI())^cnt->relContactPoint[1];
+		    dvel = ((cnt->relContactPoint[1] ^ cnt->normal) * cnt->s2->getParent()->getInvI())^cnt->relContactPoint[1];
 		    cnt->angin[1] = dvel * cnt->normal;
-		    cnt->linin[1] = cnt->s2nfixed->getParent()->getInvM();							  
+		    cnt->linin[1] = cnt->s2->getParent()->getInvM();							  
 		    cnt->dvel += cnt->angin[1] + cnt->linin[1];
-		    dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * cnt->s2nfixed->getParent()->getInvI())^cnt->relContactPoint[1];
-		    cnt->dvely += dvely * cnt->tangeant + cnt->s2nfixed->getParent()->getInvM();
+		    dvely = ((cnt->relContactPoint[1] ^ cnt->tangeant) * cnt->s2->getParent()->getInvI())^cnt->relContactPoint[1];
+		    cnt->dvely += dvely * cnt->tangeant + cnt->s2->getParent()->getInvM();
 		}
 		cnt->totalInertia = 1.0 / (cnt->angin[0] + cnt->linin[0] + (rb?cnt->angin[1] + cnt->linin[1] :0.0));
 		cnt->unitlinmov[0] = cnt->linin[0] * cnt->totalInertia;
@@ -338,4 +345,5 @@ void ContactGenerator::DeduceContactsDatasOldAlgorithm(std::vector<Collision *> 
 	else
 	    c->cnts = 0;
     }
+	*/
 }

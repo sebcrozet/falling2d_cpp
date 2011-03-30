@@ -1,14 +1,37 @@
 #include "stdafx.h"
 #include "InfinitePlane.h"
 
-InfinitePlane::InfinitePlane(Point2D p, Vector2D normal)
+InfinitePlane::InfinitePlane(const Point2D &p, const Vector2D &normal)
 {
+	parent = this;
+	margin = 0.0;
 	pt = p;
 	dir = normal.direction();
 	perpdir = Vector2D(-dir.getY(), dir.getX());
 	spt = p + perpdir;
 	fixedobj = true;
 }
+
+Real InfinitePlane::getBoundingSphereRadius() const
+{
+	return MACHINE_EPSILON / 2;
+}
+Vector2D InfinitePlane::getCenter() const
+{
+	return pt;
+}
+int InfinitePlane::getSupportPoint(const Vector2D &d, Point2D *res) const
+{
+	*res = pt;
+	return 0;
+}
+int InfinitePlane::getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const
+{
+	*res = pt;
+	return 0;
+}
+
+
 int InfinitePlane::getShapeTypeID() const
 { return 100; }
 Real InfinitePlane::getInertiaMomentum(Real) const

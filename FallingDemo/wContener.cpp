@@ -38,6 +38,7 @@ bool wContener::setSize(float w, float h)
 bool wContener::setCoords(float x, float y)
 {
     translate(x - rect.Left, y - rect.Top);
+	return true;
 }
 bool wContener::translate(float x, float y)
 {
@@ -47,6 +48,7 @@ bool wContener::translate(float x, float y)
 	    fils[i]->translate(x, y);
     }
     rect.Offset(x, y);
+	return true;
 }
 
 void wContener::addChild(

@@ -19,7 +19,8 @@ struct MachineState
 	DRAW_POINTS,
 	DRAW_MOVE,
 	DRAW_CIRCLE,
-	DRAW_SQUARE
+	DRAW_SQUARE,
+	DRAW_PLANE
     };
     enum DrawState
     {
@@ -28,7 +29,7 @@ struct MachineState
     };
 
     inline MachineState(sf::RenderWindow &renderWin)
-	: rwin(renderWin), buttonstate(MachineState::DRAW_MOVE)
+	: rwin(renderWin), buttonstate(MachineState::DRAW_MOVE), lbuttondown(false), rbuttondown(false)
     { }
 
 

@@ -5,9 +5,6 @@
 class wLabel : public wWidget
 {
     private:
-	static bool fontinited;
-	static sf::Font f;
-
 	sf::String dTitle;
     public:
 	wLabel(int x, int y, std::string text, int fontSize);

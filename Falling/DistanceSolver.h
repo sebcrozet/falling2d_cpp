@@ -2,6 +2,7 @@
 #include "Shapes.h"
 #include "queue"
 #include "CollisionDetector.h"
+#include "ContactBatch.h"
 #define GJK_DESTROYLIMIT 20
 
 class EPAsolver;
@@ -9,7 +10,7 @@ class GJKsolver : public CollisionDetector
 {
     friend class EPAsolver;
     private:
-    std::vector<SubCollision> cash;
+    ContactBatch cash;
     Real msum, sqmsum;	// margin sum
     Real minbRadius;
     ImplicitShape &A,&B;
@@ -28,7 +29,7 @@ class GJKsolver : public CollisionDetector
     void updateClosestFeatureSimplexDatas(Vector2D &p, Real * barycentricParam);
     bool gjk_buildMarginedSimplexWithOrigin();
 
-    bool _solve(std::vector<SubCollision> &res);
+    bool _solve(std::vector<ContactBackup *> &res);
     inline void swapPts(Vector2D &a, Vector2D &b);
     public:
     GJKsolver(ImplicitShape &a,ImplicitShape &b);

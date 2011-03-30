@@ -13,6 +13,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 	// sort list
 	curr = Collision::inPlaceSortList(curr);
 	Collision *begining = curr;
+	assert(curr->c.size());
 	for(int id = 0;id < maxiter;id++)
 	{
 	    Real trchange[2];
@@ -23,6 +24,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 	    {
 		worst->awakeIfNeeded();
 		applyPositionChangePerLevel(worst,trchange,rchange,implode);
+		bool already = false;
 		// adjust other penetrations
 		if(!worst->s2 || 
 			(implode ? worst->s1->getStackLevel() <= worst->s2->getStackLevel()
@@ -31,6 +33,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 		    // Correct attached nodes
 		    // iterate through graph's edges:
 		    Collision * cl = worst->s1->getCollisionList();
+			assert(cl->nexta == cl->nextb || !cl->nextb);
 		    cl = cl->nexta; // skip sentinel
 		    while(cl->nexta != cl->nextb)	// while other sentinel not reached; do
 		    {
@@ -47,6 +50,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 			    }
 			    else// if(scs[j]->s2 == worst->s1)
 			    {
+					assert(scs[j]->s2 == worst->s1);
 				scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[0])*scs[j]->normal);
 				scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal);
 			    }
@@ -56,16 +60,10 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 				cl->worstPenetrationAmount = scs[j]->getPenetration();
 			    }
 			}		   
-			// TODO: see next TODO
-			Collision *toRemove = cl;
 			if(cl->sa == worst->s1)
 			    cl = cl->nexta;
 			else
 			    cl = cl->nextb;	
-			// TODO: find a better way to do that
-			if(toRemove == curr)
-			    toRemove->removeFromList(); // remove to avoid double correction
-			// end TODO
 		    }
 		}
 		if(worst->s2 &&	(implode ? worst->s1->getStackLevel() >= worst->s2->getStackLevel()
@@ -74,6 +72,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 		    // Correct attached nodes
 		    // iterate through graph's edges:
 		    Collision * cl = worst->s2->getCollisionList();	
+			assert(cl->nexta == cl->nextb || !cl->nextb);
 		    cl = cl->nexta; // skip sentinel
 		    while(cl->nexta != cl->nextb)	// while other sentinel not reached; do
 		    {
@@ -90,6 +89,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 			    }
 			    else// if(scs[j]->s2 == worst->s2)
 			    {
+					assert(scs[j]->s2 == worst->s2);
 				scs[j]->setPenetration(
 					scs[j]->getPenetration() + 
 					(worst->normal*trchange[1])*scs[j]->normal +
@@ -101,20 +101,12 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 				cl->worstPenetrationAmount = scs[j]->getPenetration();
 			    }
 			}		
-			//TODO: see next TODO
-			Collision *toRemove = cl;
 			if(cl->sa == worst->s2)
 			    cl = cl->nexta;
 			else
 			    cl = cl->nextb;
-			// TODO: find a better way to do that
-			if(toRemove == curr)
-			   toRemove->removeFromList(); // remove to avoid double correction
-			// end TODO				   
 		    }	     
 		}
-		// TODO: reinsert in graph
-		curr->autoInsert();
 		// sort list again
 		curr = Collision::inPlaceSortList(begining);
 		begining = curr;
@@ -138,7 +130,7 @@ void PenetrationSolver::solveRelax(std::vector<Contact *> &scs, Real relaxRate)
 	Contact *worst = 0;
 	for(unsigned int ji=0;ji<scs.size();ji++)
 	{
-	    if(scs[ji]->getPenetration() < 0.01)
+	    if(scs[ji]->getPenetration() < 0.00)
 		continue;
 	    worst = scs[ji];
 	    worst->awakeIfNeeded();

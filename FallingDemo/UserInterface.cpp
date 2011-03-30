@@ -39,6 +39,8 @@ void changeDrawMode(int id, void *userdata)
 	((MachineState *)userdata)->buttonstate = MachineState::DRAW_SQUARE;
     else if(id == 1008)
 	((MachineState *)userdata)->buttonstate = MachineState::JOINT_FIX;
+	else if(id == 1009)
+		((MachineState *)userdata)->buttonstate = MachineState::DRAW_PLANE;
 }
 void initParseMenuCallback(void *userdata, wMenuItem *mi)
 {
@@ -59,7 +61,7 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
 	mi->setOnItemClicked(switchFlagOn);
 	mi->setOnItemReleased(switchFlagOff);
     }
-    else if(mi->getId() >= 1004 && mi->getId() <= 1008)
+    else if(mi->getId() >= 1004 && mi->getId() <= 1009)
     {
 	mi->setUserDatas(userdata);
 	mi->setOnItemClicked(changeDrawMode);
@@ -87,6 +89,7 @@ UserInterface::UserInterface(MachineState &ms)
 	    ";_?_A_1005 LYPTS\n"
 	    ";_?_A_1006 CI\n"
 	    ";_?_A_1007 RE\n"
+		":_?_A_1009 Plane\n"
 	    ":_?_A_1008 Fix\n"
 	    ";_=_ SE\n"
 	    ":_=_ Falling Demo v0.0\n"

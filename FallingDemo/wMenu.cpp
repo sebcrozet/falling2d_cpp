@@ -75,6 +75,7 @@ bool wMenuItem::setSize(float w, float h)
 {
     wContener::setSize(w, h);
     updateSubMenuLocation();
+	return true;
 }
 
 bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)

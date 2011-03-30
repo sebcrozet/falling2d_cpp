@@ -32,7 +32,7 @@ Collision::Collision(Shape *s, Shape *s2)
     else if(idsum > 10)
     {
 	// plane-shape
-	if(s->getShapeTypeID() == 10)
+	if(s->getShapeTypeID() == 100)
 	{
 	    cd = new PlaneShapeSolver((InfinitePlane *)s, (Shape *)s2);
 	    sa = s;
@@ -62,6 +62,7 @@ Collision::~Collision()
 
 void Collision::removeFromList()
 {
+	bool sentinel = (preva->nexta == preva->nextb || !preva->nextb);
     assert(preva->sa == sa || preva->sb == sa);
     assert(nexta->sa == sa || nexta->sb == sa);
     assert(prevb->sa == sb || prevb->sb == sb);
@@ -86,6 +87,8 @@ void Collision::removeFromList()
     else
 	nextb->prevb = prevb;
 
+	if(sentinel)
+		assert(preva->nexta == preva->nextb || !preva->nextb);
     // TODO: remove: Useless but OK for debug purpoise
     preva =0;
     prevb = 0;
@@ -94,33 +97,34 @@ void Collision::removeFromList()
 }
 void Collision::autoInsert()
 {
-    // TODO: remove: validity test
-    if(preva != 0)
-	while(true) printf("ERROR: autoInsert() check."); // error...
-    // end TODO
+    assert(preva == 0);
     Collision *ca = sa->getCollisionList();
     Collision *cb = sb->getCollisionList();
+	assert(ca->nexta == ca->nextb || !ca->nextb);
+	assert(cb->nexta == cb->nextb || !cb->nextb);
+	assert(ca->sa == ca->sb);
+	assert(cb->sa == cb->sb);
     preva = ca;
     prevb = cb;
 
     if(sa == ca->sa)
     {
 	nexta = ca->nexta;
-	if(ca->nexta->sa == sa)
-	    ca->nexta->preva = this;
+	if(nexta->sa == sa)
+	    nexta->preva = this;
 	else
-	    ca->nexta->prevb = this;
+		nexta->prevb = this;
 	ca->nexta = this;
     }
     else
     {
 	nexta = ca->nextb;
-	if(ca->nextb->sa == sa)
-	    ca->nextb->preva = this;
+	if(nexta->sa == sa)
+	    nexta->preva = this;
 	else
-	    ca->nextb->prevb = this;
+	    nexta->prevb = this;
 	ca->nextb = this;
-    }
+    } 
     // Insert in b list
     if(sb == cb->sa)
     {
@@ -139,11 +143,14 @@ void Collision::autoInsert()
 	else
 	    cb->nextb->prevb = this;
 	cb->nextb = this;
-    }
+    } 
+	assert(!ca->nextb);
+	assert(!cb->nextb);
 }
 
 void Collision::insertInLevel(Collision *c)
 {
+	//assert(!nextlvlptr && !prevlvlptr);
     nextlvlptr = c->nextlvlptr;
     prevlvlptr = c;
     c->nextlvlptr = this;
@@ -156,6 +163,15 @@ Collision *Collision::inPlaceSortList(Collision *lbegin)
     Collision *curr = lbegin->nextlvlptr;   // begin with the second element
     Collision *next = curr; // save next element
     Collision *res = lbegin;
+	while(curr != lbegin)
+	{
+		if(curr->worstPenetrationAmount > res->worstPenetrationAmount)
+			res = curr;
+		curr = curr->nextlvlptr;
+	}
+	assert(res->worstPenetrationAmount < 1000);
+
+	return res;
     // for all, do:
     while(curr != lend) // lend is a spetial case (handled separately)
     {
@@ -244,22 +260,22 @@ void CollisionArbiter::deleteP(Pair &p)
 
 void CollisionArbiter::addP(Pair *p, Shape *s, Shape *s2)
 {
-    if(p->e)
-    {
-	if(((Collision *)p->e)->cd->getIsInactive())
-	    ((Collision *)p->e)->cd->setInactive(false); // mark as active
+	if(p->e)
+	{
+		if(((Collision *)p->e)->cd->getIsInactive())
+			((Collision *)p->e)->cd->setInactive(false); // mark as active
+		else
+			return; // avoid redundency in collision deletion
+	}
 	else
-	    return; // avoid redundency in collision deletion
-    }
-    else
-	p->e = new Collision(s, s2);
-    ((Collision *)p->e)->autoInsert(); // Auto instert in collision graph
+		p->e = new Collision(s, s2);
+	((Collision *)p->e)->autoInsert(); // Auto instert in collision graph
 }
 
 void CollisionArbiter::addObject(Shape *s)
 {
-    // Prepare object's collision list sentinels
-    Collision *head = new Collision(s);
+	// Prepare object's collision list sentinels
+	Collision *head = new Collision(s);
     Collision *tail = new Collision(s);
     head->nexta = tail;
     tail->preva = head;

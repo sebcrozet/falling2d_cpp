@@ -7,7 +7,7 @@ DiskDiskSolver::DiskDiskSolver(Disk *d1, Disk *d2) : d1(d1), d2(d2)
 bool DiskDiskSolver::canDestroy()
 { return true; }
 
-bool DiskDiskSolver::_solve(std::vector<SubCollision> &resl)
+bool DiskDiskSolver::_solve(std::vector<ContactBackup *> &resl)
 {
 	// ignore OBB tree, direct result is available
 	Vector2D p1 = d1->getCenter(), p2 = d2->getCenter();
@@ -27,7 +27,8 @@ bool DiskDiskSolver::_solve(std::vector<SubCollision> &resl)
 		Point2D ptA = Point2D(res.getX(), res.getY());	
 		res = p2 - (dp * r2);		   
 		Point2D ptB = Point2D(res.getX(), res.getY());
-		resl.push_back(SubCollision(ptA, ptB));
+		lastBackup.setDatas(ptA, ptB, d1, d2);
+		resl.push_back(&lastBackup);
 		return false;
 	}		 	
 }

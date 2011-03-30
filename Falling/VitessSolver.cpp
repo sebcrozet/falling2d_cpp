@@ -11,14 +11,11 @@ void VitessSolver::integrate(std::vector<RigidBody*> r,Real dt)
 		{
 			//rb->updateSleepState(dt); 
 			//rb->getV().print();
-			rb->multV(pow(0.995,dt));
-			rb->multO(pow(0.995,dt));
+			rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt+Vector2D(0, 0.5*G*dt*dt));
+			rb->multV(0.998);
 			rb->addV(Vector2D(0,G*dt,0));
-			rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt);
 			rb->setDeltaTeta(-PIX_PER_METTER*rb->getOmega()*dt);
 			rb->setTeta(rb->getTeta()+rb->getDeltaTeta());
-			rb->multV(pow(0.995,dt));
-			rb->multO(pow(0.995,dt));
 		}
 	}
 }

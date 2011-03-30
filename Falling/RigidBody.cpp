@@ -20,7 +20,7 @@ void RigidBody::updateSleepState(Real dt)
 {
 	// detect low velocities
 	Real currm = v * v + omega * omega;
-	Real bias = pow(BIAS,dt);
+	Real bias = POW(BIAS,dt);
 	bool movstab = updateMovementStabilisationState();
 	movment = (bias*movment) + (1-bias) * currm;
 	if(movment > 10.0*SLEEPLIMIT)
@@ -90,6 +90,15 @@ void RigidBody::setAwake(bool awake)
 		v.setY(0);
 		omega = 0;
 	}
+}
+
+RigidBody *RigidBody::build_planarBody(
+	const Point2D &origin,
+	const Vector2D &normal
+	)
+{
+	InfinitePlane *ip = new InfinitePlane(origin, normal);
+	return new RigidBody(ip, ip->getSurface(), origin);
 }
 
 RigidBody *RigidBody::build_polygonalBody(

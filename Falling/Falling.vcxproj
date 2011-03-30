@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ContactBatch.cpp" />
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -138,6 +139,7 @@
     <ClCompile Include="VitessSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ContactBatch.h" />
     <ClInclude Include="Falling.h" />
     <ClInclude Include="floatTests.h" />
     <ClInclude Include="RigidBody.h" />

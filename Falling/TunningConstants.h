@@ -40,7 +40,7 @@
 #include <algorithm>
 #include <float.h>
 // Define Floating point accuracy
-//#define DOUBLE
+#define DOUBLE
 #ifdef DOUBLE
 #	define Real double
 #	define MACHINE_EPSILON DBL_EPSILON
@@ -49,6 +49,7 @@
 #	define MAX(a,b) std::max((a),(b))
 #	define MIN(a,b) std::min((a),(b))
 #	define ABS(a) std::abs((a))
+#	define POW(a,b) (pow((a), (b)))
 #else
 #	define Real float
 #	define MACHINE_EPSILON FLT_EPSILON
@@ -57,13 +58,14 @@
 #	define MAX(a,b) ((float)std::max((float)(a),(float)(b)))
 #	define MIN(a,b) ((float)std::min((float)(a),(float)(b)))
 #	define ABS(a) ((float)std::abs((float)(a)))
+#	define POW(a,b) ((float)pow((float)(a), (float)(b)))
 #endif
 // Define comparaison functions
 
 #define G (10.0 * 9.81)
 #define PIX_PER_METTER 1.0
 #define POINT_EQUALS_ERROR (MACHINE_EPSILON)
-#define PROXIMITY_AWARENESS 1.0
+#define PROXIMITY_AWARENESS 8.0
 //
 #define Falling_CONFIG
 #endif

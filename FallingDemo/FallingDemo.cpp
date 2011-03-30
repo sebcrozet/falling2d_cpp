@@ -29,10 +29,10 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void mouseMoved(MachineState &ms, float x, float y)
+void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
 {
     if(ms.rbuttondown)
-	ms.rwin.GetDefaultView().Move(ms.oldx - x, ms.oldy - y);
+	ms.rwin.GetDefaultView().Move(ms.oldx - realx, ms.oldy - realy);
     else 
     {
 	switch(ms.buttonstate)
@@ -59,6 +59,7 @@ void mouseMoved(MachineState &ms, float x, float y)
 		}
 		break;
 	    case MachineState::DRAW_CIRCLE:
+		case MachineState::DRAW_PLANE:
 	    case MachineState::DRAW_SQUARE:
 		/*if(ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Left)
 		  || ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Right))
@@ -73,20 +74,17 @@ void mouseMoved(MachineState &ms, float x, float y)
 		break;
 	}
     }
-    ms.oldx = x;
-    ms.oldy = y;
 }
 
 void mousePushed(MachineState &ms, float x, float y)
 {
-    ms.oldx = x;
-    ms.oldy = y;
     if(ms.lbuttondown)
     {
 	switch(ms.buttonstate)
 	{
 	    case MachineState::DRAW_MOVE:
-	    case MachineState::DRAW_CIRCLE:
+    	case MachineState::DRAW_CIRCLE:
+    	case MachineState::DRAW_PLANE:
 	    case MachineState::DRAW_SQUARE:
 		ms.vpts.clear();
 		// then add point
@@ -118,58 +116,69 @@ void makePolyFromvptsList(MachineState &ms)
 		    n,
 		    false,
 		    ms.w,
-		    false));
+			pObject::O_POLY));
     }
     ms.vpts.clear();
 }
 
 void mouseReleased(MachineState &ms, float x, float y)
 {
-    ms.oldx = x;
-    ms.oldy = y;
     int n;
     Point2D *pts;
     Point2D ul;
     Point2D dr;
-    if(ms.lbuttondown)
-    {
-	switch(ms.buttonstate)
+	if(ms.lbuttondown)
 	{
-	    case MachineState::DRAW_POINTS:
-		// nothing to do...
-		break;
-	    case MachineState::DRAW_SQUARE:
-	    case MachineState::DRAW_MOVE:
-		if(ms.buttonstate == MachineState::DRAW_MOVE)
-		    ms.vpts.push_back(Point2D(x/SCALE,y/SCALE));
-		else
+		switch(ms.buttonstate)
 		{
-		    // create a rectangle adding the two missing points
-		    ul = ms.vpts[0];
-		    dr = ms.vpts[1];
-		    ms.vpts.clear();
-		    ms.vpts.push_back(ul);
-		    ms.vpts.push_back(Point2D(ul.getX(), dr.getY()));
-		    ms.vpts.push_back(dr);
-		    ms.vpts.push_back(Point2D(dr.getX(), ul.getY()));
+		case MachineState::DRAW_POINTS:
+			// nothing to do...
+			break;
+		case MachineState::DRAW_SQUARE:
+		case MachineState::DRAW_MOVE:
+			if(ms.buttonstate == MachineState::DRAW_MOVE)
+				ms.vpts.push_back(Point2D(x/SCALE,y/SCALE));
+			else
+			{
+				// create a rectangle adding the two missing points
+				ul = ms.vpts[0];
+				dr = ms.vpts[1];
+				ms.vpts.clear();
+				ms.vpts.push_back(ul);
+				ms.vpts.push_back(Point2D(ul.getX(), dr.getY()));
+				ms.vpts.push_back(dr);
+				ms.vpts.push_back(Point2D(dr.getX(), ul.getY()));
+			}
+			makePolyFromvptsList(ms);
+			break;
+		case MachineState::DRAW_CIRCLE:
+			// create circle
+			ms.objs.push_back(
+				new pObject(
+				0,
+				Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
+				false,
+				ms.w,
+				pObject::O_CIRCLE,
+				ms.vpts[0])
+				);
+			ms.vpts.clear();
+			break;
+		case MachineState::DRAW_PLANE:
+			Point2D *optvect = new Point2D(ms.vpts[1]);
+			ms.objs.push_back(
+				new pObject(
+				optvect,
+				1,
+				true,
+				ms.w,
+				pObject::O_PLANE,
+				ms.vpts[0])
+				);
+			delete optvect;
+			break;
 		}
-		makePolyFromvptsList(ms);
-		break;
-	    case MachineState::DRAW_CIRCLE:
-		// create circle
-		ms.objs.push_back(
-			new pObject(
-			    0,
-			    Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
-			    false,
-			    ms.w,
-			    true,
-			    ms.vpts[0])
-			);
-		ms.vpts.clear();
-		break;
 	}
-    }
 }
 
 void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
@@ -209,6 +218,8 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
 		    MAX(ev.MouseButton.X,0), 
 		    MAX(ev.MouseButton.Y,0), 
 		    &ms.rwin.GetDefaultView());
+	ms.oldx = ev.MouseButton.X;
+	ms.oldy = ev.MouseButton.Y;
 	mousePushed(ms, pos.x, pos.y);
     }
     else if(ev.Type == sf::Event::MouseMoved)
@@ -221,7 +232,9 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
 		    MAX(ev.MouseMove.Y,0), 
 		    &ms.rwin.GetDefaultView()
 		    );
-	mouseMoved(ms, pos.x, pos.y);
+	mouseMoved(ms, pos.x, pos.y, ev.MouseMove.X, ev.MouseMove.Y);
+	ms.oldx = ev.MouseMove.X;
+	ms.oldy = ev.MouseMove.Y;
     }
     else if(ev.Type == sf::Event::KeyPressed)
     {
@@ -352,6 +365,15 @@ void drawDrawingShape(MachineState &ms, UserInterface &ui)
 			ms.vpts[1].getY(),
 			sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
 	    break;
+	case MachineState::DRAW_PLANE:
+		ms.rwin.Draw(sf::Shape::Line(
+			ms.vpts[0].getX(),
+			ms.vpts[0].getY(),
+			ms.vpts[1].getX(),
+			ms.vpts[1].getY(),
+			2,
+			sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
+		break;
     }
 }
 

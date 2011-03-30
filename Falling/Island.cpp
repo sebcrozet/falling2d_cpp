@@ -13,7 +13,9 @@ void Island::pushToLevelOneChain(Collision *next)
 	stackLevels.push_back(next);
     }
     else
+	{
 	next->insertInLevel(stackLevels[stackLevels.size()-1]);
+	}
 }
 
 void Island::calculateStackLevels()
@@ -125,12 +127,13 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
     bool insertToOneLevel = false;
     next = coll->getCollisionList();
     //if(next->sa == coll) ==> always true in the first sentinel
+	assert(next->sa == next->sb);
     next = next->nexta;
     while(next->sa != next->sb) // second sentinel reached if ==
     {
 	if(next->sa == coll)
 	{
-	    // go on next node
+	    // go on next's node
 	    if(next->c.size())
 	    {
 		if(next->sb->isFixed())
@@ -200,6 +203,8 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
 	c->collisionStackLevel = -1;
 	c->sa->setStackLevel(-1);
 	c->sb->setStackLevel(-1);
+	//c->nextlvlptr = 0;
+	//c->prevlvlptr = 0;
     }
     // Make a depth first research
     for(unsigned int i=0;i<colls.size();i++)

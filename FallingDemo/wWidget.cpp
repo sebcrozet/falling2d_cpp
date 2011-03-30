@@ -35,6 +35,7 @@ bool wWidget::setRect(float x, float y, float w, float h)
 {
     setCoords(x,y);
     setSize(w, h);
+	return true;
 }
 bool wWidget::translate(float x, float y)
 { 

@@ -1,19 +1,10 @@
 #include "stdafx.h"
 #include "wLabel.h"
 
-sf::Font wLabel::f = sf::Font();
-bool wLabel::fontinited = false;
-
-
 wLabel::wLabel(int x, int y, std::string text, int fontSize)
     : wWidget(x, y, 0,0 , true, -2)
 {
-    if(!wLabel::fontinited)
-    {
-	wLabel::fontinited = true;
-	wLabel::f.LoadFromFile("Inconsolata.otf", fontSize);
-    }
-    dTitle = sf::String(text, wLabel::f, fontSize); 
+	dTitle = sf::String(text, sf::Font::GetDefaultFont(), fontSize); 
     dTitle.SetX(x);
     dTitle.SetY(y);
     wWidget::setSize(dTitle.GetRect().GetWidth(), dTitle.GetRect().GetHeight() + 2);

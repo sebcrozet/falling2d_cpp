@@ -56,10 +56,10 @@ void World::solve(Real dt)
 {
     // add and remove objects now
     // TODO : uncomment the Sleep function
-    //checkSleeps(dt);
     dumpAddDelete();
     if(paused)
 	return;
+    //checkSleeps(dt);
     VitessSolver::integrate(objs,dt);
     // solve distances (collision detection)
     std::vector<Collision *> colls;
@@ -92,7 +92,7 @@ void World::solve(Real dt)
 		    if(basecoeff < 2)
 			basecoeff = 2;
 		    //PenetrationSolver::solve(ctcts);
-		    //PenetrationSolver::solve(isls2.top(), true, (5-i) / 2);//*basecoeff/2);
+		    PenetrationSolver::solve(isls2.top(), true, (5-i) / 2);//*basecoeff/2);
 		    // stack explosion
 		    PenetrationSolver::solve(isls2.top(), false, i);//basecoeff);
 		}

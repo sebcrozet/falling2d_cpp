@@ -3,7 +3,12 @@
 
 void ImpulseSolver::solve(std::vector<Contact *> &scs,Real dt)
 {
-    for(unsigned int i = 0;i < scs.size()*10;i++)
+	/*
+	printf("%i \n",scs.size());
+	for(unsigned int j = 0; j<scs.size(); j++)
+		printf(">> %f\n", scs[j]->getPenetration());
+		*/
+    for(unsigned int i = 0;i < scs.size()*100;i++)
     {
 	Vector2D rch[2];
 	Vector2D vch[2];
@@ -11,7 +16,7 @@ void ImpulseSolver::solve(std::vector<Contact *> &scs,Real dt)
 	Real worstV = 0.01;
 	for(unsigned int j=0;j<scs.size();j++)
 	{
-	    if(scs[j]->getPenetration() > -0.001 && scs[j]->desiredVelocityChange > worstV)
+		if(scs[j]->getPenetration() > -Float::sqFloatEps && scs[j]->desiredVelocityChange > worstV)
 	    {   
 		worstV = scs[j]->desiredVelocityChange;
 		worst = scs[j];
@@ -32,23 +37,23 @@ void ImpulseSolver::solve(std::vector<Contact *> &scs,Real dt)
 		    scs[j]->closingVelocity = scs[j]->closingVelocity + scs[j]->toLocal(cp);
 		    scs[j]->updateVelChange(dt);
 		}
-		else if(scs[j]->s2nfixed == worst->s1)
+		else if(scs[j]->s2 == worst->s1)
 		{
 		    cp = rch[0] ^ scs[j]->relContactPoint[1];
 		    cp = cp + vch[0];
 		    scs[j]->closingVelocity = scs[j]->closingVelocity - scs[j]->toLocal(cp);
 		    scs[j]->updateVelChange(dt);
 		}
-		if(worst->s2nfixed)
+		if(worst->s2)
 		{
-		    if(scs[j]->s1 == worst->s2nfixed)
+		    if(scs[j]->s1 == worst->s2)
 		    {
 			cp = rch[1] ^ scs[j]->relContactPoint[0];
 			cp = cp + vch[1];
 			scs[j]->closingVelocity = scs[j]->closingVelocity + scs[j]->toLocal(cp);
 			scs[j]->updateVelChange(dt);
 		    }
-		    else if(scs[j]->s2nfixed == worst->s2nfixed)
+		    else if(scs[j]->s2 == worst->s2)
 		    {
 			cp = rch[1] ^ scs[j]->relContactPoint[1];
 			cp = cp + vch[1];
@@ -65,17 +70,21 @@ void ImpulseSolver::solve(std::vector<Contact *> &scs,Real dt)
 
 void ImpulseSolver::applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch)
 {
-    Vector2D impulse = c->toGlobal(Vector2D(c->desiredVelocityChange/(c->dvel),-(0.5*c->closingVelocity.getY())/(c->dvely),0));
+	float ximp =c->desiredVelocityChange/(c->dvel);
+	float yimp = -c->closingVelocity.getY() / c->dvely;
+	if(ABS(yimp) > ABS(ximp) * 0.7)
+		yimp = (yimp < 0 ? -0.7:0.7)*ximp;
+	Vector2D impulse = c->toGlobal(Vector2D(ximp,yimp,0));
     vch[0] = (impulse) * c->s1->getParent()->getInvM();
     rch[0] = ((c->relContactPoint[0] ^ impulse) * c->s1->getParent()->getInvI()); 
     c->s1->getParent()->addV(vch[0]);
     c->s1->getParent()->addRV(rch[0].getZ());
-    if(c->s2nfixed)
+    if(c->s2)
     {
-	vch[1] = impulse * (- c->s2nfixed->getParent()->getInvM());
-	rch[1] = (c->relContactPoint[1] ^ impulse) * -(c->s2nfixed->getParent()->getInvI()); 
-	c->s2nfixed->getParent()->addV(vch[1]);
-	c->s2nfixed->getParent()->addRV(rch[1].getZ());
+	vch[1] = impulse * (- c->s2->getParent()->getInvM());
+	rch[1] = (c->relContactPoint[1] ^ impulse) * -(c->s2->getParent()->getInvI()); 
+	c->s2->getParent()->addV(vch[1]);
+	c->s2->getParent()->addRV(rch[1].getZ());
     }
 }
 

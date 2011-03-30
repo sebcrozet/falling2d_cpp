@@ -42,7 +42,7 @@ class wWidget
 	{ return isVisible; }
 	inline int getZOrder() const
 	{ return zOrder; }
-	inline int setId(int nid)
+	inline void setId(int nid)
 	{ id = nid; }
 
 	inline void setVisible(bool visible)

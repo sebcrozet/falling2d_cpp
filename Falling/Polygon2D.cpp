@@ -921,14 +921,14 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
 	Real minTeta = 90;
 	for(int i=0; i<4; i++)
 	{
-	    while (t_teta[i] < 0.0000000001)
+	    while (Float::negativeOrZero(t_teta[i]))
 	    {
 		t_p[i] = tmod(t_p[i] + 1,nbrPts);
 		int id = t_p[i];
 		Vector2D vc = Vector2D(pts[id],pts[tmod(id+1,nbrPts)]);
 		t_teta[i] = acos(vc.dot(calipers[i])/vc.magnitude());
 		// TODO: remove test
-		if(t_teta[i] < 0.0000000001)
+		if(Float::negativeOrZero(t_teta[i]))
 		    printf("mhhhh");
 		// end todo
 	    }

@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 //#pragma region GJKsolver
-GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) : A(a), B(b), simplexSize(0)
+GJKsolver::GJKsolver(ImplicitShape &a, ImplicitShape &b) 
+	: cash(a, b), A(a), B(b), simplexSize(0)
 {
     satlastdir = b.getCenter() - a.getCenter();
     simplexSize = 1;
@@ -26,44 +27,19 @@ bool GJKsolver::canDestroy()
     return (v * v > rr * rr);
 }
 
-bool GJKsolver::_solve(std::vector<SubCollision> &res)
+bool GJKsolver::_solve(std::vector<ContactBackup *> &res)
 {
     Point2D pa, pb;
     if(getPenDepth(&pa, &pb) != 0)
     {
-	res.push_back(SubCollision(pa, pb));
-	// add cashed infos
-	for(int i = 0; i < (int)cash.size(); i++)
-	{
-	    Point2D ca = A.toGlobal(cash[i].ptA);
-	    Point2D cb = B.toGlobal(cash[i].ptB);
-	    if(Vector2D(ca, cb) * Vector2D(ca, cb) > minbRadius)
-	    {
-		cash[i] = cash[cash.size() - 1];
-		cash.pop_back();
-		i--;
-	    }
-	    else
-		res.push_back(SubCollision(ca, cb));
+		cash.addContact(SubCollision(pa, pb));
+		int n = cash.getNbrContacts();
+		for(int i = 0; i < n; i++)
+			res.push_back(cash.getContacts(i));
+		return false;
 	}
-	// update cash
-	Point2D nca = A.toLocal(pa);
-	Point2D ncb = B.toLocal(pb);
-	unsigned int i = 0;
-	for(; i < cash.size(); i++)
-	{
-	    // TODO: find a better way to do that
-	    if(Vector2D(nca, cash[i].ptA) * Vector2D(nca, cash[i].ptA) < minbRadius / 10.0)
-		break;
-	    if(Vector2D(ncb, cash[i].ptB) * Vector2D(ncb, cash[i].ptB) < minbRadius / 10.0)
-		break;
-	}
-	if(i == cash.size())
-	    cash.push_back(SubCollision(nca, ncb));
-	return false;
-    }
     else 
-	cash.clear();
+		cash.eraseCashedContacts();
     return canDestroy();
 }
 
@@ -625,7 +601,7 @@ Vector2D EPAsolver::getPenetrationDepth(Point2D *pA, Point2D *pB)
 	    gsolv.A.getMarginedSupportPoint(np, &pa);							 
 	    gsolv.B.getMarginedSupportPoint(np.reflexion(), &pb);
 	    pc = pa - pb;
-	    if(pc.errorEquals(lastpc1) || pc.errorEquals(lastpc2) || loop>20)
+	    if(pc.errorEquals(lastpc1) || pc.errorEquals(lastpc2))
 		break; // EPA wont converge due to imprecision (will always return the same support point). So exit with current approximation!
 	    lastpc1 = lastpc2;
 	    lastpc2 = pc;

@@ -26,7 +26,7 @@ bool GenericSolver::canDestroy()
     return pm.getNbActivePairs() == 0; // no valid cash datas
 } 
 
-bool GenericSolver::_solve(std::vector<SubCollision> &res)
+bool GenericSolver::_solve(std::vector<ContactBackup *> &res)
 {
     std::vector<OBBIntersection *> oi;
     OBBtree::traverseTree(s1->getOtree(), s2->getOtree(), oi);

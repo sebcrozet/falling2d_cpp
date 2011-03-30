@@ -25,12 +25,12 @@ bool PlaneShapeSolver::canDestroy()
 	return pm.getNbActivePairs() == 0; // no valid cash datas
 }
 
-bool PlaneShapeSolver::_solve(std::vector<SubCollision> &res)
+bool PlaneShapeSolver::_solve(std::vector<ContactBackup *> &res)
 {
 	std::vector<OBB *> oi;
 	traverseTree(s->getOtree(),  oi);
-	int s = (int)oi.size();
-	for(int i = 0; i < s; i++)
+	int size = (int)oi.size();
+	for(int i = 0; i < size; i++)
 	{
 		OBB *oin = oi[i];
 		Pair* p = pm.addPair(oin->getID(), 0);
@@ -59,7 +59,7 @@ bool PlaneShapeSolver::_solve(std::vector<SubCollision> &res)
 	return pm.getNbActivePairs() == 0;
 }
 
-void PlaneShapeSolver::traverseTree(OBBtree *a, std::vector<OBB *>res)
+void PlaneShapeSolver::traverseTree(OBBtree *a, std::vector<OBB *> &res)
 {	
 	std::stack<OBBtree *> s;
 
@@ -93,13 +93,15 @@ bool PlaneImplicitShapeDistanceSolver::canDestroy()
 	return p.sqDistToPlane(Point2D(is.getCenter()) - is.getBoundingSphereRadius()) > PS_DESTROYLIMIT;
 }
 
-bool PlaneImplicitShapeDistanceSolver::_solve(std::vector<SubCollision> &res)
+bool PlaneImplicitShapeDistanceSolver::_solve(std::vector<ContactBackup *> &res)
 {
 	Point2D ppt;
-	optid = is.getSupportPoint(p.getNormal().reflexion(), &ppt, optid);
+	optid = is.getMarginedSupportPoint(p.getNormal().reflexion(), &ppt, optid);
 	if(p.isInSolidHalfSpace(ppt))
 	{
-		res.push_back(SubCollision(p.getProjectedPt(ppt), ppt));
+		// TODO: inherite also from Implicit Shape
+		lastContactDatas.setDatas(p.getProjectedPt(ppt), ppt, &p, &is);
+		res.push_back(&lastContactDatas);
 		return false;
 	}
 	return canDestroy();
