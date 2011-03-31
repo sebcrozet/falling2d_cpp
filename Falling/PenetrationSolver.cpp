@@ -24,7 +24,6 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
 	    {
 		worst->awakeIfNeeded();
 		applyPositionChangePerLevel(worst,trchange,rchange,implode);
-		bool already = false;
 		// adjust other penetrations
 		if(!worst->s2 || 
 			(implode ? worst->s1->getStackLevel() <= worst->s2->getStackLevel()

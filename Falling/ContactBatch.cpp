@@ -11,7 +11,7 @@ void ContactBatch::eraseCashedContacts()
 	scol.clear();
 }
 
-void ContactBatch::addContact(SubCollision &lastDeepestPen)
+void ContactBatch::addContact(const SubCollision &lastDeepestPen)
 {
 	
 		bool pushNewContact = true;

@@ -20,12 +20,12 @@ Vector2D InfinitePlane::getCenter() const
 {
 	return pt;
 }
-int InfinitePlane::getSupportPoint(const Vector2D &d, Point2D *res) const
+int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res) const
 {
 	*res = pt;
 	return 0;
 }
-int InfinitePlane::getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const
+int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res, int) const
 {
 	*res = pt;
 	return 0;

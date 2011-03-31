@@ -9,20 +9,30 @@
 typedef struct ContactBackup ContactBackup;
 struct ContactBackup
 {
-	Vector2D normal;
 	Point2D relPtA;
 	Point2D relPtB;	
 	Real depth;
+	Vector2D normal;
 
 	inline ContactBackup()
-		: normal(Vector2D()), relPtA(Point2D()), relPtB(Point2D()), depth(0)
+		:relPtA(Point2D()), relPtB(Point2D()), depth(0), normal(Vector2D())
 	{ }
-	inline ContactBackup(const Point2D &pa, const Point2D &pb, ImplicitShape *A, ImplicitShape *B)
+	inline ContactBackup(
+		const Point2D &pa, 
+		const Point2D &pb, 
+		ImplicitShape *A, 
+		ImplicitShape *B
+		)
 	{
 		setDatas(pa, pb, A, B);
 	}
 
-	inline void setDatas(const Point2D &pa, const Point2D &pb, ImplicitShape *A, ImplicitShape *B)
+	inline void setDatas(
+		const Point2D &pa, 
+		const Point2D &pb, 
+		ImplicitShape *A, 
+		ImplicitShape *B
+		)
 	{
 		normal = Vector2D(pa, pb);
 		depth = normal.normalise();
@@ -30,8 +40,15 @@ struct ContactBackup
 		relPtB = B->toLocal(pb);
 	}
 	
-	inline ContactBackup(const Point2D &pa, const Point2D &pb, const Vector2D &n, Real depth)
-		: relPtA(pa), relPtB(pb), depth(depth), normal(n)
+	inline ContactBackup(
+		const Point2D &pa, 
+		const Point2D &pb, 
+		const Vector2D &n, 
+		Real depth)
+		: relPtA(pa), 
+		  relPtB(pb), 
+		  depth(depth), 
+		  normal(n)
 	{ }
 };
 
@@ -46,7 +63,7 @@ public:
 		: A(A), B(B)
 	{ }
 	~ContactBatch();
-	void addContact(SubCollision &lastDeepestColl);
+	void addContact(const SubCollision &lastDeepestColl);
 	void eraseCashedContacts();
 
 	inline int getNbrContacts() const
