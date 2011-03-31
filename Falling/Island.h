@@ -4,24 +4,28 @@
 class PenetrationSolver;
 class Island
 {
-	friend class PenetrationSolver;
+  friend class PenetrationSolver;
 private:
-	std::vector<Collision *> stackLevels;
-	std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
+  std::vector<Collision *> stackLevels;
+  std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
 
-	static void batchIsland(Island *isl,Shape *coll); // recursive call
+  static void batchIsland(Island *isl,Shape *coll); // recursive call
 public:
-	Island();
-	void calculateStackLevels();
-	void pushToLevelOneChain(Collision *c);
-	inline void insertToLevelOne(Shape *c);
-	inline bool isEmpty();
+  Island();
+  void calculateStackLevels();
+  void pushToLevelOneChain(Collision *c);
+  inline void insertToLevelOne(Shape *c);
+  inline bool isEmpty();
 
-	static void batchIslands(std::vector<Collision *> &colls,std::stack<Island *> &islands);
+  static void batchIslands(std::vector<Collision *> &colls,std::stack<Island *> &islands);
 };
 inline void Island::insertToLevelOne(Shape *c)
-{ graphNodes.push(c); }
+{
+  graphNodes.push(c);
+}
 inline bool Island::isEmpty()
-{ return graphNodes.empty() ;}
+{
+  return graphNodes.empty() ;
+}
 #define __ISLANDS__
 #endif

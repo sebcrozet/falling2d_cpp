@@ -12,14 +12,14 @@
 class GenericSolver	: public CollisionDetector
 {
 private:
-	Shape *s1, *s2;
-	PairManager pm;	// cash all sub-shape collision couple
+  Shape *s1, *s2;
+  PairManager pm;	// cash all sub-shape collision couple
 
-	static void deletePair(Pair &p);
-	bool _solve(std::vector<ContactBackup *> &res);
-	bool canDestroy();
-public: 
-	GenericSolver(Shape *s1, Shape *s2);
+  static void deletePair(Pair &p);
+  bool _solve(std::vector<ContactBackup *> &res);
+  bool canDestroy();
+public:
+  GenericSolver(Shape *s1, Shape *s2);
 };
 #define __GENERIC_SOLVER__
 #endif

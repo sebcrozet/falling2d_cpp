@@ -1,4 +1,4 @@
-#ifndef __COLLISION_ARBITER__	  
+#ifndef __COLLISION_ARBITER__
 #include "TunningConstants.h"
 #include "CollisionDetector.h"
 #include "DiskDiskSolver.h"
@@ -12,44 +12,44 @@ struct Contact;
 struct QuarterSpace;
 struct Collision
 {
-	Shape *sa, *sb;
-	std::vector<ContactBackup *> c;
-	Contact **cnts; // Contact *[]
-	CollisionDetector *cd;	 // Specific collision solver
-	Collision *preva,*prevb,*nexta,*nextb;
-	Collision *nextlvlptr,*prevlvlptr;
-	Contact *worstContact;
-	Real worstPenetrationAmount;
-	int collisionStackLevel;   
-	QuarterSpace *liberty1,*liberty2;
+  Shape *sa, *sb;
+  std::vector<ContactBackup *> c;
+  Contact **cnts; // Contact *[]
+  CollisionDetector *cd;	 // Specific collision solver
+  Collision *preva,*prevb,*nexta,*nextb;
+  Collision *nextlvlptr,*prevlvlptr;
+  Contact *worstContact;
+  Real worstPenetrationAmount;
+  int collisionStackLevel;
+  QuarterSpace *liberty1,*liberty2;
 
-	Collision(Shape *sa, Shape *sb);
-	Collision(Shape *s);
-	~Collision();
-	void removeFromList();
-	void autoInsert();
-	void insertInLevel(Collision *);
+  Collision(Shape *sa, Shape *sb);
+  Collision(Shape *s);
+  ~Collision();
+  void removeFromList();
+  void autoInsert();
+  void insertInLevel(Collision *);
 
-	static Collision *inPlaceSortList(Collision *);
+  static Collision *inPlaceSortList(Collision *);
 };
 
 
 class CollisionArbiter
-{	   
+{
 private:
-	std::vector<Shape *> s;
-	SAPsolver sap;
+  std::vector<Shape *> s;
+  SAPsolver sap;
 
-	static void addP(Pair *p, Shape *s, Shape *s2);
-	static void deleteP(Pair &p);
-	static bool removeP(Pair *p);
+  static void addP(Pair *p, Shape *s, Shape *s2);
+  static void deleteP(Pair &p);
+  static bool removeP(Pair *p);
 public:
-	CollisionArbiter();
-	~CollisionArbiter();
-	void addObject(Shape *s);
-	void deleteObject(Shape *s);
-	void solve(std::vector<Collision *> &res);
-	void notifyObjectMoved(Shape *s);
+  CollisionArbiter();
+  ~CollisionArbiter();
+  void addObject(Shape *s);
+  void deleteObject(Shape *s);
+  void solve(std::vector<Collision *> &res);
+  void notifyObjectMoved(Shape *s);
 };
 #define __COLLISION_ARBITER__
 #endif

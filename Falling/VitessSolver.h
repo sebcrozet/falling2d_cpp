@@ -4,5 +4,5 @@
 class VitessSolver
 {
 public:
-	static void integrate(std::vector <RigidBody *> r,Real dt);
+  static void integrate(std::vector <RigidBody *> r,Real dt);
 };

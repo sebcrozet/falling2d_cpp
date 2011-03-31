@@ -6,14 +6,14 @@
 
 class DiskDiskSolver : public CollisionDetector
 {
-private: 
-	Disk *d1, *d2;
-	ContactBackup lastBackup;
+private:
+  Disk *d1, *d2;
+  ContactBackup lastBackup;
 
-	bool _solve(std::vector<ContactBackup *> &res);
-public:	
-	DiskDiskSolver(Disk *d1, Disk *d2);
-	bool canDestroy();
+  bool _solve(std::vector<ContactBackup *> &res);
+public:
+  DiskDiskSolver(Disk *d1, Disk *d2);
+  bool canDestroy();
 };
 #define __DISK_DISK_SOLVER__
 #endif

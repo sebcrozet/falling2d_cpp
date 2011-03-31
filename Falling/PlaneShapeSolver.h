@@ -10,30 +10,30 @@
 class PlaneImplicitShapeDistanceSolver : public CollisionDetector
 {
 private:
-	ImplicitShape &is;
-	InfinitePlane &p;
-	int optid;
-	ContactBackup lastContactDatas;
+  ImplicitShape &is;
+  InfinitePlane &p;
+  int optid;
+  ContactBackup lastContactDatas;
 
-	bool _solve(std::vector<ContactBackup *> &res);
+  bool _solve(std::vector<ContactBackup *> &res);
 public:
-	PlaneImplicitShapeDistanceSolver(InfinitePlane &ip, ImplicitShape &is);
-	bool canDestroy();
+  PlaneImplicitShapeDistanceSolver(InfinitePlane &ip, ImplicitShape &is);
+  bool canDestroy();
 };
 
 class PlaneShapeSolver : public CollisionDetector
 {
 private:
-	PairManager pm; 
-	Shape *s;
-	InfinitePlane *ip;
+  PairManager pm;
+  Shape *s;
+  InfinitePlane *ip;
 
-	void traverseTree(OBBtree *ot, std::vector<OBB *> &res);
-	bool _solve(std::vector<ContactBackup *> &res); // returns whether current class should be destroyed
-	static void pairDeleted(Pair &p);
+  void traverseTree(OBBtree *ot, std::vector<OBB *> &res);
+  bool _solve(std::vector<ContactBackup *> &res); // returns whether current class should be destroyed
+  static void pairDeleted(Pair &p);
 public:
-	PlaneShapeSolver(InfinitePlane *p, Shape *s);
-	bool canDestroy();
+  PlaneShapeSolver(InfinitePlane *p, Shape *s);
+  bool canDestroy();
 };
 #define __PLANE_IMPLICIT_DIST_SOLVER__
 #endif

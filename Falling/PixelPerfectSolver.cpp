@@ -6,11 +6,11 @@ PixelPerfectSolver::PixelPerfectSolver(PixelPerfectShape *ps, Shape *s) : pps(ps
 
 bool PixelPerfectSolver::_solve(std::vector<ContactBackup *> &)
 {
-	// naive climb shape vertices
-	return canDestroy();	
+  // naive climb shape vertices
+  return canDestroy();
 }
 
 bool PixelPerfectSolver::canDestroy()
 {
-	return true; // no cash data for now
+  return true; // no cash data for now
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 // Les macros suivantes définissent la plateforme minimale requise. La plateforme minimale requise
-// est la version de Windows, Internet Explorer etc. qui dispose des fonctionnalités nécessaires pour exécuter 
-// votre application. Les macros fonctionnent en activant toutes les fonctionnalités disponibles sur les versions de la plateforme jusqu'à la 
+// est la version de Windows, Internet Explorer etc. qui dispose des fonctionnalités nécessaires pour exécuter
+// votre application. Les macros fonctionnent en activant toutes les fonctionnalités disponibles sur les versions de la plateforme jusqu'à la
 // version spécifiée.
 
 // Modifiez les définitions suivantes si vous devez cibler une plateforme avant celles spécifiées ci-dessous.

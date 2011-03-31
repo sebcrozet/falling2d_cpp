@@ -19,9 +19,9 @@
 #			define FALLINGAPI __declspec(dllexport)
 #		else
 #			define FALLINGAPI __declspec(dllimport)
-#		endif	
+#		endif
 #	else
-#		define FALLINGAPI 
+#		define FALLINGAPI
 #	endif
 #else
 #	define FALLINGAPI

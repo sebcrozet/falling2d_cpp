@@ -5,11 +5,11 @@
 class PixelPerfectSolver : CollisionDetector
 {
 private:
-	PixelPerfectShape *pps;
-	Shape * s;
+  PixelPerfectShape *pps;
+  Shape * s;
 
-	bool _solve(std::vector<ContactBackup *> &res);
+  bool _solve(std::vector<ContactBackup *> &res);
 public:
-	bool canDestroy();
-	PixelPerfectSolver(PixelPerfectShape *ps, Shape *s);
+  bool canDestroy();
+  PixelPerfectSolver(PixelPerfectShape *ps, Shape *s);
 };

@@ -8,9 +8,9 @@ CollisionDetector::CollisionDetector() : isInactive(false)
 { }
 
 bool CollisionDetector::solve(std::vector<ContactBackup *> &res)
-{			
-    if(!isInactive)
-	return _solve(res);
-    else
-	return canDestroy();
+{
+  if(!isInactive)
+    return _solve(res);
+  else
+    return canDestroy();
 }
