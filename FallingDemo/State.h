@@ -48,6 +48,8 @@ struct MachineState
   // environment dragging
   float oldx;
   float oldy;
+  // 
+  float elapsedPhysicsTime;
   //
 };
 

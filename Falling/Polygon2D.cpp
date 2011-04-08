@@ -35,10 +35,6 @@ Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int h
       subShapes[i] = new ImplicitPolygon2D(subpolys[i], nbptssubpolys[i], this, i);
       totalSurface += subShapes[i]->getSurface();
       Point2D centr= subShapes[i]->getCentroid();
-      // TODO: remove test
-      //if(!(centr.getX() == centr.getX() && centr.getY() == centr.getY()))
-      //	while (true);
-      // end todo
       totalCentroid += subShapes[i]->getCentroid() * subShapes[i]->getSurface();
     }
   totalCentroid = Point2D(totalCentroid.getX() / totalSurface, totalCentroid.getY() / totalSurface);
@@ -149,21 +145,7 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
       Point2D rp = polyset[0]->rightTgtPt(studiedpt);
       for(int i = 1; i < s; i++)
         {
-          // TODO: remove test
-          int iii;
-          for(iii = 0; iii < polyset[i]->nbrPts; iii++)
-            {
-              if(polyset[i]->pts[iii].exactEquals(studiedpt))
-                break;
-            }
-          if(iii == polyset[i]->nbrPts && Point2D::pointInPolygon(studiedpt, polyset[i]->pts, polyset[i]->nbrPts))
-            assert(false);
-          // end TODO
           Point2D tmp = polyset[i]->rightTgtPt(studiedpt);
-          // TODO: remove test
-          if(tmp.exactEquals(miny))
-            printf("aienratenrtaueausieasrieanietaunietars\n");
-          // end todo
           if(tmp.exactEquals(studiedpt))
             continue;
           Real lt = tmp.isLeftTo(studiedpt, rp);
@@ -190,8 +172,8 @@ void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polys
   if(id == 1)
     {
       // TODO: remove test
-      Point2D *out;
-      simplifyToProper(ch,chn, &out);
+      //Point2D *out;
+      //simplifyToProper(ch,chn, &out);
       // end todo
       chull = new ImplicitPolygon2D(ch,chn,this,1);
     }
@@ -564,35 +546,9 @@ Point2D Polygon2D::getCentroid(Point2D *in, int n,Real aire)
     }
   return Point2D(ax / (6 * aire), ay / (6 * aire));
 }
-//#pragma endregion
-//#pragma endregion
 
-//#pragma region ImplicitPolygon2D
 ImplicitPolygon2D::ImplicitPolygon2D(Point2D *globalPts, int n, Polygon2D *p, int id)
 {
-  /*
-     for(int i = 0; i < n; i++)
-     {
-     Point2D tmp = globalPts[i];
-     globalPts[i] = globalPts[n - 1 - i];
-     globalPts[n - 1 - i] = tmp;
-     }
-     */
-  // TODO: remove test
-  int j = n-1;
-  for(int i = 0; i < n; i++)
-    {
-      for(int k = i+1; k < n-2; k++)
-        {
-          Point2D useless;
-          Real param;
-          if(Point2D::intersectSegments(globalPts[j], globalPts[i], globalPts[k], globalPts[k+1], &useless, &param) != -1)
-            {
-              assert(false);
-            }
-        }
-    }
-  //
   nbrPts = n;
   parent = p;
   margin = PROXIMITY_AWARENESS + 0.5;
@@ -939,10 +895,7 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
               int id = t_p[i];
               Vector2D vc = Vector2D(pts[id],pts[tmod(id+1,nbrPts)]);
               t_teta[i] = acos(vc.dot(calipers[i])/vc.magnitude());
-              // TODO: remove test
-              if(Float::negativeOrZero(t_teta[i]))
-                printf("mhhhh");
-              // end todo
+              assert(!Float::negativeOrZero(t_teta[i]));
             }
           if(t_teta[i] < minTeta)
             minTeta = t_teta[i];

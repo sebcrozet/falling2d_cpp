@@ -13,7 +13,7 @@ private:
   ImplicitShape &is;
   InfinitePlane &p;
   int optid;
-  ContactBackup lastContactDatas;
+  ContactBatch cash;
 
   bool _solve(std::vector<ContactBackup *> &res);
 public:

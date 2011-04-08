@@ -56,8 +56,19 @@ Collision::Collision(Shape *s, Shape *s2)
 
 Collision::~Collision()
 {
-  c.clear();
+  clearContacts();
   delete cd;
+}
+
+void Collision::clearContacts()
+{
+  if(c.size())
+  {
+	  for(int i = 0; i < c.size(); i++)
+		  delete cnts[i];
+	  c.clear();
+	  delete cnts;
+  }
 }
 
 void Collision::removeFromList()
@@ -315,7 +326,7 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
       if(!((Collision*)p[i].e)->sa->getParent()->isSleeping() || !((Collision*)p[i].e)->sb->getParent()->isSleeping())
         {
           collisionLost = ((Collision *)p[i].e)->c.size() > 0;
-          ((Collision *)p[i].e)->c.clear();
+		  ((Collision *)p[i].e)->clearContacts();
           /*if(*/
           ((Collision*)p[i].e)->cd->solve(((Collision *)p[i].e)->c);//)
           //	;//todel.push(&p[i]);
@@ -327,6 +338,7 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
         {
           // TODO: useless, find a way to do it before integration
           // Wake up objects
+			printf("Collision lost!\n");
           ((Collision*)p[i].e)->sa->getParent()->setAwake(true);
           ((Collision*)p[i].e)->sb->getParent()->setAwake(true);
         }

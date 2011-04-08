@@ -18,13 +18,21 @@ int main(int argc, char* argv[])
   ms.w.setPaused(true);
   ms.drawstate |= MachineState::DRAW_BORDERS;
   UserInterface ui(ms);
+  sf::Clock cl;
+  sf::Clock pcl;
   while(rw.IsOpened())
     {
       sf::Event ev;
+	  cl.Reset();
       while(rw.GetEvent(ev))
         dispatchEvent(ev, ms,ui);
+	  float bph = cl.GetElapsedTime();
       ms.w.solve(0.016f);
+	  ms.elapsedPhysicsTime = cl.GetElapsedTime() - bph;
       draw(ms, ui);
+	  float elpstmr = cl.GetElapsedTime();
+	  if(elpstmr < 0.016)
+		  sf::Sleep(0.016 - elpstmr);
     }
   return 0;
 }
@@ -156,7 +164,7 @@ void mouseReleased(MachineState &ms, float x, float y)
           ms.objs.push_back(
             new pObject(
               0,
-              Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
+              20,//Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
               false,
               ms.w,
               pObject::O_CIRCLE,

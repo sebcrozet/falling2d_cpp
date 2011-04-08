@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UserInterface.h"
+#include <sstream>
 
 void exitApplication(int, void *userdata)
 {
@@ -25,6 +26,14 @@ void switchFlagOff(int id, void *userdata)
     ((MachineState *)userdata)->drawstate &= ~MachineState::DRAW_BORDERS;
   else if(id == 1002)
     ((MachineState *)userdata)->drawstate &= ~MachineState::DRAW_COMPONENTS;
+}
+
+void stepIntegrateSolveEngine(int id, void *userdata)
+{
+	if(id == 201)
+		((MachineState *)userdata)->w.integrate(0.016);
+	else
+		((MachineState *)userdata)->w.solvePenetrationsAndImpulse(0.016);
 }
 
 void changeDrawMode(int id, void *userdata)
@@ -55,6 +64,11 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
       mi->setOnItemClicked(pauseEngine);
       mi->setOnItemReleased(pauseEngine);
     }
+  else if(mi->getId() > 200 && mi->getId() <= 202)
+  {
+	mi->setUserDatas(userdata);
+	mi->setOnItemClicked(stepIntegrateSolveEngine);
+  }
   else if(mi->getId() >= 1001 && mi->getId() <= 1002)
     {
       mi->setUserDatas(userdata);
@@ -73,7 +87,7 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
 UserInterface::UserInterface(MachineState &ms)
   : absorbMouse(false)
 {
-  ui.push_back(new wDialog(200,200,"My first dialog!"));
+  ui.push_back(new wLabel(10, 40, "", 20));
   ui.push_back(wMenuBar::fromStringDescriptor(
                  ": Files\n"
                  "> :_1 Quit Falling Demo\n"
@@ -84,6 +98,8 @@ UserInterface::UserInterface(MachineState &ms)
                  ">> :_?_1002 Show components\n"
                  ";_=_ SE\n"
                  ";_?_200 LE\n"
+				 ":_201 Integrate\n"
+				 ":_202 Solve\n"
                  ";_=_ SE\n"
                  ";_?@_A_1004 LY\n"
                  ";_?_A_1005 LYPTS\n"
@@ -126,6 +142,12 @@ bool UserInterface::dispatchEvent(sf::Event ev, MachineState &ms)
 
 void UserInterface::draw(MachineState &ms)
 {
+	std::ostringstream o;
+	o << ms.elapsedPhysicsTime;
+	if(ms.elapsedPhysicsTime < 0.016)
+		((wLabel *)ui[0])->setText(o.str(), 0, 0, 0);
+	else
+		((wLabel *)ui[0])->setText(o.str(), 255, 0, 0);
   for(unsigned int i = 0; i < ui.size(); i++)
     {
       ui[i]->draw(ms.rwin);

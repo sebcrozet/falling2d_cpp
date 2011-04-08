@@ -85,7 +85,7 @@ void PlaneShapeSolver::traverseTree(OBBtree *a, std::vector<OBB *> &res)
     }
 }
 
-PlaneImplicitShapeDistanceSolver::PlaneImplicitShapeDistanceSolver(InfinitePlane &ip, ImplicitShape &is) : is(is), p(ip)
+PlaneImplicitShapeDistanceSolver::PlaneImplicitShapeDistanceSolver(InfinitePlane &ip, ImplicitShape &is) : is(is), p(ip), cash(ip, is)
 {
   Point2D unusued;
   optid = is.getSupportPoint(ip.getNormal().reflexion(), &unusued);
@@ -101,11 +101,12 @@ bool PlaneImplicitShapeDistanceSolver::_solve(std::vector<ContactBackup *> &res)
   Point2D ppt;
   optid = is.getMarginedSupportPoint(p.getNormal().reflexion(), &ppt, optid);
   if(p.isInSolidHalfSpace(ppt))
-    {
-      // TODO: inherite also from Implicit Shape
-      lastContactDatas.setDatas(p.getProjectedPt(ppt), ppt, &p, &is);
-      res.push_back(&lastContactDatas);
-      return false;
-    }
+	  cash.addContact(SubCollision(p.getProjectedPt(ppt), ppt));
+  if(cash.getNbrContacts())
+  {
+	  for(int i = 0; i < cash.getNbrContacts(); i++)
+		  res.push_back(cash.getContacts(i));
+	  return false;
+  }
   return canDestroy();
 }

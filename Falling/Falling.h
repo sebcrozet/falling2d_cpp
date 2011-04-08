@@ -35,6 +35,8 @@ public:
   void addObject(RigidBody *s);
   void removeObject(RigidBody *s);
   void solve(Real dt);
+  void integrate(Real dt);
+  void solvePenetrationsAndImpulse(Real dt);
 
   void notifyObjectMoved(RigidBody *s);
 };

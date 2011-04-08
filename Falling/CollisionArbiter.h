@@ -21,7 +21,6 @@ struct Collision
   Contact *worstContact;
   Real worstPenetrationAmount;
   int collisionStackLevel;
-  QuarterSpace *liberty1,*liberty2;
 
   Collision(Shape *sa, Shape *sb);
   Collision(Shape *s);
@@ -29,6 +28,7 @@ struct Collision
   void removeFromList();
   void autoInsert();
   void insertInLevel(Collision *);
+  void clearContacts();
 
   static Collision *inPlaceSortList(Collision *);
 };

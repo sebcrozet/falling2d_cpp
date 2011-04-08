@@ -44,12 +44,6 @@ inline void GeometryHelper::Transformation2D::setTeta(Real t)
   teta = t;
   coteta = cos(t);
   siteta = sin(t);
-  // TODO: remove that
-  // Validity tests
-  //
-  if(!(teta == teta)||!(coteta == coteta)||!(siteta == siteta))
-    setTeta(0);
-  //
 }
 inline void GeometryHelper::Transformation2D::addTeta(Real t)
 {
@@ -66,9 +60,6 @@ inline void GeometryHelper::Transformation2D::setU(const Vector2D &v)
 inline void GeometryHelper::Transformation2D::addU(const Vector2D &v)
 {
   u += v;
-  // TODO: remove validity test
-  if(v.getX() > 10000 || v.getY() > 10000)
-    u.setX(0);
 }
 inline Vector2D GeometryHelper::Transformation2D::getU() const
 {

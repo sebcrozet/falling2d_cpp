@@ -2,8 +2,8 @@
 #include "TunningConstants.h"
 #include "Polygon2D.h"
 #include "Disk.h"
-#define SLEEPLIMIT 2.0
-#define BIAS 0.6
+#define SLEEPLIMIT 4.0
+#define BIAS 0.8
 #define NBRLOOPSTABILISATION 50
 class FALLINGAPI RigidBody
 {
@@ -69,11 +69,6 @@ public:
   inline void addConsumedTeta(Real dt)
   {
     consumedDeltaTeta += dt;
-    // TODO :  remove validity test
-    if(consumedDeltaTeta*dTeta < 0
-        || ABS(consumedDeltaTeta) > ABS(dTeta))
-      dTeta = dTeta;
-    //
   }
   inline Real getConsumedDeltaTeta()
   {

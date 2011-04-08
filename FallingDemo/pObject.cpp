@@ -150,6 +150,10 @@ void pObject::draw(const MachineState &ms)
                       grand = rand()%255;
                       brand = rand()%255;
                     }
+				  else if(rb->isSleeping())
+				  {
+					  rrand = grand = brand = 0;
+				  }
                   else
                     {
                       rrand = r;

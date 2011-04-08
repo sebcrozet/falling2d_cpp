@@ -4,6 +4,13 @@
 Island::Island()
 { }
 
+Island::~Island()
+{
+	stackLevels.clear();
+	while(!graphNodes.empty())
+		graphNodes.pop();
+}
+
 void Island::pushToLevelOneChain(Collision *next)
 {
   if(stackLevels.empty())
@@ -25,10 +32,8 @@ void Island::calculateStackLevels()
   Collision *levelLessOneHead = stackLevels[stackLevels.size()-1]; // previous level'head
   int currLevel = 2;
   graphNodes.push(0); // push level-1 mark
-  int iter = 0;
   do
     {
-      iter ++;
       Shape *sh = graphNodes.front();
       graphNodes.pop();
       // see if a new level is detected
@@ -42,7 +47,6 @@ void Island::calculateStackLevels()
               graphNodes.pop();
               levelLessOneHead = levelHead;
               levelHead = 0;
-              iter = 0;
             }
           else
             break; // end reached... leave!
@@ -53,6 +57,7 @@ void Island::calculateStackLevels()
         {
           if(next->collisionStackLevel < 0)
             {
+			  nbrCtcts++;
               if(next->sa == sh)
                 {
                   if(next->c.size())

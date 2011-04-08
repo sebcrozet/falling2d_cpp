@@ -20,6 +20,7 @@ void ContactBatch::addContact(const SubCollision &lastDeepestPen)
   Vector2D n(lastDeepestPen.ptA, lastDeepestPen.ptB);
   Real depth = n.normalise();
   Point2D mid = Point2D::getMiddle(lastDeepestPen.ptA, lastDeepestPen.ptB);
+
   for(int i = 0; i < (int)scol.size(); i++)
     {
       ContactBackup *cb = (scol[i]);
@@ -28,9 +29,9 @@ void ContactBatch::addContact(const SubCollision &lastDeepestPen)
       // update datas
       Vector2D ni(absA, absB);
       // calculate depth (don't change normal)
-      cb->depth = ni * cb->normal;
+      cb->depth = (ni * cb->normal);
       // see if scol[i] is deletable
-      if(cb->depth > 2.0 * PROXIMITY_AWARENESS || (ni * ni - cb->depth * cb->depth) > 4.0 * PROXIMITY_AWARENESS * PROXIMITY_AWARENESS)
+      if(cb->depth < -2.0 * PROXIMITY_AWARENESS || (ni * ni - cb->depth * cb->depth) > 4.0 * PROXIMITY_AWARENESS * PROXIMITY_AWARENESS)
         {
           // disjoint objects, remove contact
           scol[i] = scol[scol.size() - 1];
@@ -44,7 +45,7 @@ void ContactBatch::addContact(const SubCollision &lastDeepestPen)
           // see if scol[i] has to be replaced
           Vector2D test(Point2D::getMiddle(absA, absB), mid);
           if(test * test < /* TODO: use more reliable value here */ PROXIMITY_AWARENESS)
-            {
+           {
               // replace
               cb->depth = depth;
               cb->relPtA = A.toLocal(lastDeepestPen.ptA);

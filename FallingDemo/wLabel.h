@@ -10,6 +10,7 @@ public:
   wLabel(int x, int y, std::string text, int fontSize);
   void draw(sf::RenderWindow &rw);
   void close();
+  void setText(const std::string &text,int r, int g, int b);
 
   virtual bool translate(float x, float y);
   virtual bool interpretEvent(sf::Event &ev, float mx, float my);

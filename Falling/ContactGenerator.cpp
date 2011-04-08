@@ -1,67 +1,6 @@
 #include "stdafx.h"
 #include "ContactGenerator.h"
 
-bool QuarterSpace::compare(QuarterSpace *d1, QuarterSpace *d2)
-{
-  if(d1->v.getY() > 0)
-    {
-      if(d2->v.getY() > 0)
-        return d1->v.getX() < d2->v.getX();
-      else
-        return false; // d2 >
-    }
-  if(d2->v.getY() < 0)
-    return d1->v.getX() > d2->v.getX();
-  else
-    return true;
-}
-
-bool QuarterSpace::getSignificantDualQuarterSpace(QuarterSpace *q[4])
-{
-  QuarterSpace *tmp;
-  // insersion sort
-  for(int i = 1; i < 4; i++) // begin at the second element
-    {
-      tmp = q[i];
-      int j = i;
-      for(; j > 0; j--)
-        {
-          if(compare(q[j-1],tmp))
-            q[j] = q[j-1];
-          else
-            break;
-        }
-      q[j] = tmp;
-    }
-  // It's sorted in increasing order now (on the trigonometric circle, in counterclockwise)...
-  int order = 0;
-  for(int i = 0,j = 3; i < 4; j=i,i++)
-    {
-      if(q[j]->l)
-        q[j]->l = q[i]->r;
-      else
-        q[i]->r = false;
-    }
-  for(int i = 0; i<4; i++)
-    {
-      tmp = q[i];
-      if(tmp->l || tmp->r) // at least one non-blocking half-space
-        {
-          if(order < 2)
-            {
-              q[i] = q[order];
-              q[order] = tmp;
-            }
-          else // no liberty
-            return false;
-          order++;
-        }
-    }
-  return true; // TODO: virify this return value...
-}
-
-
-////
 
 void Contact::updateVelChange(Real t)
 {
@@ -106,8 +45,6 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
           c->cnts = new Contact *[max];
           for(int j=0; j<max; j++)
             {
-              // TODO do not make a copy of the SubCollision structure!
-              // end TODO
               Contact *cnt = new Contact();
               Point2D absA = c->sa->toGlobal(c->c[j]->relPtA);
               Point2D absB = c->sb->toGlobal(c->c[j]->relPtB);
@@ -116,31 +53,14 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
               cnt->absoluteContactPoint= Point2D::getMiddle(absA, absB);
               cnt->normal = c->c[j]->normal;
               cnt->setPenetration(c->c[j]->depth - 2.0 * PROXIMITY_AWARENESS); // normalise normal and return penetration depth
-              if(cnt->s1->isFixed())// || */cnt->s1->getStackLevel() < cnt->s2->getStackLevel())
+              if(cnt->s1->isFixed())
                 {
-                  /*if(!cnt->s1->isFixed())
-                  cnt->s2 = cnt->s1;
-                  else
-                  cnt->s2 = 0;
-                  */
                   cnt->s1 = cnt->s2;
                   cnt->s2 = 0;
                   cnt->normal.reflect();
                 }
-              else if(cnt->s2->isFixed())//|| */cnt->s1->getStackLevel() > cnt->s2->getStackLevel())
-                {
-                  /*
-                    if(!cnt->s2->isFixed())
-                  cnt->s2 = cnt->s2;
-                    else
+              else if(cnt->s2->isFixed())
                   cnt->s2 = 0;
-                  */
-                  cnt->s2 = 0;
-                }
-              /*
-              else
-                  cnt->s2 = cnt->s2;
-              	*/
               // get tangeant
               cnt->tangeant = Vector2D(-cnt->normal.getY(),cnt->normal.getX());
               // now calculate closing velocity
@@ -202,49 +122,6 @@ void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions,
                   c->worstContact = cnt;
                 }
             }
-          // Determine liberties' degrees
-          /*
-             QuarterSpace *liberties[4];
-             QuarterSpace *sp = new QuarterSpace();
-             sp->v = c->cnts[0]->tangeant;
-             sp->r = true;
-             sp->l = false;
-             liberties[0] = sp;
-             sp = new QuarterSpace();
-             sp->v = sp->v.reflexion();
-             sp->r = false;
-             sp->l = true;
-             liberties[1] = sp;
-             for(int j = 1; j < max; j++)
-             {
-             QuarterSpace *sp = new QuarterSpace();
-             sp->v = c->cnts[j]->tangeant;
-             sp->r = true;
-             sp->l = false;
-             liberties[2] = sp;
-             sp = new QuarterSpace();
-             sp->v = sp->v.reflexion();
-             sp->r = false;
-             sp->l = true;
-             liberties[3] = sp;
-             if(QuarterSpace::getSignificantDualQuarterSpace(liberties))
-             {
-             delete liberties[2];
-             delete liberties[3];
-             c->liberty1 = liberties[0];
-             c->liberty2 = liberties[1];
-             }
-             else
-             {
-          // no liberties
-          for(int k=0;k<4;k++)
-          delete liberties[k];
-          c->liberty1 = 0;
-          // setsing liberty2 at 0 is useless
-          }
-
-          }
-          */
         }
       else
         c->cnts = 0;

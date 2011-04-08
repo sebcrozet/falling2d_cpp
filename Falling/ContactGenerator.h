@@ -15,7 +15,7 @@ struct QuarterSpace
 
 struct Contact
 {
-  // TODO: see if there are no ureless datas here
+  // TODO: see if there are no ureless datas here (is dvely still useful?)
   Shape *s1;
   Shape *s2;
 private:
@@ -42,8 +42,7 @@ public:
   inline void setPenetration(Real p)
   {
     penetration = p;
-    if(!(penetration == penetration))
-      penetration = 0;
+    assert(penetration == penetration);
   }
   inline Real getPenetration()
   {
@@ -65,7 +64,6 @@ class ContactGenerator
 private:
 public:
   static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
-  static void DeduceContactsDatasOldAlgorithm(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
 };
 #define CGEN
 #endif

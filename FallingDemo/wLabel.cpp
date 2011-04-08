@@ -15,6 +15,13 @@ void wLabel::draw(sf::RenderWindow &rw)
   rw.Draw(dTitle);
 }
 
+void wLabel::setText(const std::string &s, int r, int g, int b)
+{
+  dTitle.SetText(sf::Unicode::Text(s));
+  dTitle.SetColor(sf::Color(r,g,b));
+  wWidget::setSize(dTitle.GetRect().GetWidth(), dTitle.GetRect().GetHeight() + 2);
+}
+
 bool wLabel::setSize(float w, float h)
 {
   return false;

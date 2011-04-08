@@ -21,12 +21,12 @@ void RigidBody::updateSleepState(Real dt)
   // detect low velocities
   Real currm = v * v + omega * omega;
   Real bias = POW(BIAS,dt);
-  bool movstab = updateMovementStabilisationState();
+  //bool movstab = updateMovementStabilisationState();
   movment = (bias*movment) + (1-bias) * currm;
-  if(movment > 10.0*SLEEPLIMIT)
-    movment = 10.0*SLEEPLIMIT;
-  /*else*/
-  if(movstab)
+  if(movment > 2.0*SLEEPLIMIT)
+    movment = 2.0*SLEEPLIMIT;
+  else if(movment < SLEEPLIMIT)
+  //if(movstab)
     setAwake(false);
   // TODO: detect low movments
 }
@@ -81,7 +81,7 @@ void RigidBody::setAwake(bool awake)
   if(awake)
     {
       sleeping = false;
-      movment = SLEEPLIMIT * 2.0;
+      movment = SLEEPLIMIT * 1.1;
       //reinitStabilisationDetector();
     }
   else

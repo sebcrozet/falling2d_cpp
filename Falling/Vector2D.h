@@ -79,12 +79,7 @@ inline void Vector2D::setZ(Real _z)
 
 inline void Vector2D::print()
 {
-  printf("%f",x);
-  printf("  ");
-  printf("%f",y);
-  printf("  ");
-  printf("%f",z);
-  printf("\n");
+	printf("%f %f %f\n", x, y, z);
 }
 
 inline bool Vector2D::isNull()

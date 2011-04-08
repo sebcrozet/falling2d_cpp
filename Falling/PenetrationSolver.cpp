@@ -120,50 +120,6 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
     }
 }
 
-void PenetrationSolver::solveRelax(std::vector<Contact *> &scs, Real relaxRate)
-{
-  for(unsigned int id = 0; id < 2; id++)
-    {
-      Real trchange[2];
-      Real rchange[2];
-      Contact *worst = 0;
-      for(unsigned int ji=0; ji<scs.size(); ji++)
-        {
-          if(scs[ji]->getPenetration() < 0.00)
-            continue;
-          worst = scs[ji];
-          worst->awakeIfNeeded();
-          applyPositionChangeRelax(worst,trchange,rchange,relaxRate);
-          // adjust other penetrations
-          for(unsigned int j=0; j<scs.size(); j++)
-            {
-              if(scs[j]->s1 == worst->s1)
-                {
-                  Real m = (worst->normal*trchange[0])*scs[j]->normal + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal;
-                  scs[j]->setPenetration(scs[j]->getPenetration() - m);
-                }
-              else if(scs[j]->s2 == worst->s1)
-                {
-                  scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[0])*scs[j]->normal);
-                  scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal);
-                }
-              if(worst->s2)
-                {
-                  if(scs[j]->s1 == worst->s2)
-                    {
-                      Real m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-                      scs[j]->setPenetration(scs[j]->getPenetration() - m);
-                    }
-                  else if(scs[j]->s2 == worst->s2)
-                    {
-                      Real m = (worst->normal*trchange[1])*scs[j]->normal + (Vector2D(0,0,rchange[1])^scs[j]->relContactPoint[1])*scs[j]->normal;
-                      scs[j]->setPenetration(scs[j]->getPenetration() + m);
-                    }
-                }
-            }
-        }
-    }
-}
 
 void PenetrationSolver::solve(std::vector<Contact *> &scs)
 {
@@ -311,88 +267,6 @@ void PenetrationSolver::applyPositionChangePerLevel(Contact *c,Real *ch,Real *ah
     }
 }
 
-void PenetrationSolver::applyPositionChangeRelax(Contact *c,Real *ch,Real *ah, Real relaxmultiplier)
-{
-  Real relaxpen = c->getPenetration()*1.0/relaxmultiplier;
-  ah[0] = relaxpen*c->unitangmov[0];
-  ch[0] = relaxpen*c->unitlinmov[0];
-  Real limita = c->s1->getParent()->getDeltaTeta();
-  Real pivot = c->s1->getParent()->getConsumedDeltaTeta();
-  Real dch = 0;
-  if(limita < 0)
-    {
-      if(ah[0] + pivot > 0)
-        {
-          dch = ((Vector2D(0,0,(ah[0] + pivot)) ^ c->relContactPoint[0])*c->normal);
-          ah[0] = -pivot;
-        }
-      else if(ah[0] + pivot < limita)
-        {
-          dch = ((Vector2D(0,0,(ah[0] - limita + pivot)) ^ c->relContactPoint[0])*c->normal);
-          ah[0] = limita - pivot;
-        }
-      //else ok
-    }
-  else // limita >= 0 // same thing
-    {
-      if(ah[0] + pivot < 0)
-        {
-          dch = ((Vector2D(0,0,(ah[0] + pivot)) ^ c->relContactPoint[0])*c->normal);
-          ah[0] = -pivot;
-        }
-      else if(ah[0] + pivot > limita)
-        {
-          dch = ((Vector2D(0,0,(ah[0] - limita + pivot)) ^ c->relContactPoint[0])*c->normal);
-          ah[0] = limita - pivot;
-        }
-      //else ok
-    }
-  c->s1->getParent()->addConsumedTeta(ah[0]);
-  ch[0] += dch;
-  c->s1->translate(c->normal*ch[0]);
-  c->s1->rotate(-ah[0]);
-  if(c->s2)
-    {
-      ch[1] = -relaxpen*c->unitlinmov[1];
-      ah[1] = -relaxpen*c->unitangmov[1];
-
-      limita = c->s2->getParent()->getDeltaTeta();
-      pivot = c->s2->getParent()->getConsumedDeltaTeta();
-      dch = 0;
-      if(limita < 0)
-        {
-          if(ah[1] + pivot > 0)
-            {
-              dch = ((Vector2D(0,0,(ah[1] + pivot)) ^ c->relContactPoint[1])*c->normal);
-              ah[1] = -pivot;
-            }
-          else if(ah[1] + pivot < limita)
-            {
-              dch = ((Vector2D(0,0,(ah[1] - limita + pivot)) ^ c->relContactPoint[1])*c->normal);
-              ah[1] = limita - pivot;
-            }
-          //else ok
-        }
-      else // limita >= 0 // same thing
-        {
-          if(ah[1] + pivot < 0)
-            {
-              dch = ((Vector2D(0,0,(ah[1] + pivot)) ^ c->relContactPoint[1])*c->normal);
-              ah[1] = -pivot;
-            }
-          else if(ah[1] + pivot > limita)
-            {
-              dch = ((Vector2D(0,0,(ah[1] - limita + pivot)) ^ c->relContactPoint[1])*c->normal);
-              ah[1] = limita - pivot;
-            }
-          //else ok
-        }
-      c->s2->getParent()->addConsumedTeta(ah[1]);
-      ch[1] += dch;
-      c->s2->translate(c->normal*ch[1]);
-      c->s2->rotate(-ah[1]);
-    }
-}
 void PenetrationSolver::applyPositionChange(Contact *c,Real *ch,Real *ah)
 {
   ah[0] = c->getPenetration()*c->unitangmov[0];

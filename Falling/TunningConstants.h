@@ -62,7 +62,7 @@
 #endif
 // Define comparaison functions
 
-#define G (10.0 * 9.81)
+#define G (50.0 * 9.81)
 #define PIX_PER_METTER 1.0
 #define POINT_EQUALS_ERROR (MACHINE_EPSILON)
 #define PROXIMITY_AWARENESS 8.0
