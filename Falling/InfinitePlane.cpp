@@ -103,8 +103,8 @@ namespace Falling
 	}
     }
 
-    bool InfinitePlane::containsPoint(const Point2D &pt) const
+    bool InfinitePlane::containsPoint(const Point2D &testpt) const
     {
-	return pt.isLeftTo(perpdir, spt);
+	return testpt.isLeftTo(pt, spt) >= 0;
     }
 }

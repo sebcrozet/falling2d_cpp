@@ -44,7 +44,22 @@ namespace Falling
 	    return l1 != 0.0 && isLeftTo(p2 , p3) > 0.0 && isLeftTo(p3 , p) > 0.0;
     }
 
-    Real Point2D::intersectSegments(Point2D &p, Point2D &p2, Point2D &p3, Point2D &p4, Point2D *res,Real *bparam2)
+    bool Point2D::intersectLines(const Point2D &p, const Point2D &p2, const Point2D &p3, const Point2D &p4, Point2D *res)
+    {
+	Vector2D s1(p,p2);
+	Vector2D s2(p3,p4);
+	Vector2D s13(p3,p);
+	Real denom =  s1.perp(s2);
+	if(denom == 0.0)
+	    return false; // parallels
+	Real u1 = s2.perp(s13) / denom;
+	// else intersects
+	*res = Point2D(p.getX() + u1 * s1.getX(),p.getY() + u1 * s1.getY());
+	//assert(res->getX() == res->getX() && res->getY() == res->getY());
+	return true; // return barycentric coordinate
+    }
+
+    Real Point2D::intersectSegments(const Point2D &p, const Point2D &p2, const Point2D &p3, const Point2D &p4, Point2D *res,Real *bparam2)
     {
 	Vector2D s1(p,p2);
 	Vector2D s2(p3,p4);

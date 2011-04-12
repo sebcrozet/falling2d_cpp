@@ -54,7 +54,7 @@ namespace Falling
     inline Point2D InfinitePlane::getProjectedPt(const Point2D &p) const
     {
 	Vector2D ao(pt, p);
-	return pt + (perpdir * (ao * perpdir));
+	return pt + (dir * (PROXIMITY_AWARENESS + 0.5)) + (perpdir * (ao * perpdir));
     }
     inline Real InfinitePlane::sqDistToPlane(const Point2D &p) const
     {

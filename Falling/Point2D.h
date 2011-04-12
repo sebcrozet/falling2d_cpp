@@ -39,7 +39,8 @@ namespace Falling
 	    inline Real isLeftTo(const Point2D &p,const Point2D &p2) const;
 	    inline Real isLeftTo(const Point2D &p,const Point2D &p2, int onsegmentvalue) const;
 	    inline Real isInLine(const Point2D &p,const Point2D& p2) const;
-	    static Real intersectSegments(Point2D &p,Point2D &p2,Point2D &p3,Point2D &p4, Point2D *res, Real *bparam2);
+	    static Real intersectSegments(const Point2D &p, const Point2D &p2, const Point2D &p3, const Point2D &p4, Point2D *res, Real *bparam2);
+	    static bool intersectLines(const Point2D &p, const Point2D &p2, const Point2D &p3, const Point2D &p4, Point2D *res);
 	    bool isInCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3) const;
 	    bool isInCCWTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3) const;
 	    bool isInUnorientedTriangle(const Point2D &p,const Point2D &p2, const Point2D &p3) const;

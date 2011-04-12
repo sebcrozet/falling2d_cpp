@@ -59,7 +59,11 @@ pObject::pObject(Falling::Point2D *pts,int n,bool iscircle, Falling::World &w, O
       w.addObject(rb);
       break;
     case pObject::O_PLANE:
-      rb = Falling::RigidBody::build_planarBody(center, Falling::Vector2D(center, pts[0]));
+      diskcenter = center;
+      u = Falling::Vector2D(center, pts[0]);
+      u.normalise();
+      rb = Falling::RigidBody::build_planarBody(center, u);
+      u = Falling::Vector2D(u.getY(), -u.getX());
       w.addObject(rb);
       break;
     }
@@ -215,6 +219,89 @@ void pObject::draw(const MachineState &ms)
       );
       break;
     case pObject::O_PLANE:
+      // build a list of all points on the screen
+      // and insert the first point at the end of
+      // the list also
+      Falling::Point2D screenpts[5];
+      sf::Vector2f cvpt;
+      Falling::Point2D inter1;
+      Falling::Point2D inter2;
+      
+      cvpt = ms.rwin.ConvertCoords(0, 0, &ms.rwin.GetDefaultView());
+      screenpts[0] = Falling::Point2D(cvpt.x, cvpt.y);
+      cvpt = ms.rwin.ConvertCoords(ms.rwin.GetWidth(), 0, &ms.rwin.GetDefaultView());
+      screenpts[1] = Falling::Point2D(cvpt.x, cvpt.y);
+      cvpt = ms.rwin.ConvertCoords(ms.rwin.GetWidth(), ms.rwin.GetHeight(), &ms.rwin.GetDefaultView());
+      screenpts[2] = Falling::Point2D(cvpt.x, cvpt.y);
+      cvpt = ms.rwin.ConvertCoords(0, ms.rwin.GetHeight(), &ms.rwin.GetDefaultView());
+      screenpts[3] = Falling::Point2D(cvpt.x, cvpt.y);
+      screenpts[4] = screenpts[0];
+
+      int transition = 0;
+      int inters = 0;
+      sf::Shape polyshape;
+      for(unsigned i = 0; i < 5; i++)
+      {
+	  if(rb->containsPoint(screenpts[i]))
+	  {
+	      if(transition == -1)
+	      {
+		  // transition not contained -> contained
+		  // determine the plane's intersection with the corresponding segment
+		  if(Falling::Point2D::intersectLines(screenpts[i - 1], screenpts[i], diskcenter + u, diskcenter, &inter1))
+		  {
+		      // add the point on the list
+		      polyshape.AddPoint(
+			      inter1.getX(),
+			      inter1.getY(),
+			      sf::Color(200, 200, 200)
+			      );
+		      inters++;
+		  }
+	      }
+	      polyshape.AddPoint(
+		      screenpts[i].getX(),
+		      screenpts[i].getY(),
+		      sf::Color(200, 200, 200)
+		      );
+	      //add the point
+	      transition = 1;
+	  }
+	  else 
+	  {
+	      // point not contained
+	      if(transition == 1)
+	      {
+		  // transition contained -> not contained
+		  // determine the plane's intersection with the corresponding segment
+		  if(Falling::Point2D::intersectLines(screenpts[i - 1], screenpts[i], diskcenter + u, diskcenter, &inter2))
+		  {
+		      // add the point on the list
+		      polyshape.AddPoint(
+			      inter2.getX(),
+			      inter2.getY(),
+			      sf::Color(200, 200, 200)
+			      );
+		      inters++;
+		  }
+	      }
+	      transition = -1;
+	  }
+      }
+      ms.rwin.Draw(polyshape);
+      if(inters == 2)
+      {
+	  ms.rwin.Draw(
+		  sf::Shape::Line(
+		      inter1.getX(),
+		      inter1.getY(),
+		      inter2.getX(),
+		      inter2.getY(),
+		      3.f,
+		      sf::Color(100, 100, 100) 
+		      )
+		  );
+      }
       break;
     }
 }

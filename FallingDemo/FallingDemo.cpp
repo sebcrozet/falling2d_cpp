@@ -57,6 +57,8 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
 {
   if(ms.rbuttondown)
     ms.rwin.GetDefaultView().Move(ms.oldx - realx, ms.oldy - realy);
+  else if(ms.selectedObj)
+    return;
   else
     {
       switch(ms.buttonstate)
@@ -118,6 +120,7 @@ void mousePushed(MachineState &ms, float x, float y)
       ms.selectedObj = 0;
   else
   {
+      ms.vpts.clear();
       return;
   }
 
@@ -167,6 +170,8 @@ void mouseReleased(MachineState &ms, float x, float y)
 
   if(ms.selectedObj || ms.vpts.size() < 2)
   {
+      if(ms.buttonstate != MachineState::DRAW_POINTS)
+	  ms.vpts.clear();
       return;
   }
   if(ms.lbuttondown)
@@ -436,7 +441,8 @@ void draw(MachineState &ms, UserInterface &ui)
 
   ms.rwin.Clear(sf::Color(200,191,231));
   ms.rwin.SetView(ms.rwin.GetDefaultView());
-  drawDrawingShape(ms, ui);
+  if(!ms.selectedObj)
+      drawDrawingShape(ms, ui);
 
   for(unsigned int i = 0; i < ms.objs.size(); i++)
     {

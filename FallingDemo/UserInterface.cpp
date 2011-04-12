@@ -160,7 +160,7 @@ UserInterface::UserInterface(MachineState &ms)
                  ";_?_A_1005 LYPTS\n"
                  ";_?_A_1006 CI\n"
                  ";_?_A_1007 RE\n"
-                 //":_?_A_1008 Plane\n"
+                 ":_?_A_1008 Plane\n"
                  ";_=_ SE\n"
                  ":_1009 Fix\n"
 		 //":_1010 Del\n"
