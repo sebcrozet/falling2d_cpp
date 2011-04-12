@@ -49,13 +49,13 @@ void Island::pushToLevelOneChain(Collision *next)
 void Island::verifyLvlPtrChain(Collision *ptr)
 {
   Collision *begin = ptr;
-  assert(!ptr->sa->isdeleting());
-  assert(!ptr->sb->isdeleting());
+  //assert(!ptr->sa->isdeleting());
+  //assert(!ptr->sb->isdeleting());
   while(ptr->nextlvlptre != begin)
   {
       ptr = ptr->nextlvlptre;
-      assert(!ptr->sa->isdeleting());
-      assert(!ptr->sb->isdeleting());
+      //assert(!ptr->sa->isdeleting());
+      //assert(!ptr->sb->isdeleting());
   }
   // virify prev pointers
   while(ptr->prevlvlptr != begin)
@@ -66,7 +66,7 @@ void Island::calculateStackLevels()
 {
   // Make a breadth first research
   Collision *levelHead = 0;
-  assert(stackLevels.size());
+  //assert(stackLevels.size());
   Collision *levelLessOneHead = stackLevels[stackLevels.size()-1]; // previous level's head
   int currLevel = 2;
   graphNodes.push(0); // push level-1 mark
@@ -179,17 +179,17 @@ void Island::calculateStackLevels()
 
 void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
 {
-  assert(!coll->isFixed());
+  //assert(!coll->isFixed());
   Collision *next;
   bool insertToOneLevel = false;
   next = coll->getCollisionList();
   //if(next->sa == coll) ==> always true in the first sentinel
-  assert(next->sa == next->sb);
+  //assert(next->sa == next->sb);
   next = next->nexta;
-  assert(next->sa != next->sb);
+  //assert(next->sa != next->sb);
   while(next->sa != next->sb) // second sentinel reached if ==
     {
-	assert(!next->sa->isdeleting() && !next->sb->isdeleting());
+	//assert(!next->sa->isdeleting() && !next->sb->isdeleting());
       if(next->sa == coll)
         {
           // go on next's node
@@ -278,7 +278,7 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
             {
               colls[i]->sb->setStackLevel(-2);
               batchIsland(isl,colls[i]->sb);
-	      assert(!isl->isEmpty());
+	      //assert(!isl->isEmpty());
               // island will always contain one object
             }
           else
@@ -319,7 +319,7 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
                         }
                     }
                 }
-	        assert(!isl->isEmpty());
+	        //assert(!isl->isEmpty());
             }
           // push to islands stack
           islands.push(isl);

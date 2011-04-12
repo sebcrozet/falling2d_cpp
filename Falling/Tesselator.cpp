@@ -438,10 +438,11 @@ Poly *Poly::testAndSwap(Point *pt)
 Poly *Poly::split(Point *p1, Point *p2)
 {
   // TODO: remove test
-  if(pts->getnext()->getnext()->getnext() == pts)
+  /*if(pts->getnext()->getnext()->getnext() == pts)
     assert(false);
   if(pts->getnext()->getnext() == pts)
     assert(false);
+    */
   // end todo
   DoubleLinkedList<Point *> *l1 = 0, *l2 = 0, *parc = pts;
   DoubleLinkedList<Edge *> *ad1 = 0, *ad2 = 0, *adjparc = adj;

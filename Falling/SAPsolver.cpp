@@ -93,7 +93,7 @@ void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, Real xm, 
   int i = *im;
   EndPoint en = list[i];
   Shape *spr = aabbs[en.getParent()].parent;
-  assert(!spr->isdeleting());
+  //assert(!spr->isdeleting());
   bool sens = list[i + 1].getValue() < en.getValue();
   if(sens)
     {
@@ -297,10 +297,10 @@ void SAPsolver::verifylist(std::vector<EndPoint> &ep)
 {
     for(unsigned int i = 0; i < ep.size() - 1; i++)
     {
-	assert(ep[i+1].getValue() >= ep[i].getValue());
-	assert(ep[i].getValue() == -MACHINE_MAX || ep[i].getValue() == MACHINE_MAX || !aabbs[ep[i].getParent()].parent->isdeleting());
+	//assert(ep[i+1].getValue() >= ep[i].getValue());
+	//assert(ep[i].getValue() == -MACHINE_MAX || ep[i].getValue() == MACHINE_MAX || !aabbs[ep[i].getParent()].parent->isdeleting());
     }
-    assert(ep[ep.size() - 1].getValue() == -MACHINE_MAX || ep[ep.size() - 1].getValue() == MACHINE_MAX || !aabbs[ep[ep.size() - 1].getParent()].parent->isdeleting());
+    //assert(ep[ep.size() - 1].getValue() == -MACHINE_MAX || ep[ep.size() - 1].getValue() == MACHINE_MAX || !aabbs[ep[ep.size() - 1].getParent()].parent->isdeleting());
 }
 
 void SAPsolver::updateAddedBoxCollisionPairs(AABB &b)

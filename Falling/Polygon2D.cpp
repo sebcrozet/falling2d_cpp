@@ -914,7 +914,7 @@ OBB *ImplicitPolygon2D::buildOBB(Point2D *pts, int nbrPts, ImplicitPolygon2D *pa
               int id = t_p[i];
               Vector2D vc = Vector2D(pts[id],pts[tmod(id+1,nbrPts)]);
               t_teta[i] = acos(vc.dot(calipers[i])/vc.magnitude());
-              assert(!Float::negativeOrZero(t_teta[i]));
+              //assert(!Float::negativeOrZero(t_teta[i]));
             }
           if(t_teta[i] < minTeta)
             minTeta = t_teta[i];

@@ -59,7 +59,7 @@ Real Point2D::intersectSegments(Point2D &p, Point2D &p2, Point2D &p3, Point2D &p
   // else intersects
   *res = Point2D(p.getX() + u1 * s1.getX(),p.getY() + u1 * s1.getY());
   *bparam2 = u2;
-  assert(res->getX() == res->getX() && res->getY() == res->getY());
+  //assert(res->getX() == res->getX() && res->getY() == res->getY());
   return u1; // return barycentric coordinate
 }
 // view simple algorithm in

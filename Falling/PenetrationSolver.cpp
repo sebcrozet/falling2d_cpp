@@ -29,7 +29,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
       // sort list
       curr = Collision::inPlaceSortList(curr);
       Collision *begining = curr;
-      assert(curr->c.size());
+      //assert(curr->c.size());
       for(int id = 0; id < maxiter; id++)
         {
           Real trchange[2];
@@ -48,7 +48,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
                   // Correct attached nodes
                   // iterate through graph's edges:
                   Collision * cl = worst->s1->getCollisionList();
-                  assert(cl->nexta == cl->nextb || !cl->nextb);
+                  //assert(cl->nexta == cl->nextb || !cl->nextb);
                   cl = cl->nexta; // skip sentinel
                   while(cl->nexta != cl->nextb)	// while other sentinel not reached; do
                     {
@@ -65,7 +65,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
                             }
                           else// if(scs[j]->s2 == worst->s1)
                             {
-                              assert(scs[j]->s2 == worst->s1);
+                              //assert(scs[j]->s2 == worst->s1);
                               scs[j]->setPenetration(scs[j]->getPenetration() + (worst->normal*trchange[0])*scs[j]->normal);
                               scs[j]->setPenetration(scs[j]->getPenetration() + (Vector2D(0,0,rchange[0])^scs[j]->relContactPoint[0])*scs[j]->normal);
                             }
@@ -87,7 +87,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
                   // Correct attached nodes
                   // iterate through graph's edges:
                   Collision * cl = worst->s2->getCollisionList();
-                  assert(cl->nexta == cl->nextb || !cl->nextb);
+                  //assert(cl->nexta == cl->nextb || !cl->nextb);
                   cl = cl->nexta; // skip sentinel
                   while(cl->nexta != cl->nextb)	// while other sentinel not reached; do
                     {
@@ -104,7 +104,7 @@ void PenetrationSolver::solve(Island *isl,bool implode, int maxiter)
                             }
                           else// if(scs[j]->s2 == worst->s2)
                             {
-                              assert(scs[j]->s2 == worst->s2);
+                              //assert(scs[j]->s2 == worst->s2);
                               scs[j]->setPenetration(
                                 scs[j]->getPenetration() +
                                 (worst->normal*trchange[1])*scs[j]->normal +

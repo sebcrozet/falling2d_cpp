@@ -98,15 +98,15 @@ void Collision::clearContacts()
 void Collision::removeFromList()
 {
   bool sentinel = (preva->nexta == preva->nextb || !preva->nextb);
-  assert(preva->sa == sa || preva->sb == sa);
-  assert(nexta->sa == sa || nexta->sb == sa);
-  assert(prevb->sa == sb || prevb->sb == sb);
-  assert(nextb->sa == sb || nextb->sb == sb);
+  //assert(preva->sa == sa || preva->sb == sa);
+  //assert(nexta->sa == sa || nexta->sb == sa);
+  //assert(prevb->sa == sb || prevb->sb == sb);
+  //assert(nextb->sa == sb || nextb->sb == sb);
   if(preva->sa == sa)
     preva->nexta = nexta;
   else
   {
-      assert(preva->sb == sa);
+      //assert(preva->sb == sa);
     preva->nextb = nexta;
   }
 
@@ -114,7 +114,7 @@ void Collision::removeFromList()
     nexta->preva = preva;
   else
   {
-      assert(preva->sb == sa);
+      //assert(preva->sb == sa);
     nexta->prevb = preva;
   }
 
@@ -122,7 +122,7 @@ void Collision::removeFromList()
     prevb->nexta = nextb;
   else
   {
-      assert(prevb->sb == sb);
+      //assert(prevb->sb == sb);
     prevb->nextb = nextb;
   }
 
@@ -130,12 +130,12 @@ void Collision::removeFromList()
     nextb->preva = prevb;
   else
   {
-      assert(prevb->sb == sb);
+      //assert(prevb->sb == sb);
     nextb->prevb = prevb;
   }
 
   if(sentinel)
-    assert(preva->nexta == preva->nextb || !preva->nextb);
+    //assert(preva->nexta == preva->nextb || !preva->nextb);
   nexta = 0; // mark as not in any list
   nextb = 0;
   preva = 0;
@@ -145,15 +145,15 @@ void Collision::removeFromList()
 }
 void Collision::autoInsert()
 {
-  assert(nexta == 0);
+  //assert(nexta == 0);
   Collision *ca = sa->getCollisionList();
   Collision *cb = sb->getCollisionList();
-  assert(ca);
-  assert(cb);
-  assert(ca->nexta == ca->nextb || !ca->nextb);
-  assert(cb->nexta == cb->nextb || !cb->nextb);
-  assert(ca->sa == ca->sb);
-  assert(cb->sa == cb->sb);
+  //assert(ca);
+  //assert(cb);
+  //assert(ca->nexta == ca->nextb || !ca->nextb);
+  //assert(cb->nexta == cb->nextb || !cb->nextb);
+  //assert(ca->sa == ca->sb);
+  //assert(cb->sa == cb->sb);
   preva = ca;
   prevb = cb;
 
@@ -194,13 +194,13 @@ void Collision::autoInsert()
         cb->nextb->prevb = this;
       cb->nextb = this;
     }
-  assert(!ca->nextb);
-  assert(!cb->nextb);
+  //assert(!ca->nextb);
+  //assert(!cb->nextb);
 }
 
 void Collision::insertInLevele(Collision *c)
 {
-  assert(!nextlvlptre && !prevlvlptr);
+  //assert(!nextlvlptre && !prevlvlptr);
   nextlvlptre = c->nextlvlptre;
   prevlvlptr = c;
   c->nextlvlptre = this;
@@ -220,7 +220,7 @@ Collision *Collision::inPlaceSortList(Collision *lbegin)
         res = curr;
       curr = curr->nextlvlptre;
     }
-  assert(res->worstPenetrationAmount < 1000);
+  //assert(res->worstPenetrationAmount < 1000);
 
   return res;
   // TODO: use the sort-based algorithm instead of the naive approach
@@ -353,8 +353,8 @@ void CollisionArbiter::deleteObject(Shape *s)
   // so, head = first collision / tail = second collision
   Collision *c = s->getCollisionList();
   // invalidate the collision list
-  assert((c->sa == c->sb));
-  assert((c->nexta->sa == c->nexta->sb));
+  //assert((c->sa == c->sb));
+  //assert((c->nexta->sa == c->nexta->sb));
   s->setCollisionList(0, 0);
   // must be sentinels
   // delete it
@@ -378,8 +378,8 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
 
   for(int i = 0; i < n; i ++)
     {
-	assert(!((Collision*)p[i].e)->sa->isdeleting());
-	assert(!((Collision*)p[i].e)->sb->isdeleting());
+	//assert(!((Collision*)p[i].e)->sa->isdeleting());
+	//assert(!((Collision*)p[i].e)->sb->isdeleting());
       bool collisionLost = false;
       if(
 	      !((Collision*)p[i].e)->sa->getParent()->isSleeping() 

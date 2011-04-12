@@ -1,0 +1,5 @@
+To make the library Falling and the test application FallingDemo run:
+> autoreconf --install
+> ./configure
+> make
+
