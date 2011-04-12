@@ -17,45 +17,48 @@
 #ifndef __ISLANDS__
 #include "CollisionArbiter.h"
 
-class PenetrationSolver;
-class World;
-class Island
+namespace Falling
 {
-  friend class PenetrationSolver;
-  friend class ImpulseSolver;
-  // TODO: remove this friend statement
-  friend class World;
-  // end TODO
-    public:
-  // TODO: remove (test)
-  bool isnonfix;
-  // end TODO
-    protected:
-private:
-  int nbrCtcts;
-  std::vector<Collision *> stackLevels;
-  std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
+    class PenetrationSolver;
+    class World;
+    class Island
+    {
+	friend class PenetrationSolver;
+	friend class ImpulseSolver;
+	// TODO: remove this friend statement
+	friend class World;
+	// end TODO
+	public:
+	// TODO: remove (test)
+	bool isnonfix;
+	// end TODO
+	protected:
+	private:
+	int nbrCtcts;
+	std::vector<Collision *> stackLevels;
+	std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
 
-  static void batchIsland(Island *isl,Shape *coll); // recursive call
-  
-public:
-  Island();
-  ~Island();
-  void calculateStackLevels();
-  void pushToLevelOneChain(Collision *c);
+	static void batchIsland(Island *isl,Shape *coll); // recursive call
 
-  // TODO: remove test
-  static void verifyLvlPtrChain(Collision *ptr);
-  // end TODO
+	public:
+	Island();
+	~Island();
+	void calculateStackLevels();
+	void pushToLevelOneChain(Collision *c);
 
-  inline void insertToLevelOne(Shape *c)
-  { graphNodes.push(c); }
-  inline bool isEmpty()
-  { return graphNodes.empty(); }
-  inline int getNbrCtcts()
-  { return nbrCtcts; }
+	// TODO: remove test
+	static void verifyLvlPtrChain(Collision *ptr);
+	// end TODO
 
-  static void batchIslands(std::vector<Collision *> &colls,std::stack<Island *> &islands);
-};
+	inline void insertToLevelOne(Shape *c)
+	{ graphNodes.push(c); }
+	inline bool isEmpty()
+	{ return graphNodes.empty(); }
+	inline int getNbrCtcts()
+	{ return nbrCtcts; }
+
+	static void batchIslands(std::vector<Collision *> &colls,std::stack<Island *> &islands);
+    };
+}
 #define __ISLANDS__
 #endif

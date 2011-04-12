@@ -73,12 +73,12 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
             {
               if(
                 ms.vpts.size() == 0
-                || !Point2D(x/SCALE, y/SCALE).exactEquals(
+                || !Falling::Point2D(x/SCALE, y/SCALE).exactEquals(
                   ms.vpts[ms.vpts.size()-1]
                 )
               )
                 {
-                  ms.vpts.push_back(Point2D(x/SCALE,y/SCALE));
+                  ms.vpts.push_back(Falling::Point2D(x/SCALE,y/SCALE));
                 }
             }
           break;
@@ -91,9 +91,9 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
           if(ms.lbuttondown)
             {
               if(ms.vpts.size() == 2)
-                ms.vpts[1] = Point2D(x/SCALE, y/SCALE);
+                ms.vpts[1] = Falling::Point2D(x/SCALE, y/SCALE);
               else
-                ms.vpts.push_back(Point2D(x/SCALE, y/SCALE));
+                ms.vpts.push_back(Falling::Point2D(x/SCALE, y/SCALE));
             }
           break;
 	default:
@@ -107,7 +107,7 @@ void mousePushed(MachineState &ms, float x, float y)
   unsigned int i;
   for(i = 0; i < ms.objs.size(); i++)
   {
-      if(ms.objs[i]->rb->containsPoint(Point2D(x,y)))
+      if(ms.objs[i]->rb->containsPoint(Falling::Point2D(x,y)))
       {
 	  printf("Found!\n");
 	  ms.selectedObj = ms.objs[i];
@@ -132,7 +132,7 @@ void mousePushed(MachineState &ms, float x, float y)
           ms.vpts.clear();
           // then add point
         case MachineState::DRAW_POINTS:
-          ms.vpts.push_back(Point2D(x/SCALE, y/SCALE));
+          ms.vpts.push_back(Falling::Point2D(x/SCALE, y/SCALE));
           break;
 	default:
 	  break;
@@ -145,7 +145,7 @@ void makePolyFromvptsList(MachineState &ms)
   int n = ms.vpts.size();
   if(n>=3)
     {
-      Point2D *pts = new Point2D[n];
+      Falling::Point2D *pts = new Falling::Point2D[n];
       for(int i=0; i<n; i++)
         pts[i] = ms.vpts[i];
       ms.objs.push_back(
@@ -161,9 +161,9 @@ void makePolyFromvptsList(MachineState &ms)
 
 void mouseReleased(MachineState &ms, float x, float y)
 {
-  Point2D ul;
-  Point2D dr;
-  Point2D *optvect;
+  Falling::Point2D ul;
+  Falling::Point2D dr;
+  Falling::Point2D *optvect;
 
   if(ms.selectedObj || ms.vpts.size() < 2)
       return;
@@ -180,7 +180,7 @@ void mouseReleased(MachineState &ms, float x, float y)
 	  {
 	      if(ms.vpts.size() < 3)
 		  return;
-	      ms.vpts.push_back(Point2D(x/SCALE,y/SCALE));
+	      ms.vpts.push_back(Falling::Point2D(x/SCALE,y/SCALE));
 	  }
           else
             {
@@ -189,9 +189,9 @@ void mouseReleased(MachineState &ms, float x, float y)
               dr = ms.vpts[1];
               ms.vpts.clear();
               ms.vpts.push_back(ul);
-              ms.vpts.push_back(Point2D(ul.getX(), dr.getY()));
+              ms.vpts.push_back(Falling::Point2D(ul.getX(), dr.getY()));
               ms.vpts.push_back(dr);
-              ms.vpts.push_back(Point2D(dr.getX(), ul.getY()));
+              ms.vpts.push_back(Falling::Point2D(dr.getX(), ul.getY()));
             }
           makePolyFromvptsList(ms);
           break;
@@ -200,7 +200,7 @@ void mouseReleased(MachineState &ms, float x, float y)
           ms.objs.push_back(
             new pObject(
               0,
-              20,//Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
+              20,//Falling::Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
               false,
               ms.w,
               pObject::O_CIRCLE,
@@ -209,7 +209,7 @@ void mouseReleased(MachineState &ms, float x, float y)
           ms.vpts.clear();
           break;
         case MachineState::DRAW_PLANE:
-          optvect = new Point2D(ms.vpts[1]);
+          optvect = new Falling::Point2D(ms.vpts[1]);
           ms.objs.push_back(
             new pObject(
               optvect,
@@ -315,7 +315,7 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
 }
 
 
-void exploreOBBtree(sf::RenderWindow &screen,OBBtree *t, Vector2D v, int deepness, int curr)
+void exploreOBBtree(sf::RenderWindow &screen, Falling::OBBtree *t, Falling::Vector2D v, int deepness, int curr)
 {
   if(t==0)
     return;
@@ -399,7 +399,7 @@ void drawDrawingShape(MachineState &ms, UserInterface &)
       ms.rwin.Draw(sf::Shape::Circle(
                      ms.vpts[0].getX(),
                      ms.vpts[0].getY(),
-                     Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
+                     Falling::Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
                      sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
       break;
     case MachineState::DRAW_SQUARE:
@@ -439,7 +439,7 @@ void draw(MachineState &ms, UserInterface &ui)
          win.Draw(sf::Shape::Line(objs[i]->p->aabb_xM,objs[i]->p->aabb_yM, objs[i]->p->aabb_xM, objs[i]->p->aabb_ym,1,sf::Color(0,0,0)));
          win.Draw(sf::Shape::Line(objs[i]->p->aabb_xm,objs[i]->p->aabb_ym, objs[i]->p->aabb_xm, objs[i]->p->aabb_yM,1,sf::Color(0,0,0)));
          win.Draw(sf::Shape::Line(objs[i]->p->aabb_xM,objs[i]->p->aabb_yM, objs[i]->p->aabb_xm, objs[i]->p->aabb_yM,1,sf::Color(0,0,0)));
-         Vector2D poss= objs[i]->p->getPos();
+         Falling::Vector2D poss= objs[i]->p->getPos();
          OBB *o = objs[i]->p->chull->obb;//getOtree()->o;
          win.Draw(sf::Shape::Line(poss.getX() + o->pts[0].getX(), poss.getY() + o->pts[0].getY(), poss.getX() + o->pts[1].getX(), poss.getY() + o->pts[1].getY(),1,sf::Color(0,0,0)));
          win.Draw(sf::Shape::Line(poss.getX() + o->pts[1].getX(), poss.getY() + o->pts[1].getY(), poss.getX() + o->pts[2].getX(), poss.getY() + o->pts[2].getY(),1,sf::Color(0,0,0)));

@@ -54,11 +54,11 @@ struct MachineState
 
   bool running;
   // physics engine
-  World w;
+  Falling::World w;
   // objects in the world
   sf::RenderWindow &rwin;
   std::vector<pObject *> objs;
-  std::vector<Point2D> vpts;
+  std::vector<Falling::Point2D> vpts;
   // logical state of the engine
   LeftButtonState buttonstate;
   int drawstate;

@@ -25,17 +25,20 @@
 #include "ContactBatch.h"
 #define GS_IDBIGOFFSET 2063 // il ne devrait pas y avoir plus de GS_IDBIGOFFET OBB dans un arbre. GS_IDBIGOFFET est un nombre premier (réduction de collisions dans le pm?). 
 
-class GenericSolver	: public CollisionDetector
+namespace Falling
 {
-private:
-  Shape *s1, *s2;
-  PairManager pm;	// cash all sub-shape collision couple
+    class GenericSolver	: public CollisionDetector
+    {
+	private:
+	    Shape *s1, *s2;
+	    PairManager pm;	// cash all sub-shape collision couple
 
-  static void deletePair(Pair &p);
-  bool _solve(std::vector<ContactBackup *> &res);
-  bool canDestroy();
-public:
-  GenericSolver(Shape *s1, Shape *s2);
-};
+	    static void deletePair(Pair &p);
+	    bool _solve(std::vector<ContactBackup *> &res);
+	    bool canDestroy();
+	public:
+	    GenericSolver(Shape *s1, Shape *s2);
+    };
+}
 #define __GENERIC_SOLVER__
 #endif

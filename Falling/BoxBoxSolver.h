@@ -15,4 +15,3 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 // Specific solver for simple shapes (more efficient than always using GJK-EPA)
-//

@@ -23,7 +23,7 @@ float pObject::poly = 0;
 float pObject::polx = 0;
 int pObject::icall = 0;
 
-pObject::pObject(Point2D *pts,int n,bool iscircle, World &w, ObjectType cir,Point2D center)  : pts(pts), support(0), diskcenter(center)
+pObject::pObject(Falling::Point2D *pts,int n,bool iscircle, Falling::World &w, ObjectType cir,Falling::Point2D center)  : pts(pts), support(0), diskcenter(center)
 {
   otype = cir;
 
@@ -32,34 +32,34 @@ pObject::pObject(Point2D *pts,int n,bool iscircle, World &w, ObjectType cir,Poin
   switch (otype)
     {
     case pObject::O_POLY:
-      rb = RigidBody::build_polygonalBody(
+      rb = Falling::RigidBody::build_polygonalBody(
              pts,
              n,
              iscircle,
              10.f,
-             Vector2D(),
+             Falling::Vector2D(),
              0.f
            );
       u = rb->getPos();
       for(int i=0; i<n; i++)
         pts[i] -= u;
-      p = (Polygon2D*)(rb->getShape());
+      p = (Falling::Polygon2D *)(rb->getShape());
       w.addObject(rb);
       break;
     case pObject::O_CIRCLE:
-      rb = RigidBody::build_circularBody(
+      rb = Falling::RigidBody::build_circularBody(
              center,
              nb,
              iscircle,
              nb,
-             Vector2D(center),
+             Falling::Vector2D(center),
              0.f
            );
-      d = (Disk *)(rb->getShape());
+      d = (Falling::Disk *)(rb->getShape());
       w.addObject(rb);
       break;
     case pObject::O_PLANE:
-      rb = RigidBody::build_planarBody(center, Vector2D(center, pts[0]));
+      rb = Falling::RigidBody::build_planarBody(center, Falling::Vector2D(center, pts[0]));
       w.addObject(rb);
       break;
     }
@@ -100,7 +100,7 @@ void pObject::toogleFixed()
 void pObject::draw(const MachineState &ms)
 {
   sf::Shape sh;
-  Vector2D pos;
+  Falling::Vector2D pos;
 
   icall = 0;
   poly = rb->getPos().getY();
@@ -156,7 +156,7 @@ void pObject::draw(const MachineState &ms)
                     }
                   for(int i = 0; i < p->subShapes[j]->nbrPts; i++)
                     {
-                      Point2D ptsi = p->toGlobal(p->subShapes[j]->pts[i]);
+                      Falling::Point2D ptsi = p->toGlobal(p->subShapes[j]->pts[i]);
                       sh.AddPoint(
                         ptsi.getX()*SCALE,
                         ptsi.getY()*SCALE,
@@ -173,7 +173,7 @@ void pObject::draw(const MachineState &ms)
                   sf::Shape sh;
                   for(int i = 0; i < p->subShapes[j]->nbrPts; i++)
                     {
-                      Point2D ptsi = p->toGlobal(p->subShapes[j]->pts[i]);
+                      Falling::Point2D ptsi = p->toGlobal(p->subShapes[j]->pts[i]);
                       sh.AddPoint(
                         ptsi.getX()*SCALE,
                         ptsi.getY()*SCALE,
@@ -191,8 +191,8 @@ void pObject::draw(const MachineState &ms)
 
             for(int i = 0; i < nb; j = i,i++)
               {
-                Point2D vptsi = p->toGlobal(pts[j]);
-                Point2D vptsi1 = p->toGlobal(pts[i]);
+                Falling::Point2D vptsi = p->toGlobal(pts[j]);
+                Falling::Point2D vptsi1 = p->toGlobal(pts[i]);
                 ms.rwin.Draw(
                   sf::Shape::Line(
                     vptsi.getX()*SCALE,
@@ -208,8 +208,8 @@ void pObject::draw(const MachineState &ms)
       }
       ms.rwin.Draw(
         sf::Shape::Circle(
-          p->toGlobal(Point2D(0,0)).getX(),
-          p->toGlobal(Point2D(0,0)).getY(),
+          p->toGlobal(Falling::Point2D(0,0)).getX(),
+          p->toGlobal(Falling::Point2D(0,0)).getY(),
           1, sf::Color(r - 70, g - 70, b - 70),2
         )
       );

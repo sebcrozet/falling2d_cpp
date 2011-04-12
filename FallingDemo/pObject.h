@@ -31,27 +31,27 @@ public:
     O_PLANE
   };
 public:
-  Tesselator *t;
-  Vector2D u;
-  Polygon2D * p;
-  Disk * d;
-  RigidBody *rb;
-  Point2D * pts;
+  Falling::Tesselator *t;
+  Falling::Vector2D u;
+  Falling::Polygon2D * p;
+  Falling::Disk * d;
+  Falling::RigidBody *rb;
+  Falling::Point2D * pts;
   int nb, support, r, g, b;
   ObjectType otype;
   int drawLimit;
-  Point2D diskcenter;
+  Falling::Point2D diskcenter;
   static sf::RenderWindow *rwin;
   static int icall;
   static float polx,poly;
 
   pObject(
-	  Point2D * pts,
+	  Falling::Point2D * pts,
 	  int n,
 	  bool iscircle, 
-	  World &coll, 
+	  Falling::World &coll, 
 	  ObjectType type,
-	  Point2D center = Point2D()
+	  Falling::Point2D center = Falling::Point2D()
 	  );
   void draw(const MachineState &ms);
   void toogleFixed();

@@ -18,14 +18,17 @@
 #include "Shapes.h"
 #include "PixelPerfectShape.h"
 
-class PixelPerfectSolver : CollisionDetector
+namespace Falling
 {
-private:
-  PixelPerfectShape *pps;
-  Shape * s;
+    class PixelPerfectSolver : CollisionDetector
+    {
+	private:
+	    PixelPerfectShape *pps;
+	    Shape * s;
 
-  bool _solve(std::vector<ContactBackup *> &res);
-public:
-  bool canDestroy();
-  PixelPerfectSolver(PixelPerfectShape *ps, Shape *s);
-};
+	    bool _solve(std::vector<ContactBackup *> &res);
+	public:
+	    PixelPerfectSolver(PixelPerfectShape *ps, Shape *s);
+	    bool canDestroy();
+    };
+}

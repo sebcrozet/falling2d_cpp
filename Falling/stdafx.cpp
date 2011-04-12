@@ -14,11 +14,5 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-// stdafx.cpp : fichier source incluant simplement les fichiers Include standard
-// Falling.pch représente l'en-tête précompilé
-// stdafx.obj contient les informations de type précompilées
 
 #include "stdafx.h"
-
-// TODO : faites référence aux en-têtes supplémentaires nécessaires dans STDAFX.H
-// absents de ce fichier
