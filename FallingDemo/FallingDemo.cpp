@@ -109,7 +109,7 @@ void mousePushed(MachineState &ms, float x, float y)
   {
       if(ms.objs[i]->rb->containsPoint(Falling::Point2D(x,y)))
       {
-	  printf("Found!\n");
+	  //printf("Found!\n");
 	  ms.selectedObj = ms.objs[i];
 	  break;
       }
@@ -166,7 +166,9 @@ void mouseReleased(MachineState &ms, float x, float y)
   Falling::Point2D *optvect;
 
   if(ms.selectedObj || ms.vpts.size() < 2)
+  {
       return;
+  }
   if(ms.lbuttondown)
     {
       switch(ms.buttonstate)
@@ -179,7 +181,10 @@ void mouseReleased(MachineState &ms, float x, float y)
           if(ms.buttonstate == MachineState::DRAW_MOVE)
 	  {
 	      if(ms.vpts.size() < 3)
+	      {
+		  ms.vpts.clear();
 		  return;
+	      }
 	      ms.vpts.push_back(Falling::Point2D(x/SCALE,y/SCALE));
 	  }
           else
@@ -200,7 +205,7 @@ void mouseReleased(MachineState &ms, float x, float y)
           ms.objs.push_back(
             new pObject(
               0,
-              20,//Falling::Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
+              Falling::Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
               false,
               ms.w,
               pObject::O_CIRCLE,
@@ -220,8 +225,10 @@ void mouseReleased(MachineState &ms, float x, float y)
               ms.vpts[0])
           );
           delete optvect;
-          break;
+	  ms.vpts.clear();
+	  break;
 	default:
+	  ms.vpts.clear();
 	  break;
         }
     }

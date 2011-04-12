@@ -741,7 +741,7 @@ namespace Falling
 	Poly *poly;
 	Poly *opppoly;
 	Point *p1, *p2;
-	printf("Beginning ...\n");
+	//printf("Beginning ...\n");
 	do
 	{
 	    poly = curr->getValue();
@@ -768,27 +768,27 @@ namespace Falling
 	    }
 	    Real l1 = p1->pt.isLeftTo(begin->pt, end);
 	    Real l2 = p2->pt.isLeftTo(begin->pt, end);
-	    Real bl1 = p1->pt.isLeftTo(begin->pt, end);
-	    Real bl2 = p2->pt.isLeftTo(begin->pt, end);
+	    //Real bl1 = p1->pt.isLeftTo(begin->pt, end);
+	    //Real bl2 = p2->pt.isLeftTo(begin->pt, end);
 	    Real dotl1 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p1->pt));
 	    Real dotl2 =Vector2D(begin->pt, end).dot(Vector2D(begin->pt,p2->pt));
 	    if(p1->pt.isInLine(begin->pt, end) && dotl1 > 0.0)
 	    {
 		// point of triangle in the same line
-		printf("(1) Rec with: %f , % f \n\r", p1->pt.getX(), p1->pt.getY());
+		//printf("(1) Rec with: %f , % f \n\r", p1->pt.getX(), p1->pt.getY());
 		return triangleMarching(p1, end, graphpt);
 	    }
 	    else if(p2->pt.isInLine(begin->pt, end) && dotl2 > 0.0)
 	    {
 		// point of triangle in the same line
-		printf("(2) Rec with: %f , % f \n\r", p2->pt.getX(), p2->pt.getY());
+		//printf("(2) Rec with: %f , % f \n\r", p2->pt.getX(), p2->pt.getY());
 		return triangleMarching(p2, end, graphpt);
 	    }
 	    else if(l1 < 0.0 && l2 > 0.0)
 	    {
 		break;
 	    }
-	    printf("Refusing: %f ... %f || %f ... %f  \n", l1, l2, bl1, bl2);
+	    //printf("Refusing: %f ... %f || %f ... %f  \n", l1, l2, bl1, bl2);
 	    // else, not the good triangle
 	    curr = curr->getnext();
 	}
@@ -799,7 +799,7 @@ namespace Falling
 	// march on next triangle
 	// (point is not in this triangle due to
 	// previous tests).
-	printf("Accepting...\n");
+	//printf("Accepting...\n");
 	poly = opppoly;
 	//printf("Not found!\n\r");
 	while(true)
@@ -828,7 +828,7 @@ namespace Falling
 	    }
 	    if(thirdpt->pt.isInLine(begin->pt, end))
 	    {
-		printf("(3) Rec with: %f , % f \n\r", thirdpt->pt.getX(), thirdpt->pt.getY());
+		//printf("(3) Rec with: %f , % f \n\r", thirdpt->pt.getX(), thirdpt->pt.getY());
 		return triangleMarching(thirdpt, end, graphpt);
 	    }
 	    else if(lt > 0.0)
@@ -1022,20 +1022,24 @@ namespace Falling
 	    if(p1->pt.isInLine(begin->pt, end->pt) && dotl1 > 0.0)
 	    {
 		// point of triangle in the same line
+		/*
 		if(p1->marked)
 		    printf("(0) Accepted a marked point: %p. Dot: %f\n", p1, dotl1);
 		else
 		    printf("Accepted a non-marked point: %f ... %f\n", p1->pt.getX(), p1->pt.getY());
+		    */
 		insertEdge(p1, end);
 		return;
 	    }
 	    else if(p2->pt.isInLine(begin->pt, end->pt) && dotl2 > 0.0)
 	    {
 		// point of triangle in the same line
+		/*
 		if(p2->marked)
 		    printf("(1) Accepted a marked point: %p. Dot: %f\n", p2, dotl2);
 		else
 		    printf("Accepted a non-marked point: %f ... %f\n", p2->pt.getX(), p2->pt.getY());
+		*/
 		insertEdge(p2, end);
 		return;
 	    }
@@ -1043,7 +1047,7 @@ namespace Falling
 	    {
 		break;
 	    }
-	    printf("Refusing %f ... %f \n", l1, l2);
+	    //printf("Refusing %f ... %f \n", l1, l2);
 	    // else, not the good triangle
 	    curr = curr->getnext();
 	}
@@ -1072,10 +1076,12 @@ namespace Falling
 	    //printf("lt -> %f ||", lt);
 	    if(thirdpt->pt.isInLine(begin->pt, end->pt))
 	    {
+		/*
 		if(thirdpt->marked)
 		    printf("(3) Accepted a marked point: %p.\n", thirdpt);
 		else
 		    printf("Accepted a non-marked point.");
+		    */
 		insertEdge(thirdpt, end);
 		end = thirdpt;
 		break;
@@ -1318,11 +1324,11 @@ namespace Falling
 		    nbinter++;
 		    Point *useless;
 		    // insert intersecion point
-		    printf("Intersection found: bparam: %f\n", bparam1);
-		    printf("Intersection found: bparam2: %f\n", bparam2);
+		    //printf("Intersection found: bparam: %f\n", bparam1);
+		    //printf("Intersection found: bparam2: %f\n", bparam2);
 		    if((!inter.isInLine(pts[ptsm1],pts[i])) || (!inter.isInLine(pts[p],pts[o])))
 		    {
-			printf("CORRUPTED INTERSECTION\n");
+			//printf("CORRUPTED INTERSECTION\n");
 			//Sleep(5000);
 			/*
 			   while(true)
@@ -1332,7 +1338,7 @@ namespace Falling
 			   }*/
 		    }
 		    insertPoint(inter, &useless);
-		    printf("Intersection found: addr.: %p\n", useless);
+		    //printf("Intersection found: addr.: %p\n", useless);
 		    useless->marked = true;
 		}
 	    }
@@ -1349,9 +1355,9 @@ namespace Falling
 	int i;
 	for(i = 0; i< nbpts; k = i, i++)
 	{
-	    printf("Edge inserting... \n");
+	    //printf("Edge inserting... \n");
 	    insertEdge(ptgraphlist[nbholes][k], ptgraphlist[nbholes][i]);
-	    printf("Edge inserted. \n");
+	    //printf("Edge inserted. \n");
 	}
 	// END of Constrained Delaunay Triangulation
 

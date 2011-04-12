@@ -88,7 +88,7 @@ namespace Falling
 
     bool Polygon2D::containsPoint(const Point2D &pt) const
     {
-	printf("%f ... %f\n", t.transforminv(pt).getX(), t.transforminv(pt).getY());
+	//printf("%f ... %f\n", t.transforminv(pt).getX(), t.transforminv(pt).getY());
 	return Point2D::pointInPolygon(t.transforminv(pt), points, nbrPts);
     }
 

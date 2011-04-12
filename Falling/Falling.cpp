@@ -107,7 +107,7 @@ namespace Falling
 		isls.top()->calculateStackLevels();
 		for(unsigned int i = 0; i < isls.top()->stackLevels.size(); i++)
 		{
-		    printf("Fixed? %i\n", isls.top()->isnonfix);
+		    //printf("Fixed? %i\n", isls.top()->isnonfix);
 		    //Island::verifyLvlPtrChain(isls.top()->stackLevels[i]);
 		}
 		isls.pop();

@@ -312,11 +312,13 @@ namespace Falling
 	Collision *coll = (Collision *)p.e;
 	if(coll->nexta) // if still in the list remove it
 	{
-	    printf("Removing an in-list pair!\n");
+	    //printf("Removing an in-list pair!\n");
 	    coll->removeFromList();
 	}
+	/*
 	else
 	    printf("Removing an not-in-list pair!\n");
+	    */
 	delete coll;
     }
 
