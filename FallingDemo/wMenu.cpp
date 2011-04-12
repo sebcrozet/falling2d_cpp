@@ -1,22 +1,46 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "wMenu.h"
 
-wMenuItem::wMenuItem(std::string path1, std::string path2, int type, int group, int id, bool toogled, bool locked, bool itemOrientation) :
+wMenuItem::wMenuItem(
+	std::string path1, 
+	std::string path2, 
+	int type, 
+	int group, 
+	int id, 
+	bool toogled, 
+	bool locked, 
+	bool itemOrientation) :
   wContener(0,0,0,0,true,-2,0,0,(path1 == "SE" && !itemOrientation)?wContener::alignTopBottom:wContener::alignLeftRight, wContener::wrapBoth),
   toogled(toogled),
   highlighted(false),
+  locked(locked),
+  orientation(itemOrientation),
+  checkbox(AND_LETTER(type,'?')),
+  greycolor(200),
+  id(id),
+  itemtype(type),
+  checkgroup(group),
+  userdata(0),
+  sw(0),
   onItemClicked(0),
   onItemPushed(0),
-  onItemReleased(0),
-  sw(0),
-  greycolor(200),
-  userdata(0),
-  itemtype(type),
-  checkbox(AND_LETTER(type,'?')),
-  locked(locked),
-  checkgroup(group),
-  id(id),
-  orientation(itemOrientation)
+  onItemReleased(0)
 {
   if(AND_LETTER(type,';'))
     {
@@ -139,7 +163,7 @@ bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)
     return true;
 }
 
-void wMenuItem::update(float dt)
+void wMenuItem::update(float)
 {
   // TODO: lose focus ?
 }
@@ -230,27 +254,32 @@ bool wMenuItem::translate(float x, float y)
 /*
  * Menu bar definition
  */
-wMenuBar::wMenuBar(int x, int y, bool orientation, bool visible)
-  : orientation(orientation),
+wMenuBar::wMenuBar(int, int, bool orientation, bool visible)
+  : 
     wContener(
       0, 0, 5, 5,
       visible,
       -2,
       3, 3,
       orientation?wContener::alignLeftRight:wContener::alignTopBottom,
-      wContener::wrapBoth)
+      wContener::wrapBoth),
+    orientation(orientation)
 { }
 
 wMenuBar *wMenuBar::fromFileDescriptor(
-  std::string filePath,
-  bool orientation,
-  void *userdata,
-  void (*itemCreated)(void *,wMenuItem*))
+  std::string ,
+  bool ,
+  void *,
+  void (*)(void *,wMenuItem*))
 {
+  // FIXME
+  /*
   std::string descr;
   // TODO: open file and extract the string descriptor
   // construct menu
   return wMenuBar::fromStringDescriptor(descr,orientation,userdata, itemCreated);
+  */
+  return 0;
 }
 /* Parses a string descripting a full menu bar
  ** Format:
@@ -491,7 +520,7 @@ void wMenuBar::draw(sf::RenderWindow &rw)
 bool wMenuBar::interpretEvent(sf::Event &ev, float mx, float my)
 {
   bool interpret = false;
-  for(int i = 0; i < fils.size(); i++)
+  for(unsigned int i = 0; i < fils.size(); i++)
     {
       if(fils[i]->getIsVisible())
         {
@@ -504,7 +533,7 @@ bool wMenuBar::interpretEvent(sf::Event &ev, float mx, float my)
                   ((wMenuItem *)fils[i])->expand(true);
                   if(((wMenuItem *)fils[i])->getGroup())
                     {
-                      for(int j = 0; j < fils.size(); j++)
+                      for(unsigned int j = 0; j < fils.size(); j++)
                         {
                           if(j != i && ((wMenuItem *)fils[i])->getGroup() == ((wMenuItem *)fils[j])->getGroup())
                             ((wMenuItem *)fils[j])->groupUnselect();

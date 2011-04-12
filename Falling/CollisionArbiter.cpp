@@ -1,25 +1,46 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
 #include "stdafx.h"
+#include "ContactGenerator.h"
 #include "CollisionArbiter.h"
+#include "Island.h"
 
 Collision::Collision(Shape *s)
 {
   sa = s;
   sb = s;
-  // TODO: remove: useless but OK for debug
-  preva =0;
+  cd = 0;
+  nexta = 0; // if 0, 'this' is not in a list
+  nextb = 0;
+  preva = 0;
   prevb = 0;
-  nexta=0;
-  nextb=0;
-  //
+  nextlvlptre = 0;
+  prevlvlptr = 0;
 }
+
 Collision::Collision(Shape *s, Shape *s2)
 {
-  // TODO: remove: useless but OK for debug
-  preva =0;
+  nexta = 0;
+  nextb = 0;
+  preva = 0;
   prevb = 0;
-  nexta=0;
-  nextb=0;
-  //
+  nextlvlptre = 0;
+  prevlvlptr = 0;
   // choose correct collision detector and order shapes
   int idsum = s->getShapeTypeID() + s2->getShapeTypeID();
   if(idsum == 2)
@@ -57,17 +78,20 @@ Collision::Collision(Shape *s, Shape *s2)
 Collision::~Collision()
 {
   clearContacts();
-  delete cd;
+  if(cd) // test cd's validity (not detector is allocated for sentinels!)
+      delete cd;
 }
 
 void Collision::clearContacts()
 {
+  nextlvlptre = 0;
+  prevlvlptr = 0;
   if(c.size())
   {
-	  for(int i = 0; i < c.size(); i++)
-		  delete cnts[i];
-	  c.clear();
-	  delete cnts;
+      for(unsigned int i = 0; i < c.size(); i++)
+	  delete cnts[i];
+      c.clear();
+      delete cnts;
   }
 }
 
@@ -81,36 +105,51 @@ void Collision::removeFromList()
   if(preva->sa == sa)
     preva->nexta = nexta;
   else
+  {
+      assert(preva->sb == sa);
     preva->nextb = nexta;
+  }
 
   if(nexta->sa == sa)
     nexta->preva = preva;
   else
+  {
+      assert(preva->sb == sa);
     nexta->prevb = preva;
+  }
 
   if(prevb->sa == sb)
     prevb->nexta = nextb;
   else
+  {
+      assert(prevb->sb == sb);
     prevb->nextb = nextb;
+  }
 
   if(nextb->sa == sb)
     nextb->preva = prevb;
   else
+  {
+      assert(prevb->sb == sb);
     nextb->prevb = prevb;
+  }
 
   if(sentinel)
     assert(preva->nexta == preva->nextb || !preva->nextb);
-  // TODO: remove: Useless but OK for debug purpoise
-  preva =0;
+  nexta = 0; // mark as not in any list
+  nextb = 0;
+  preva = 0;
   prevb = 0;
-  nexta=0;
-  nextb=0;
+  nextlvlptre = 0;
+  prevlvlptr = 0;
 }
 void Collision::autoInsert()
 {
-  assert(preva == 0);
+  assert(nexta == 0);
   Collision *ca = sa->getCollisionList();
   Collision *cb = sb->getCollisionList();
+  assert(ca);
+  assert(cb);
   assert(ca->nexta == ca->nextb || !ca->nextb);
   assert(cb->nexta == cb->nextb || !cb->nextb);
   assert(ca->sa == ca->sb);
@@ -159,34 +198,36 @@ void Collision::autoInsert()
   assert(!cb->nextb);
 }
 
-void Collision::insertInLevel(Collision *c)
+void Collision::insertInLevele(Collision *c)
 {
-  //assert(!nextlvlptr && !prevlvlptr);
-  nextlvlptr = c->nextlvlptr;
+  assert(!nextlvlptre && !prevlvlptr);
+  nextlvlptre = c->nextlvlptre;
   prevlvlptr = c;
-  c->nextlvlptr = this;
-  nextlvlptr->prevlvlptr = this;
+  c->nextlvlptre = this;
+  nextlvlptre->prevlvlptr = this;
 }
 
 Collision *Collision::inPlaceSortList(Collision *lbegin)
 {
   Collision *lend = lbegin->prevlvlptr;
-  Collision *curr = lbegin->nextlvlptr;   // begin with the second element
+  Collision *curr = lbegin->nextlvlptre;   // begin with the second element
   Collision *next = curr; // save next element
   Collision *res = lbegin;
+  Island::verifyLvlPtrChain(lbegin);
   while(curr != lbegin)
     {
       if(curr->worstPenetrationAmount > res->worstPenetrationAmount)
         res = curr;
-      curr = curr->nextlvlptr;
+      curr = curr->nextlvlptre;
     }
   assert(res->worstPenetrationAmount < 1000);
 
   return res;
+  // TODO: use the sort-based algorithm instead of the naive approach
   // for all, do:
   while(curr != lend) // lend is a spetial case (handled separately)
     {
-      next = curr->nextlvlptr;
+      next = curr->nextlvlptre;
       Real currpen = curr->worstPenetrationAmount;
       while(true) // see stop condition in the next if statement
         {
@@ -201,12 +242,12 @@ Collision *Collision::inPlaceSortList(Collision *lbegin)
               // TODO: swap only at last iteration!
               Collision *prevptr = curr->prevlvlptr;
               // 6 pointers => 6 affectations
-              prevptr->prevlvlptr->nextlvlptr = curr;
+              prevptr->prevlvlptr->nextlvlptre = curr;
               curr->prevlvlptr = prevptr->prevlvlptr;
               prevptr->prevlvlptr = curr;
-              prevptr->nextlvlptr = curr->nextlvlptr;
-              curr->nextlvlptr->prevlvlptr = prevptr;
-              curr->nextlvlptr = prevptr;
+              prevptr->nextlvlptre = curr->nextlvlptre;
+              curr->nextlvlptre->prevlvlptr = prevptr;
+              curr->nextlvlptre = prevptr;
             }
           else
             break;
@@ -224,12 +265,12 @@ Collision *Collision::inPlaceSortList(Collision *lbegin)
           // TODO: swap only at last iteration!
           Collision *prevptr = curr->prevlvlptr;
           // 6 pointers => 6 affectations
-          prevptr->prevlvlptr->nextlvlptr = curr;
+          prevptr->prevlvlptr->nextlvlptre = curr;
           curr->prevlvlptr = prevptr->prevlvlptr;
           prevptr->prevlvlptr = curr;
-          prevptr->nextlvlptr = curr->nextlvlptr;
-          curr->nextlvlptr->prevlvlptr = prevptr;
-          curr->nextlvlptr = prevptr;
+          prevptr->nextlvlptre = curr->nextlvlptre;
+          curr->nextlvlptre->prevlvlptr = prevptr;
+          curr->nextlvlptre = prevptr;
         }
       else
         break;
@@ -266,7 +307,15 @@ bool CollisionArbiter::removeP(Pair *p)
 
 void CollisionArbiter::deleteP(Pair &p)
 {
-  delete (Collision *)p.e;
+    Collision *coll = (Collision *)p.e;
+    if(coll->nexta) // if still in the list remove it
+    {
+	printf("Removing an in-list pair!\n");
+	coll->removeFromList();
+    }
+    else
+	printf("Removing an not-in-list pair!\n");
+    delete coll;
 }
 
 void CollisionArbiter::addP(Pair *p, Shape *s, Shape *s2)
@@ -303,9 +352,14 @@ void CollisionArbiter::deleteObject(Shape *s)
   // All other collision should have been deleed by SAP,
   // so, head = first collision / tail = second collision
   Collision *c = s->getCollisionList();
+  // invalidate the collision list
+  assert((c->sa == c->sb));
+  assert((c->nexta->sa == c->nexta->sb));
+  s->setCollisionList(0, 0);
+  // must be sentinels
+  // delete it
   delete c->nexta;
   delete c;
-  //
 }
 
 void CollisionArbiter::notifyObjectMoved(Shape *s)
@@ -315,15 +369,22 @@ void CollisionArbiter::notifyObjectMoved(Shape *s)
 
 void CollisionArbiter::solve(std::vector<Collision*> &res)
 {
-  int n = 0;
+  int n;
   Pair *p;
+  std::stack<Pair *> todel;
+
+  n = 0;
   p = sap.solve(&n);
 
-  std::stack<Pair *> todel;
   for(int i = 0; i < n; i ++)
     {
+	assert(!((Collision*)p[i].e)->sa->isdeleting());
+	assert(!((Collision*)p[i].e)->sb->isdeleting());
       bool collisionLost = false;
-      if(!((Collision*)p[i].e)->sa->getParent()->isSleeping() || !((Collision*)p[i].e)->sb->getParent()->isSleeping())
+      if(
+	      !((Collision*)p[i].e)->sa->getParent()->isSleeping() 
+	      || !((Collision*)p[i].e)->sb->getParent()->isSleeping()
+	)
         {
           collisionLost = ((Collision *)p[i].e)->c.size() > 0;
 		  ((Collision *)p[i].e)->clearContacts();
@@ -338,7 +399,7 @@ void CollisionArbiter::solve(std::vector<Collision*> &res)
         {
           // TODO: useless, find a way to do it before integration
           // Wake up objects
-			printf("Collision lost!\n");
+	  printf("Collision lost!\n");
           ((Collision*)p[i].e)->sa->getParent()->setAwake(true);
           ((Collision*)p[i].e)->sb->getParent()->setAwake(true);
         }

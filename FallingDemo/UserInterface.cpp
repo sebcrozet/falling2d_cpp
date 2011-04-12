@@ -1,13 +1,60 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "UserInterface.h"
 #include <sstream>
+
+void removeObject(int, void *userdata)
+{
+    if(((MachineState *)userdata)->selectedObj)
+    {
+	pObject *po = ((MachineState *)userdata)->selectedObj;
+	((MachineState *)userdata)->selectedObj = 0;
+	((MachineState *)userdata)->w.removeObject(po->rb);
+	((MachineState *)userdata)->objs.erase
+	    (
+	     std::remove
+	     (
+	      ((MachineState *)userdata)->objs.begin(),
+	      ((MachineState *)userdata)->objs.end(),
+	      po
+	     ), 
+	     ((MachineState *)userdata)->objs.end()
+	    );
+	delete po;
+    }
+    // else, nothing to delete!
+}
+
+void toogledFixedItem(int, void *userdata)
+{
+    if(((MachineState *)userdata)->selectedObj != 0)
+    {
+	((MachineState *)userdata)->selectedObj->toogleFixed();
+    }
+    // else, nothing to (un)fix
+}
 
 void exitApplication(int, void *userdata)
 {
   ((MachineState *)userdata)->rwin.Close();
 }
 
-void pauseEngine(int id, void *userdata)
+void pauseEngine(int, void *userdata)
 {
   ((MachineState *)userdata)->w.setPaused(!((MachineState *)userdata)->w.getPaused());
 }
@@ -47,8 +94,6 @@ void changeDrawMode(int id, void *userdata)
   else if(id == 1007)
     ((MachineState *)userdata)->buttonstate = MachineState::DRAW_SQUARE;
   else if(id == 1008)
-    ((MachineState *)userdata)->buttonstate = MachineState::JOINT_FIX;
-  else if(id == 1009)
     ((MachineState *)userdata)->buttonstate = MachineState::DRAW_PLANE;
 }
 void initParseMenuCallback(void *userdata, wMenuItem *mi)
@@ -75,11 +120,21 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
       mi->setOnItemClicked(switchFlagOn);
       mi->setOnItemReleased(switchFlagOff);
     }
-  else if(mi->getId() >= 1004 && mi->getId() <= 1009)
+  else if(mi->getId() >= 1004 && mi->getId() <= 1008)
     {
       mi->setUserDatas(userdata);
       mi->setOnItemClicked(changeDrawMode);
     }
+  else if(mi->getId() == 1009)
+  {
+      mi->setUserDatas(userdata);
+      mi->setOnItemClicked(toogledFixedItem);
+  }
+  else if(mi->getId() == 1010)
+  {
+      mi->setUserDatas(userdata);
+      mi->setOnItemClicked(removeObject);
+  }
 }
 
 
@@ -98,15 +153,17 @@ UserInterface::UserInterface(MachineState &ms)
                  ">> :_?_1002 Show components\n"
                  ";_=_ SE\n"
                  ";_?_200 LE\n"
-				 ":_201 Integrate\n"
-				 ":_202 Solve\n"
+		 ":_201 Integrate\n"
+		 ":_202 Solve\n"
                  ";_=_ SE\n"
                  ";_?@_A_1004 LY\n"
                  ";_?_A_1005 LYPTS\n"
                  ";_?_A_1006 CI\n"
                  ";_?_A_1007 RE\n"
-                 ":_?_A_1009 Plane\n"
-                 ":_?_A_1008 Fix\n"
+                 //":_?_A_1008 Plane\n"
+                 ";_=_ SE\n"
+                 ":_1009 Fix\n"
+		 //":_1010 Del\n"
                  ";_=_ SE\n"
                  ":_=_ Falling Demo v0.0\n"
                  ,

@@ -1,7 +1,26 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
+// TODO: remove include (usefull only for debug)
 #include "Island.h"
+// end TODO
 
 Island::Island()
+    : nbrCtcts(0)
 { }
 
 Island::~Island()
@@ -15,21 +34,40 @@ void Island::pushToLevelOneChain(Collision *next)
 {
   if(stackLevels.empty())
     {
-      next->nextlvlptr = next;
+      next->nextlvlptre = next;
       next->prevlvlptr = next;
       stackLevels.push_back(next);
     }
   else
     {
-      next->insertInLevel(stackLevels[stackLevels.size()-1]);
+      next->insertInLevele(stackLevels[stackLevels.size()-1]);
+      verifyLvlPtrChain(next);
+      verifyLvlPtrChain(stackLevels[stackLevels.size()-1]);
     }
+}
+
+void Island::verifyLvlPtrChain(Collision *ptr)
+{
+  Collision *begin = ptr;
+  assert(!ptr->sa->isdeleting());
+  assert(!ptr->sb->isdeleting());
+  while(ptr->nextlvlptre != begin)
+  {
+      ptr = ptr->nextlvlptre;
+      assert(!ptr->sa->isdeleting());
+      assert(!ptr->sb->isdeleting());
+  }
+  // virify prev pointers
+  while(ptr->prevlvlptr != begin)
+      ptr = ptr->prevlvlptr;
 }
 
 void Island::calculateStackLevels()
 {
   // Make a breadth first research
   Collision *levelHead = 0;
-  Collision *levelLessOneHead = stackLevels[stackLevels.size()-1]; // previous level'head
+  assert(stackLevels.size());
+  Collision *levelLessOneHead = stackLevels[stackLevels.size()-1]; // previous level's head
   int currLevel = 2;
   graphNodes.push(0); // push level-1 mark
   do
@@ -57,7 +95,7 @@ void Island::calculateStackLevels()
         {
           if(next->collisionStackLevel < 0)
             {
-			  nbrCtcts++;
+	      nbrCtcts++;
               if(next->sa == sh)
                 {
                   if(next->c.size())
@@ -72,16 +110,24 @@ void Island::calculateStackLevels()
                         {
                           if(levelHead == 0)
                             {
-                              next->nextlvlptr = next; // make it circular
+                              next->nextlvlptre = next; // make it circular
                               next->prevlvlptr = next;
                               levelHead = next;
                               stackLevels.push_back(levelHead); // push new graph level
                             }
                           else
-                            next->insertInLevel(levelHead);
+			  {
+                            next->insertInLevele(levelHead);
+			    verifyLvlPtrChain(levelHead);
+			    verifyLvlPtrChain(next);
+			  }
                         }
                       else // insert in last level (levelLessOne must be != 0)
-                        next->insertInLevel(levelLessOneHead);
+		      {
+                        next->insertInLevele(levelLessOneHead);
+			verifyLvlPtrChain(levelLessOneHead);
+			verifyLvlPtrChain(next);
+		      }
                     }
                   next = next->nexta;
                 }
@@ -99,16 +145,22 @@ void Island::calculateStackLevels()
                         {
                           if(levelHead == 0)
                             {
-                              next->nextlvlptr = next; // make it circular
+                              next->nextlvlptre = next; // make it circular
                               next->prevlvlptr = next;
                               levelHead = next;
                               stackLevels.push_back(levelHead); // push new graph level
                             }
                           else
-                            next->insertInLevel(levelHead);
+			  {
+                            next->insertInLevele(levelHead);
+			    verifyLvlPtrChain(levelHead);
+			  }
                         }
                       else // insert in last level (levelLessOne must be != 0)
-                        next->insertInLevel(levelLessOneHead);
+		      {
+                        next->insertInLevele(levelLessOneHead);
+			verifyLvlPtrChain(levelLessOneHead);
+		      }
                     }
                   next = next->nextb;
                 }
@@ -134,8 +186,10 @@ void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
   //if(next->sa == coll) ==> always true in the first sentinel
   assert(next->sa == next->sb);
   next = next->nexta;
+  assert(next->sa != next->sb);
   while(next->sa != next->sb) // second sentinel reached if ==
     {
+	assert(!next->sa->isdeleting() && !next->sb->isdeleting());
       if(next->sa == coll)
         {
           // go on next's node
@@ -208,8 +262,8 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
       c->collisionStackLevel = -1;
       c->sa->setStackLevel(-1);
       c->sb->setStackLevel(-1);
-      //c->nextlvlptr = 0;
-      //c->prevlvlptr = 0;
+      c->nextlvlptre = 0;
+      c->prevlvlptr = 0;
     }
   // Make a depth first research
   for(unsigned int i=0; i<colls.size(); i++)
@@ -219,10 +273,12 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
           // new island detected
           Island *isl = new Island();
           // recursive call with non-fixed object
+	  isl->isnonfix = false;
           if(colls[i]->sa->isFixed())
             {
               colls[i]->sb->setStackLevel(-2);
               batchIsland(isl,colls[i]->sb);
+	      assert(!isl->isEmpty());
               // island will always contain one object
             }
           else
@@ -231,6 +287,7 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
               batchIsland(isl,colls[i]->sa);
               if(isl->isEmpty()) // empty island => no fixed objects in the graph
                 {
+		    isl->isnonfix = true;
                   Shape *coll= colls[i]->sa;
                   coll->setStackLevel(0); // select one object as base
                   isl->insertToLevelOne(coll);
@@ -262,6 +319,7 @@ void Island::batchIslands(std::vector<Collision*> &colls, std::stack<Island*> &i
                         }
                     }
                 }
+	        assert(!isl->isEmpty());
             }
           // push to islands stack
           islands.push(isl);

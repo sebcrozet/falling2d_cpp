@@ -1,11 +1,26 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "FallingDemo.h"
 
-int drawLimit = 0;
-int main(int argc, char* argv[])
+int main(int, char**)
 {
   sf::WindowSettings ws;
-  ws.AntialiasingLevel = 8;
+  ws.AntialiasingLevel = 0;
   sf::RenderWindow rw(
     sf::VideoMode(800,600,32),
     "Falling Demo v0.1",
@@ -17,6 +32,7 @@ int main(int argc, char* argv[])
   // pause the engine at the beginning
   ms.w.setPaused(true);
   ms.drawstate |= MachineState::DRAW_BORDERS;
+  ms.selectedObj = 0;
   UserInterface ui(ms);
   sf::Clock cl;
   sf::Clock pcl;
@@ -25,7 +41,7 @@ int main(int argc, char* argv[])
       sf::Event ev;
 	  cl.Reset();
       while(rw.GetEvent(ev))
-        dispatchEvent(ev, ms,ui);
+        ::dispatchEvent(ev, ms,ui);
 	  float bph = cl.GetElapsedTime();
       ms.w.solve(0.016f);
 	  ms.elapsedPhysicsTime = cl.GetElapsedTime() - bph;
@@ -80,12 +96,31 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
                 ms.vpts.push_back(Point2D(x/SCALE, y/SCALE));
             }
           break;
+	default:
+	  break;
         }
     }
 }
 
 void mousePushed(MachineState &ms, float x, float y)
 {
+  unsigned int i;
+  for(i = 0; i < ms.objs.size(); i++)
+  {
+      if(ms.objs[i]->rb->containsPoint(Point2D(x,y)))
+      {
+	  printf("Found!\n");
+	  ms.selectedObj = ms.objs[i];
+	  break;
+      }
+  }
+  if(i == ms.objs.size())
+      ms.selectedObj = 0;
+  else
+  {
+      return;
+  }
+
   if(ms.lbuttondown)
     {
       switch(ms.buttonstate)
@@ -99,13 +134,8 @@ void mousePushed(MachineState &ms, float x, float y)
         case MachineState::DRAW_POINTS:
           ms.vpts.push_back(Point2D(x/SCALE, y/SCALE));
           break;
-        case MachineState::JOINT_FIX:
-          for(int i = 0; i < ms.objs.size(); i++)
-            {
-              if(ms.objs[i]->rb->containsPoint(Point2D(x,y)))
-                ms.objs[i]->toogleFixed();
-            }
-          break;
+	default:
+	  break;
         }
     }
 }
@@ -131,10 +161,12 @@ void makePolyFromvptsList(MachineState &ms)
 
 void mouseReleased(MachineState &ms, float x, float y)
 {
-  int n;
-  Point2D *pts;
   Point2D ul;
   Point2D dr;
+  Point2D *optvect;
+
+  if(ms.selectedObj || ms.vpts.size() < 2)
+      return;
   if(ms.lbuttondown)
     {
       switch(ms.buttonstate)
@@ -145,7 +177,11 @@ void mouseReleased(MachineState &ms, float x, float y)
         case MachineState::DRAW_SQUARE:
         case MachineState::DRAW_MOVE:
           if(ms.buttonstate == MachineState::DRAW_MOVE)
-            ms.vpts.push_back(Point2D(x/SCALE,y/SCALE));
+	  {
+	      if(ms.vpts.size() < 3)
+		  return;
+	      ms.vpts.push_back(Point2D(x/SCALE,y/SCALE));
+	  }
           else
             {
               // create a rectangle adding the two missing points
@@ -173,7 +209,7 @@ void mouseReleased(MachineState &ms, float x, float y)
           ms.vpts.clear();
           break;
         case MachineState::DRAW_PLANE:
-          Point2D *optvect = new Point2D(ms.vpts[1]);
+          optvect = new Point2D(ms.vpts[1]);
           ms.objs.push_back(
             new pObject(
               optvect,
@@ -185,6 +221,8 @@ void mouseReleased(MachineState &ms, float x, float y)
           );
           delete optvect;
           break;
+	default:
+	  break;
         }
     }
 }
@@ -255,9 +293,8 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
         }
       else
         inc = -1;
-      for(int i = 0; i < ms.objs.size(); i++)
+      for(unsigned int i = 0; i < ms.objs.size(); i++)
         ms.objs[i]->incrementLimit(inc);
-      drawLimit+=inc;
 
     }
   else if(ev.Type == sf::Event::Resized)
@@ -324,7 +361,7 @@ void exploreOBBtree(sf::RenderWindow &screen,OBBtree *t, Vector2D v, int deepnes
   exploreOBBtree(screen,t->l, v, deepness, curr+1);
 }
 
-void drawDrawingShape(MachineState &ms, UserInterface &ui)
+void drawDrawingShape(MachineState &ms, UserInterface &)
 {
   if(ms.vpts.size() < 2)
     return;
@@ -382,13 +419,13 @@ void drawDrawingShape(MachineState &ms, UserInterface &ui)
                      2,
                      sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
       break;
+    default:
+      break;
     }
 }
 
 void draw(MachineState &ms, UserInterface &ui)
 {
-  int sens = -1;
-  int currR = 0;
 
   ms.rwin.Clear(sf::Color(200,191,231));
   ms.rwin.SetView(ms.rwin.GetDefaultView());

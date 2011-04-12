@@ -1,3 +1,19 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "pObject.h"
 
@@ -81,36 +97,14 @@ void pObject::toogleFixed()
     }
 }
 
-void pObject::drawp(sf::RenderWindow &rw, Poly *pol)
-{
-  DoubleLinkedList<Point *> *curr = pol->pts;
-  srand(icall);
-  int rcomp = rand()%250;
-  int gcomp = rand()%250;
-  int bcomp = rand()%250;
-  sf::Shape ppol;
-  do
-    {
-      ppol.AddPoint(
-        curr->getValue()->pt.getX() + polx,
-        curr->getValue()->pt.getY() + poly,
-        sf::Color(rcomp, gcomp, bcomp)
-      );
-      curr = curr->getnext();
-    }
-  while(curr != pol->pts);
-  rw.Draw(ppol);
-  icall+= 10;
-}
-
 void pObject::draw(const MachineState &ms)
 {
   sf::Shape sh;
   Vector2D pos;
+
   icall = 0;
   poly = rb->getPos().getY();
   polx = rb->getPos().getX();
-  /*t->parcgraph(rw, pObject::drawp);*/
   switch(otype)
     {
     case pObject::O_CIRCLE:
@@ -120,8 +114,8 @@ void pObject::draw(const MachineState &ms)
              pos.getY()*SCALE,
              nb,
              sf::Color(r,g,b),
-             (ms.drawstate & MachineState::DRAW_BORDERS) ? 3.f : 0.f,
-             sf::Color(r - 70, g - 70,b - 70)
+             ms.selectedObj == this ? 4.f : (ms.drawstate & MachineState::DRAW_BORDERS) ? 3.f : 0.f,
+             ms.selectedObj == this ? sf::Color(255, 255, 255) : sf::Color(r - 70, g - 70,b - 70)
            );
       ms.rwin.Draw(sh);
       ms.rwin.Draw(
@@ -150,11 +144,11 @@ void pObject::draw(const MachineState &ms)
                       grand = rand()%255;
                       brand = rand()%255;
                     }
-				  else if(rb->isSleeping())
-				  {
-					  rrand = grand = brand = 0;
-				  }
-                  else
+		  else if(rb->isSleeping())
+		  {
+		      rrand = grand = brand = 0;
+		  }
+		  else
                     {
                       rrand = r;
                       grand = g;
@@ -191,11 +185,11 @@ void pObject::draw(const MachineState &ms)
             }
         }
       {
-        unsigned int j = nb-1;
-        if(ms.drawstate & MachineState::DRAW_BORDERS)
+        int j = nb-1;
+        if(ms.drawstate & MachineState::DRAW_BORDERS || ms.selectedObj == this)
           {
 
-            for(unsigned int i = 0; i < nb; j = i,i++)
+            for(int i = 0; i < nb; j = i,i++)
               {
                 Point2D vptsi = p->toGlobal(pts[j]);
                 Point2D vptsi1 = p->toGlobal(pts[i]);
@@ -205,8 +199,8 @@ void pObject::draw(const MachineState &ms)
                     vptsi.getY()*SCALE,
                     vptsi1.getX()*SCALE,
                     vptsi1.getY()*SCALE,
-                    3.f,
-                    sf::Color(r - 70, g - 70,b - 70)
+                    ms.selectedObj == this ? 4.f : 3.f,
+                    ms.selectedObj == this ? sf::Color(255, 255, 255) : sf::Color(r - 70, g - 70,b - 70)
                   )
                 );
               }
@@ -216,7 +210,7 @@ void pObject::draw(const MachineState &ms)
         sf::Shape::Circle(
           p->toGlobal(Point2D(0,0)).getX(),
           p->toGlobal(Point2D(0,0)).getY(),
-          3, sf::Color(r - 70, g - 70, b - 70),2
+          1, sf::Color(r - 70, g - 70, b - 70),2
         )
       );
       break;

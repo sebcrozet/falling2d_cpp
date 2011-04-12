@@ -1,3 +1,19 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 // Falling.cpp : définit les fonctions exportées pour l'application DLL.
 //
 #include "stdafx.h"
@@ -26,7 +42,7 @@ void World::dumpAddDelete()
       RigidBody * r = removeWaitingQueue.top();
       ca.deleteObject(r->getShape());
       removeWaitingQueue.pop();
-      std::remove(objs.begin(),objs.end(),r);
+      objs.erase(std::remove(objs.begin(),objs.end(),r), objs.end());
     }
   while(!addWaitingQueue.empty())
     {
@@ -59,7 +75,7 @@ void World::solve(Real dt)
   dumpAddDelete();
   if(paused)
     return;
-  checkSleeps(dt);
+  //checkSleeps(dt);
   integrate(dt);
   solvePenetrationsAndImpulse(dt);
 }
@@ -86,6 +102,11 @@ void World::solvePenetrationsAndImpulse(Real dt)
 		  // TODO:  avoid this horrible stack transfert
 		  isls2.push(isls.top());
 		  isls.top()->calculateStackLevels();
+		  for(unsigned int i = 0; i < isls.top()->stackLevels.size(); i++)
+		  {
+		      printf("Fixed? %i\n", isls.top()->isnonfix);
+		      //Island::verifyLvlPtrChain(isls.top()->stackLevels[i]);
+		  }
 		  isls.pop();
 	  }
 	  //
@@ -109,5 +130,15 @@ void World::solvePenetrationsAndImpulse(Real dt)
 		  isls2.pop();
 	  }
 	  ImpulseSolver::solve(ctcts,dt);
+	  // TODO: remove test
+	  for(unsigned int i = 0; i < colls.size(); i++)
+	  {
+	      Collision *c = colls[i];
+	      c->collisionStackLevel = -1;
+	      c->sa->setStackLevel(-1);
+	      c->sb->setStackLevel(-1);
+	      c->nextlvlptre = 0;
+	      c->prevlvlptr = 0;
+	  }
     }
 }

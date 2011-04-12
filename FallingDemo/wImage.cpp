@@ -1,3 +1,19 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "wImage.h"
 
@@ -21,19 +37,19 @@ wImage::wImage(int x, int y, int w, int h, std::string path, int stretch)
 }
 
 
-bool wImage::interpretEvent(sf::Event &ev, float mx, float my)
+bool wImage::interpretEvent(sf::Event &, float, float)
 {
   return false;
 }
 
-void wImage::update(float dt)
+void wImage::update(float)
 { }
 
 bool wImage::translate(float x, float y)
 {
   if(useShape)
     {
-      for(int i=0; i<shs.size(); i++)
+      for(unsigned int i=0; i<shs.size(); i++)
         shs[i]->Move(x,y);
     }
   else
@@ -45,7 +61,7 @@ bool wImage::translate(float x, float y)
 void wImage::draw(sf::RenderWindow &rw)
 {
   if(useShape)
-    for(int i=0; i<shs.size(); i++)
+    for(unsigned int i=0; i<shs.size(); i++)
       rw.Draw(*shs[i]);
   else
     rw.Draw(img);
@@ -63,7 +79,7 @@ bool wImage::setSize(float w, float h)
     {
       if(useShape)
         {
-          for(int i = 0; i < shs.size(); i++)
+          for(unsigned int i = 0; i < shs.size(); i++)
             shs[i]->Scale(1, h / wWidget::rect.GetHeight());
         }
       else
@@ -75,7 +91,7 @@ bool wImage::setSize(float w, float h)
     {
       if(useShape)
         {
-          for(int i = 0; i < shs.size(); i++)
+          for(unsigned int i = 0; i < shs.size(); i++)
             shs[i]->Scale(w /  wWidget::rect.GetWidth(), 1);
         }
       else
@@ -238,7 +254,7 @@ void wImage::shapeLect(float w, float h)
   shs.push_back(sh);
   sh->AddPoint(0,0,sf::Color(255, 255, 255), sf::Color(100,100,100));
   sh->AddPoint(0,h,sf::Color(255, 255, 255), sf::Color(100,100,100));
-  sh->AddPoint(h,h/2.f,sf::Color(255, 255, 255), sf::Color(100,100,100));
+  sh->AddPoint(w,h/2.f,sf::Color(255, 255, 255), sf::Color(100,100,100));
   sh->SetOutlineWidth(2.f);
 }
 void wImage::shapeTickR(float w, float h)
@@ -247,7 +263,7 @@ void wImage::shapeTickR(float w, float h)
   shs.push_back(sh);
   sh->AddPoint(0,0,sf::Color(100,100,100));
   sh->AddPoint(0,h,sf::Color(100,100,100));
-  sh->AddPoint(h,h/2.f,sf::Color(100,100,100));
+  sh->AddPoint(w,h/2.f,sf::Color(100,100,100));
 }
 void wImage::shapeTickD(float w, float h)
 {
@@ -272,8 +288,9 @@ void wImage::shapeCircle(float w, float h)
   *sh = sf::Shape::Circle(w/2.f, h/2.f, w/2.f,sf::Color(100, 100, 100), 2, sf::Color(200, 200, 200));
 }
 
-void wImage::shapeDelete(float w, float h)
+void wImage::shapeDelete(float, float)
 {
+    // FIXME
 }
 
 void wImage::shapeSeparator(float w, float h)

@@ -1,8 +1,30 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "SAPsolver.h"
 
 
-SAPsolver::SAPsolver(void (*cb_addobj)(Pair *, Shape *, Shape *), bool (*cb_removeobj)(Pair *), void (*cb_deleteobj)(Pair &)) : cb_addobj(cb_addobj), cb_removeobj(cb_removeobj), cb_deleteobj(cb_deleteobj)
+SAPsolver::SAPsolver(
+	void (*cb_addobj)(Pair *, Shape *, Shape *), 
+	bool (*cb_removeobj)(Pair *), 
+	void (*cb_deleteobj)(Pair &)) 
+	: cb_addobj(cb_addobj), 
+	cb_removeobj(cb_removeobj), 
+	cb_deleteobj(cb_deleteobj)
 {
   pm.setDeletecallback(cb_deleteobj);
   // insert sentinels
@@ -10,6 +32,8 @@ SAPsolver::SAPsolver(void (*cb_addobj)(Pair *, Shape *, Shape *), bool (*cb_remo
   epx.push_back(EndPoint(MACHINE_MAX, true, 0));
   epy.push_back(EndPoint(-MACHINE_MAX, false, 0));
   epy.push_back(EndPoint(MACHINE_MAX, true, 0));
+  verifylist(epx);
+  verifylist(epy);
 }
 
 SAPsolver::~SAPsolver()
@@ -60,6 +84,8 @@ void SAPsolver::updateBoxCollisionPairs(AABB &b)
       updateEndPointMin(epy, &b.mins[1], xm, xM, ym, yM, false, 1);
       updateEndPointMax(epy, &b.maxs[1], xm, xM, ym, yM, 1);
     }
+  verifylist(epx);
+  verifylist(epy);
 }
 
 void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, Real xm, Real xM, Real ym, Real yM, int xyid)
@@ -67,6 +93,7 @@ void SAPsolver::updateEndPointMax(std::vector<EndPoint> &list,int *im, Real xm, 
   int i = *im;
   EndPoint en = list[i];
   Shape *spr = aabbs[en.getParent()].parent;
+  assert(!spr->isdeleting());
   bool sens = list[i + 1].getValue() < en.getValue();
   if(sens)
     {
@@ -208,6 +235,8 @@ Pair *SAPsolver::solve(int *nbres)
       updateBoxCollisionPairs(b);
     }
   *nbres = pm.getNbActivePairs();
+  verifylist(epx);
+  verifylist(epy);
   return pm.getActivePairs();
 }
 
@@ -260,6 +289,18 @@ void SAPsolver::addObject(Shape *s)
   s->updateAABB();
   s->updateAABB(&epx[endi - 1], &epx[endi],&epy[endi - 1], &epy[endi]);
   updateAddedBoxCollisionPairs(b);
+  verifylist(epx);
+  verifylist(epy);
+}
+
+void SAPsolver::verifylist(std::vector<EndPoint> &ep)
+{
+    for(unsigned int i = 0; i < ep.size() - 1; i++)
+    {
+	assert(ep[i+1].getValue() >= ep[i].getValue());
+	assert(ep[i].getValue() == -MACHINE_MAX || ep[i].getValue() == MACHINE_MAX || !aabbs[ep[i].getParent()].parent->isdeleting());
+    }
+    assert(ep[ep.size() - 1].getValue() == -MACHINE_MAX || ep[ep.size() - 1].getValue() == MACHINE_MAX || !aabbs[ep[ep.size() - 1].getParent()].parent->isdeleting());
 }
 
 void SAPsolver::updateAddedBoxCollisionPairs(AABB &b)
@@ -369,14 +410,14 @@ void SAPsolver::removeObject(Shape *s)
   // same for y
   for(int i = aabbs[removeid].maxs[1] + 1; i < nbep - 1; i++) // stop at nbep - 1 to not touch sentinels
     {
-      if(epx[i].isMaxValue())
+      if(epy[i].isMaxValue())
         aabbs[epy[i].getParent()].maxs[1] = i - 2;
       else
         aabbs[epy[i].getParent()].mins[1] = i - 2;
     }
-  for(int i = aabbs[removeid].mins[1] + 1; i < aabbs[removeid].maxs[0]; i++)
+  for(int i = aabbs[removeid].mins[1] + 1; i < aabbs[removeid].maxs[1]; i++)
     {
-      if(epx[i].isMaxValue())
+      if(epy[i].isMaxValue())
         aabbs[epy[i].getParent()].maxs[1] = i - 1;
       else
         aabbs[epy[i].getParent()].mins[1] = i - 1;
@@ -404,7 +445,14 @@ void SAPsolver::removeObject(Shape *s)
     pm.removePair(removeid, toremove[i]);
   // remove AABB
   // dont swap with last box to avoid false id in hash table (updating everything is costly)
-  // so just let an hole and ann index to emply aabb array place
+  // so just let an hole and an index to emply aabb array place
   emptyaabbs.push(removeid);
+  // remove the aabb from the pending updates list
+  printf("(a) %i\n", updateids.size());
+  updateids.erase(std::remove(updateids.begin(), updateids.end(), removeid), updateids.end());
+  printf("(b) %i\n", updateids.size());
+  s->setdeleting();
+  verifylist(epx);
+  verifylist(epy);
   // done
 }

@@ -1,3 +1,19 @@
+/* Copyright (C) 2011 CROZET Sébastien
+
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 #include "stdafx.h"
 #include "wContener.h"
 
@@ -13,7 +29,7 @@ wContener::wContener(
   wContener::InsertMode imode,
   wContener::WrapMode wmode
 )
-  : wWidget(x, y, w, y, visible, order),
+  : wWidget(x, y, w, h, visible, order),
     paddingRL(prl),
     paddingUD(pud),
     im(imode), wm(wmode)
@@ -46,7 +62,7 @@ bool wContener::translate(float x, float y)
 {
   if(im!=wContener::absolute)
     {
-      for(int i = 0; i < fils.size(); i++)
+      for(unsigned int i = 0; i < fils.size(); i++)
         fils[i]->translate(x, y);
     }
   rect.Offset(x, y);
@@ -151,7 +167,7 @@ void wContener::updatePositions()
   if(im == wContener::alignLeftRight)
     {
       int currx = rect.Left + paddingRL;
-      for(int i = 0; i < filsgrid.size(); i++)
+      for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           wWidget *ww = filsgrid[i]->w;
           currx += filsgrid[i]->mL;
@@ -162,7 +178,7 @@ void wContener::updatePositions()
   else if(im == wContener::alignTopBottom)
     {
       int curry = rect.Top + paddingUD;
-      for(int i = 0; i < filsgrid.size(); i++)
+      for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           wWidget *ww = filsgrid[i]->w;
           curry += filsgrid[i]->mU;
@@ -173,7 +189,7 @@ void wContener::updatePositions()
   // adapt sub objects' size if needed
   if(im == wContener::alignTopBottom)
     {
-      for(int i = 0; i < filsgrid.size(); i++)
+      for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           wWidget *wdg = filsgrid[i]->w;
           wdg->setSize(
@@ -190,7 +206,7 @@ void wContener::updatePositions()
     }
   if(im == wContener::alignLeftRight)
     {
-      for(int i = 0; i < filsgrid.size(); i++)
+      for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           wWidget *wdg = filsgrid[i]->w;
           wdg->setSize(
@@ -210,7 +226,7 @@ void wContener::updateSize()
   float newh = 0;
   if(AND(wm, wContener::wrapW))
     {
-      for(int i = 0; i < filsgrid.size(); i++)
+      for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           float w = filsgrid[i]->w->getRect().GetWidth()
                     + filsgrid[i]->mR
@@ -229,7 +245,7 @@ void wContener::updateSize()
     }
   if(AND(wm, wContener::wrapH))
     {
-      for(int i = 0; i < filsgrid.size(); i++)
+      for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           int h = filsgrid[i]->w->getRect().GetHeight()
                   + filsgrid[i]->mU
