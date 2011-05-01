@@ -131,11 +131,12 @@ void pObject::draw(const MachineState &ms)
       );
       break;
     case pObject::O_POLY:
-      if(p->nbrSubShapes)
+
+      if(p->getNbrSubShapes())
         {
           if(!rb->isFixed() || (ms.drawstate & MachineState::DRAW_COMPONENTS))
             {
-              for(int j = 0; j < p->nbrSubShapes; j++)
+              for(int j = 0; j < p->getNbrSubShapes(); j++)
                 {
                   sf::Shape sh;
                   int rrand;
@@ -158,9 +159,9 @@ void pObject::draw(const MachineState &ms)
                       grand = g;
                       brand = b;
                     }
-                  for(int i = 0; i < p->subShapes[j]->nbrPts; i++)
+                  for(int i = 0; i < p->getSubShape(j)->getNbrPts(); i++)
                     {
-                      Falling::Point2D ptsi = p->toGlobal(p->subShapes[j]->pts[i]);
+                      Falling::Point2D ptsi = p->toGlobal(p->getSubShape(j)->getPts()[i]);
                       sh.AddPoint(
                         ptsi.getX()*SCALE,
                         ptsi.getY()*SCALE,
@@ -172,12 +173,12 @@ void pObject::draw(const MachineState &ms)
             }
           else
             {
-              for(int j = 0; j < p->nbrSubShapes; j++)
+              for(int j = 0; j < p->getNbrSubShapes(); j++)
                 {
                   sf::Shape sh;
-                  for(int i = 0; i < p->subShapes[j]->nbrPts; i++)
+                  for(int i = 0; i < p->getSubShape(j)->getNbrPts(); i++)
                     {
-                      Falling::Point2D ptsi = p->toGlobal(p->subShapes[j]->pts[i]);
+                      Falling::Point2D ptsi = p->toGlobal(p->getSubShape(j)->getPts()[i]);
                       sh.AddPoint(
                         ptsi.getX()*SCALE,
                         ptsi.getY()*SCALE,
@@ -297,8 +298,8 @@ void pObject::draw(const MachineState &ms)
 		      inter1.getY(),
 		      inter2.getX(),
 		      inter2.getY(),
-		      3.f,
-		      sf::Color(100, 100, 100) 
+		      ms.selectedObj == this? 4.0f : 3.f,
+		      ms.selectedObj == this? sf::Color(255, 255, 255) : sf::Color(100, 100, 100) 
 		      )
 		  );
       }

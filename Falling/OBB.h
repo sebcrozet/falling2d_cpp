@@ -14,7 +14,6 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#define DEBUGMOD
 #ifndef _OBB
 #include "TunningConstants.h"
 #include "Shapes.h"
@@ -24,11 +23,7 @@ namespace Falling
 {
     class OBB
     {
-#ifdef DEBUGMOD
-	public:
-#else
 	private:
-#endif
 	    ImplicitShape *parent;
 	    Vector2D pts[4];
 	    Vector2D axis[2];

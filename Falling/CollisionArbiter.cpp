@@ -116,7 +116,7 @@ namespace Falling
 	    nexta->preva = preva;
 	else
 	{
-	    assert(preva->sb == sa);
+	    assert(nexta->sb == sa);
 	    nexta->prevb = preva;
 	}
 
@@ -132,7 +132,7 @@ namespace Falling
 	    nextb->preva = prevb;
 	else
 	{
-	    assert(prevb->sb == sb);
+	    assert(nextb->sb == sb);
 	    nextb->prevb = prevb;
 	}
 
@@ -292,7 +292,7 @@ namespace Falling
 
     CollisionArbiter::~CollisionArbiter()
     {
-	s.clear();
+		s.clear();
     }
 
     bool CollisionArbiter::removeP(Pair *p)
@@ -382,8 +382,8 @@ namespace Falling
 
 	for(int i = 0; i < n; i ++)
 	{
-	    assert(!((Collision*)p[i].e)->sa->isdeleting());
-	    assert(!((Collision*)p[i].e)->sb->isdeleting());
+	    assert(!(((Collision*)p[i].e)->sa->isdeleting()));
+	    assert(!(((Collision*)p[i].e)->sb->isdeleting()));
 	    bool collisionLost = false;
 	    if(
 		    !((Collision*)p[i].e)->sa->getParent()->isSleeping() 

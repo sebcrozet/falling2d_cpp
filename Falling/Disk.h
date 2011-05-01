@@ -24,7 +24,6 @@ namespace Falling
     class Disk : public ImplicitShape, public Shape
     {
 	private:
-	    OBB *obb;
 	    Real radiuslessM, radius;
 	public:
 	    Disk(const Point2D &pt, Real radius, bool fixed);

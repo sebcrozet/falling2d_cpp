@@ -36,10 +36,9 @@ protected:
     int x, int y, int w,
     int h, bool visible,
     int zOrder);
-  virtual ~wWidget();
-
 
 public:
+  virtual ~wWidget();
   virtual bool translate(float x, float y);
   virtual bool setSize(float w, float h);
   virtual bool setRect(float x, float y, float w, float h);

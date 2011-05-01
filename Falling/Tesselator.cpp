@@ -35,19 +35,20 @@ namespace Falling
     { }
     /*
      * Destructor
-     * Free both double linked lists but NOT thein contents
+     * Free both double linked lists but NOT their contents
      * (Either or not botht edge's poly are null)
      */
     Poly::~Poly()
     {
-	//adj->DestroyList();
-	//pts->DestroyList();
+		//adj->DestroyList();
+		//pts->DestroyList();
     }
 
 
     //#pragma region As
     void Poly::testAdj()
     {
+		return;
 	DoubleLinkedList<Edge *> *adjparc = this->adj;
 	DoubleLinkedList<Point *> *parc = this->pts;
 	// test if not degenerate
@@ -123,6 +124,8 @@ namespace Falling
 	    delete adj->getnext()->getValue();
 	if(adj->getprev()->getValue()->isnull())
 	    delete adj->getprev()->getValue();
+	adj->DestroyList();
+	pts->DestroyList();
 	delete this;
     }
 
@@ -623,7 +626,10 @@ namespace Falling
     Point::~Point()
     {
 	if(adjlist)
+	{
 	    adjlist->DestroyList();
+		adjlist = 0;
+	}
     }
 
     /* * isInCircumcircle(...)
@@ -707,6 +713,8 @@ namespace Falling
     void Point::removeAdjascent(Poly *toremove)
     {
 	adjlist = DoubleLinkedList<Poly *>::RemoveExisting(adjlist, toremove);
+	if(!adjlist)
+		printf("Should have been deleted...\n");
     }
     //#pragma endregion
 
@@ -933,7 +941,7 @@ namespace Falling
 	// end of pseudo-polygon triangulation!
     }
     // Tesselator must be already initialized before running this
-    void Tesselator::insertPoint(Point2D &point, Point **gpoints)
+    bool Tesselator::insertPoint(Point2D &point, Point **gpoints)
     {
 	std::stack<Poly *> toVerify;
 	Point *pt;
@@ -942,7 +950,7 @@ namespace Falling
 	// if already exists, do nothing
 	(*gpoints) = pt;
 	if(!toSplit)
-	    return;
+	    return false;
 	// else determine split type
 	// determine if point is in an edge
 	DoubleLinkedList<Edge *> *curr = toSplit->adj;
@@ -989,6 +997,7 @@ namespace Falling
 	}
 	// set as last inserted point
 	Tesselator::currpt = pt;
+	return true;
     }
     // Edge insertion
     void Tesselator::insertEdge(Point *begin, Point *end)
@@ -1159,6 +1168,7 @@ namespace Falling
 
     int Tesselator::initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *holespts[], int nbholes, int nbptsholes[], Point2D ***respts, int **nbptsres)
     {
+	std::vector<Point *> pointstodelete;
 	// find bounding box and insert
 	// 4 virtual points (create a polygon
 	// and split its diagonal)
@@ -1205,15 +1215,19 @@ namespace Falling
 	Poly *p = new Poly();
 	Point *npt = new Point(Point2D(mx,my));
 	npt->addAdjascent(p);
+	pointstodelete.push_back(npt);
 	p->pts = new DoubleLinkedList<Point *>(npt);
 	npt = new Point(Point2D(Mx,my));
 	npt->addAdjascent(p);
+	pointstodelete.push_back(npt);
 	p->pts->InsertAfter(npt);
 	npt = new Point(Point2D(Mx,My));
 	npt->addAdjascent(p);
+	pointstodelete.push_back(npt);
 	p->pts->getnext()->InsertAfter(npt);
 	npt = new Point(Point2D(mx,My));
 	npt->addAdjascent(p);
+	pointstodelete.push_back(npt);
 	p->pts->InsertBefore(npt);
 	p->adj = new DoubleLinkedList<Edge *>(new Edge(p, 0));
 	p->adj->InsertAfter(new Edge(p, 0));
@@ -1235,13 +1249,18 @@ namespace Falling
 	{
 	    (*ptgraphlist) = new Point *[nbptsholes[i]];
 	    for (int j = 0; j <	nbptsholes[i]; j++)
-		insertPoint(holespts[i][j], &(*(ptgraphlist + i)[j]));
+		{
+		if(insertPoint(holespts[i][j], &((*(ptgraphlist + i))[j])))
+			pointstodelete.push_back((*(ptgraphlist + i))[j]);
+		}
 	}
 	(*(ptgraphlist + nbholes)) = new Point *[nbpts];
 	for(int i = 0; i< nbpts; i++)
-	    insertPoint(pts[i], &((*(ptgraphlist + nbholes))[i]));
+	{
+	    if(insertPoint(pts[i], &((*(ptgraphlist + nbholes))[i])))
+			pointstodelete.push_back((*(ptgraphlist + nbholes))[i]);
+	}
 	// detect edges intersections and addn intersections points
-	std::stack<Point *> steinerpoints;
 	// TODO: remove test variable
 	int nbinter = 0;
 	// end todo
@@ -1265,8 +1284,8 @@ namespace Falling
 			    Point *steiner;
 			    // insert intersecion point
 			    //printf("Intersection found: bparam: %f", bparam1);
-			    insertPoint(inter, &steiner);
-			    steinerpoints.push(steiner);
+			    if(insertPoint(inter, &steiner))
+					pointstodelete.push_back(steiner);
 			    steiner->marked = true;
 			}
 		    }
@@ -1284,8 +1303,8 @@ namespace Falling
 			Point *steiner;
 			// insert intersecion point
 			//printf("Intersection found: bparam: %f", bparam1);
-			insertPoint(inter, &steiner);
-			steinerpoints.push(steiner);
+			if(insertPoint(inter, &steiner))
+				pointstodelete.push_back(steiner);
 			steiner->marked = true;
 		    }
 		}
@@ -1302,8 +1321,8 @@ namespace Falling
 			Point *steiner;
 			//printf("Intersection found: bparam: %f", bparam1);
 			// insert intersecion point
-			insertPoint(inter, &steiner);
-			steinerpoints.push(steiner);
+			if(insertPoint(inter, &steiner))
+				pointstodelete.push_back(steiner);
 			steiner->marked = true;
 		    }
 		}
@@ -1322,7 +1341,7 @@ namespace Falling
 		if(bparam1 != -1.0 && bparam1 != 0.0 && bparam2 != 0.0 && bparam1!= 1.0 && bparam2!=1.0)
 		{
 		    nbinter++;
-		    Point *useless;
+		    Point *steiner;
 		    // insert intersecion point
 		    //printf("Intersection found: bparam: %f\n", bparam1);
 		    //printf("Intersection found: bparam2: %f\n", bparam2);
@@ -1337,9 +1356,10 @@ namespace Falling
 			   inter.isInLine(pts[p],pts[o]);
 			   }*/
 		    }
-		    insertPoint(inter, &useless);
+		    if(insertPoint(inter, &steiner))
+				pointstodelete.push_back(steiner);
 		    //printf("Intersection found: addr.: %p\n", useless);
-		    useless->marked = true;
+		    steiner->marked = true;
 		}
 	    }
 	}
@@ -1381,6 +1401,15 @@ namespace Falling
 	while(!respolys.empty())
 	{
 	    point2DListFromPointList(respolys.top());
+		DoubleLinkedList<Edge *> *curr = respolys.top()->adj;
+		DoubleLinkedList<Edge *> *first = curr;
+		do{
+			curr->getValue()->replace(respolys.top(), 0);
+			curr = curr->getnext();
+		} while(curr!= first);
+		respolys.top()->adj->DestroyList();
+		respolys.top()->pts->DestroyList();
+		delete respolys.top();
 	    respolys.pop();
 	    ipoly++;
 	}
@@ -1391,15 +1420,16 @@ namespace Falling
 	// tesselation ended!
 
 	// free memory
-	//for(int i = 0; i < nbholes; i++)
-	//	delete[] (ptgraphlist[i]);
-	//delete [](*(ptgraphlist + nbholes));
-	//delete[] ptgraphlist;
+	for(int i = 0; i < nbholes; i++)
+		delete[] (ptgraphlist[i]);
+	for(int i = 0; i < pointstodelete.size(); i++)
+		delete pointstodelete[i];
+	delete [](*(ptgraphlist + nbholes));
+	delete[] ptgraphlist;
 
-	// free graph memor
-	// TODO (recurcive?)
 	return totpolys;
     }
+
     /*
      * removeExternalTriangles(...)
      * Remove triangles not needed for the polygonal triangulation.

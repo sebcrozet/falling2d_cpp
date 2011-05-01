@@ -106,9 +106,11 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
 
 void mousePushed(MachineState &ms, float x, float y)
 {
-  unsigned int i;
-  for(i = 0; i < ms.objs.size(); i++)
+  int i;
+
+  for(i = ((int)ms.objs.size()) - 1; i >= 0; i--)
   {
+	  // scan in reverse order to touch topmost objects first.
       if(ms.objs[i]->rb->containsPoint(Falling::Point2D(x,y)))
       {
 	  //printf("Found!\n");
@@ -116,7 +118,7 @@ void mousePushed(MachineState &ms, float x, float y)
 	  break;
       }
   }
-  if(i == ms.objs.size())
+  if(i == -1)
       ms.selectedObj = 0;
   else
   {
@@ -229,7 +231,6 @@ void mouseReleased(MachineState &ms, float x, float y)
               pObject::O_PLANE,
               ms.vpts[0])
           );
-          delete optvect;
 	  ms.vpts.clear();
 	  break;
 	default:
@@ -327,6 +328,7 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
 }
 
 
+/*
 void exploreOBBtree(sf::RenderWindow &screen, Falling::OBBtree *t, Falling::Vector2D v, int deepness, int curr)
 {
   if(t==0)
@@ -372,6 +374,7 @@ void exploreOBBtree(sf::RenderWindow &screen, Falling::OBBtree *t, Falling::Vect
   exploreOBBtree(screen,t->r, v, deepness, curr+1);
   exploreOBBtree(screen,t->l, v, deepness, curr+1);
 }
+*/
 
 void drawDrawingShape(MachineState &ms, UserInterface &)
 {

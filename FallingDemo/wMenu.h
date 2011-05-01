@@ -53,6 +53,10 @@ public:
     bool locked,
     bool orientation
   );
+  inline virtual ~wMenuItem()
+  {
+	  delete sw;
+  }
   inline void setOnItemClicked(void (*callback)(int,void *))
   {
     onItemClicked = callback;

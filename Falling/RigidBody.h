@@ -54,6 +54,7 @@ namespace Falling
 	    RigidBody(Shape *s,Real m,Vector2D pos,Real teta = 0);
 	    void reinitStabilisationDetector();
 	public:
+		~RigidBody();
 	    //Do not export these function!
 	    inline Shape *getShape();
 	    void updateSleepState(Real dt);

@@ -247,14 +247,15 @@ namespace Falling
     template <typename T>
 	void DoubleLinkedList<T>::DestroyList(bool destroyValue)
 	{
-	    while(parent!=next)
+	    while(parent!=this)
 		next->Remove(destroyValue);
+		delete value;
 	    delete this;
 	}
     template <typename T>
 	void DoubleLinkedList<T>::DestroyList()
 	{
-	    while(parent!=next)
+	    while(parent!=this)
 		next->Remove();
 	    delete this;
 	}

@@ -31,7 +31,6 @@ public:
     O_PLANE
   };
 public:
-  Falling::Tesselator *t;
   Falling::Vector2D u;
   Falling::Polygon2D * p;
   Falling::Disk * d;
@@ -53,6 +52,12 @@ public:
 	  ObjectType type,
 	  Falling::Point2D center = Falling::Point2D()
 	  );
+  inline ~pObject()
+  {
+	  if(pts)
+		  delete []pts;
+	  //delete rb;
+  }
   void draw(const MachineState &ms);
   void toogleFixed();
   inline void incrementLimit(int inc)

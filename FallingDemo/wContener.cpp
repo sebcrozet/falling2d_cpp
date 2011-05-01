@@ -36,7 +36,12 @@ wContener::wContener(
 { }
 
 wContener::~wContener()
-{ }
+{
+	for(int i = 0; i < fils.size(); i++)
+		delete fils[i];
+	for(int i = 0; i < filsgrid.size(); i++)
+		delete filsgrid[i];
+}
 
 wWidget *wContener::getLastChild()
 {

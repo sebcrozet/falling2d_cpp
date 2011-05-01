@@ -44,13 +44,15 @@ namespace Falling
 		p1 = np;
 	    else if(p2 == p)
 		p2 = np;
+		if(isnull())
+			delete this;
 	    // else: no p in this edge
 	}
 
     };
     struct Point
     {
-	Point2D pt;
+	Point2D pt;		   
 	DoubleLinkedList<Poly *> *adjlist;
 	bool marked;
 	Point(const Point2D &pt);
@@ -105,9 +107,10 @@ namespace Falling
     class Tesselator
     {
 	private:
+		Poly *currpoly;
 	    Point *currpt;
 	    Poly *triangleMarching(Point *begin, Point2D &end, Point **graphpt);
-	    void insertPoint(Point2D &pt, Point **gpoints);
+	    bool insertPoint(Point2D &pt, Point **gpoints);
 	    void insertEdge(Point *r, Point *l);
 	    /*
 	     * removeMode:
@@ -130,12 +133,12 @@ namespace Falling
 		    std::stack<Poly *> &remainingPolygons);
 	    int batchTriangles(std::stack<Poly *> &toparc, std::stack<Poly *> &respolys);
 	    void point2DListFromPointList(Poly *);
-	public:
 	    Point *** ptgraphlist;
 	    Point2D ***subPolys;
 	    int **nbptsSubPolys;
 	    int ipoly;
 
+	public:
 	    void parcgraph(void(*print)(Poly *));
 	    int initAndRun(int removeMode, Point2D *pts, int nbpts, Point2D *holespts[], int nbholes, int nbptsholes[], Point2D ***subPolys, int **nbptssubPolys);
     };

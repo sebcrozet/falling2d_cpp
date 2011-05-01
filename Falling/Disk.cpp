@@ -21,14 +21,14 @@ namespace Falling
 {
     Disk::Disk(const Point2D &pt, Real dradius, bool fixed)
     {
+		deleting = false;
 	parent = this;
 	fixedobj = fixed;
 	radius = dradius + PROXIMITY_AWARENESS;
 	margin = radius;//0.04;
 	radiuslessM = 0;//radius - margin;
 	t = GeometryHelper::Transformation2D(Vector2D (pt), 0);
-	obb = new OBB(Point2D(-radius, radius),Point2D(radius, radius),Point2D(radius, -radius),Point2D(-radius, -radius), this, radius * radius, 0);
-	otree = new OBBtree(0, 0, obb);
+	otree = new OBBtree(0, 0, new OBB(Point2D(-radius, radius),Point2D(radius, radius),Point2D(radius, -radius),Point2D(-radius, -radius), this, radius * radius, 0));
     }
 
     void Disk::updateAABB()

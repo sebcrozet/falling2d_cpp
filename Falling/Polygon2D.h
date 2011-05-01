@@ -15,7 +15,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef POLYGON
-#define DEBUGMOD
 #include "Primitives.h"
 #include "Shapes.h"
 #include "GeometryHelper.h"
@@ -29,11 +28,7 @@ namespace Falling
     class ImplicitPolygon2D;
     class FALLINGAPI Polygon2D : public Shape
     {
-#ifdef DEBUGMOD
-	public:
-#else
 	private:
-#endif
 	    int nbrPts, nbrSubShapes;
 	    ImplicitPolygon2D **subShapes;
 	    ImplicitPolygon2D *chull;
@@ -63,6 +58,13 @@ namespace Falling
 	    static int simplify(Point2D * in, int n, Point2D **out, Real tolerence);
 	    static int simplifyToProper(Point2D * in, int n, Point2D **out);
 	    void update(Real rotationAngle);
+
+		inline int getNbrSubShapes() const
+		{ return nbrSubShapes; }
+
+		inline ImplicitPolygon2D *getSubShape(int i) const
+		{ return subShapes[i]; }
+
 	    inline Vector2D getCentroid() const;
 
 	    virtual int getShapeTypeID() const;
@@ -81,14 +83,11 @@ namespace Falling
 
     class FALLINGAPI ImplicitPolygon2D	: public ImplicitShape
     {
-#ifdef DEBUGMOD
-	public:
-#else
 	private:
-#endif
-	    Point2D *pts, center;
+	    Point2D *pts;
+		Point2D center;
+		OBB *obb;
 	    int nbrPts;
-	    OBB *obb;
 	    Real radius;
 	    Real surface;
 	    Real unitInertia;
@@ -98,6 +97,7 @@ namespace Falling
 	public:
 
 	    ImplicitPolygon2D(Point2D * ptsId, int n, Polygon2D *parent, int id);
+		~ImplicitPolygon2D();
 
 	    virtual int getSupportPoint(const Vector2D &d, Point2D * res) const;
 	    virtual int getSupportPoint(const Vector2D &d, Point2D * res, int o)const;
@@ -107,10 +107,11 @@ namespace Falling
 	    void translateCentroid(const Vector2D &);
 	    Point2D rightTgtPt(Point2D &ref);
 
+		inline OBB *getOBB() const;
 	    inline Vector2D getCentroid() const;
-	    inline OBB *getOBB() const;
 	    inline Real getUnitInertiaMomentum() const;
 	    inline Real getSurface() const;
+
 	    inline int getNbrPts()
 	    {
 		return nbrPts;

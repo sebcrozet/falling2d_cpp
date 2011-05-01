@@ -31,6 +31,10 @@ namespace Falling
 	    virtual bool _solve(std::vector<ContactBackup *> &res) = 0; // returns whether current class should be destroyed
 	public:
 	    CollisionDetector();
+		virtual inline ~CollisionDetector()
+		{
+			printf("removing...\n");
+		}
 	    bool solve(std::vector<ContactBackup *> &res); // returns whether current class should be destroyed
 	    inline void setInactive(bool inactive);
 	    inline bool getIsInactive();

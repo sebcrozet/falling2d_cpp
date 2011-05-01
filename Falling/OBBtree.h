@@ -37,7 +37,6 @@ namespace Falling
 	public:
 	OBBtree(OBBtree *r, OBBtree *l, OBB *o);
 	~OBBtree();
-	void realeaseTree();
 	inline bool isLeaf();
 	static void traverseTree(OBBtree *a, OBBtree *b, std::vector<OBBIntersection*> &res);
     };

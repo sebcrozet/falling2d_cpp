@@ -27,11 +27,9 @@ namespace Falling
     {
 	private:
 	    int aabbid;
-#ifdef DEBUGMOD
 	public:
-#else
+		virtual ~Shape();
 	protected:
-#endif
 	    RigidBody *parentBody;
 	    OBBtree *otree;
 	    GeometryHelper::Transformation2D t;
@@ -49,6 +47,7 @@ namespace Falling
 
 
 	public:
+
 	    // TODO: remove, for debug
 	    inline bool isdeleting()
 	    { return deleting; }

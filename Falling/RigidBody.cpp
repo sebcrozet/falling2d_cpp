@@ -34,6 +34,11 @@ namespace Falling
 	reinitStabilisationDetector();
     }
 
+	RigidBody::~RigidBody()
+	{
+		delete s;
+	}
+
     void RigidBody::updateSleepState(Real dt)
     {
 	// detect low velocities

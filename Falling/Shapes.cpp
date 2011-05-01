@@ -19,6 +19,14 @@
 
 namespace Falling
 {
+
+	Shape::~Shape()
+	{
+		// FIXME: obbtree deletion
+		//if(otree)
+		//delete otree;
+	}
+
     void ImplicitShape::addMargin(const Vector2D &d, Point2D *pt) const
     {
 	*pt += d * margin;

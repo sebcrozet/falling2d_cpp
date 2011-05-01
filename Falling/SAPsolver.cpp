@@ -254,7 +254,7 @@ namespace Falling
 	for(unsigned int i=0; i<aabbs.size(); i++)
 	{
 	    Shape *s = aabbs[i].parent;
-	    if(s->getMoved())
+	    if(s && s->getMoved())
 	    {
 		notifyBoxMoved(s);
 		s->setMoved(false);
@@ -449,11 +449,9 @@ namespace Falling
 	// dont swap with last box to avoid false id in hash table (updating everything is costly)
 	// so just let an hole and an index to emply aabb array place
 	emptyaabbs.push(removeid);
-	// remove the aabb from the pending updates list
-	printf("(a) %i\n", updateids.size());
-	updateids.erase(std::remove(updateids.begin(), updateids.end(), removeid), updateids.end());
-	printf("(b) %i\n", updateids.size());
 	s->setdeleting();
+	// ensure s's AABB won't be updated later!
+	aabbs[removeid].parent = 0;
 	verifylist(epx);
 	verifylist(epy);
 	// done

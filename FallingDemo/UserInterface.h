@@ -29,6 +29,7 @@ class UserInterface
 
 public:
   UserInterface(MachineState &ms);
+  ~UserInterface();
   bool dispatchEvent(sf::Event ev, MachineState &ms);
   void draw(MachineState &ms);
 };

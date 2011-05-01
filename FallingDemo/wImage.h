@@ -38,6 +38,7 @@ private:
 
 public:
   wImage(int x, int y, int w, int h, std::string path, int strech);
+  virtual ~wImage();
   bool testPredefShape(std::string descr, float w, float h);
   // Predefine shapes creation
   void shapeWarning(float w, float h);

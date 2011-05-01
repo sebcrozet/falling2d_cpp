@@ -138,6 +138,11 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
 }
 
 
+UserInterface::~UserInterface()
+{
+	for(int i = 0; i < ui.size(); i++)
+		delete ui[i];
+}
 
 UserInterface::UserInterface(MachineState &ms)
   : absorbMouse(false)
@@ -163,7 +168,7 @@ UserInterface::UserInterface(MachineState &ms)
                  ":_?_A_1008 Plane\n"
                  ";_=_ SE\n"
                  ":_1009 Fix\n"
-		 //":_1010 Del\n"
+				 ":_1010 Del\n"
                  ";_=_ SE\n"
                  ":_=_ Falling Demo v0.0\n"
                  ,

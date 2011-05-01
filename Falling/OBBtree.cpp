@@ -23,18 +23,13 @@ namespace Falling
     { }
 
     OBBtree::~OBBtree()
-    {
-	delete o;
-    }
-
-    void OBBtree::realeaseTree()
-    {
-	if(r != 0)
-	    r->realeaseTree();
-	if(l != 0)
-	    l->realeaseTree();
-	delete this;
-    }
+	{
+		if(r != 0)
+			delete r;
+		if(l != 0)
+			delete l;
+		delete o;
+	}
 
     void OBBtree::traverseTree(OBBtree *a, OBBtree *b, std::vector<OBBIntersection*> &res)
     {

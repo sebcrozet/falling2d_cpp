@@ -46,6 +46,7 @@ namespace Falling
 	    ca.deleteObject(r->getShape());
 	    removeWaitingQueue.pop();
 	    objs.erase(std::remove(objs.begin(),objs.end(),r), objs.end());
+		delete r;
 	}
 	while(!addWaitingQueue.empty())
 	{

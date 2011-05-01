@@ -75,8 +75,24 @@ namespace Falling
 	t.setTeta(orientation);
 	t.setU((useCentroid)?Vector2D(totalCentroid):position);
 
+	delete []nbptssubpolys;
+	delete []subpolys;
 	delete holesnbrpts;
+	delete []holespts;
     }
+
+	Polygon2D::~Polygon2D()
+	{
+		for(int i = 0; i < nbrSubShapes; i++)
+		{
+			delete subShapes[i];
+		}
+		delete []subShapes;
+		if(nbrSubShapes > 1) // if nbr == 1, we have subShapes[0] == chull !
+			delete chull;
+		delete []points;
+		delete otree;
+	}
 
     void Polygon2D::scalepts(Point2D *pts, int n, Real scalefactor)
     {
@@ -91,6 +107,7 @@ namespace Falling
 	//printf("%f ... %f\n", t.transforminv(pt).getX(), t.transforminv(pt).getY());
 	return Point2D::pointInPolygon(t.transforminv(pt), points, nbrPts);
     }
+
 
     void Polygon2D::updateAABB()
     {
@@ -197,9 +214,13 @@ namespace Falling
 	    //simplifyToProper(ch,chn, &out);
 	    // end todo
 	    chull = new ImplicitPolygon2D(ch,chn,this,1);
+		*o = new OBBtree(0, 0, chull->getOBB());
 	}
-	//
-	*o = new OBBtree(0, 0, ImplicitPolygon2D::buildOBB(ch, chn, chull, -1));
+	else
+	{
+		*o = new OBBtree(0, 0, ImplicitPolygon2D::buildOBB(ch, chn, chull, -1));
+		delete []ch;
+	}
 	chpts.clear();
 	OBBtree *oo = *o;
 
@@ -580,6 +601,11 @@ namespace Falling
 	surface = Polygon2D::getSurface(pts, n);
 	unitInertia = Polygon2D::getUnitInertiaMomentum(pts, n, Vector2D(-center.getX(), -center.getY(),0)) * surface;
     }
+
+	ImplicitPolygon2D::~ImplicitPolygon2D()
+	{
+		delete []pts;
+	}
 
     void ImplicitPolygon2D::translateCentroid(const Vector2D &u)
     {

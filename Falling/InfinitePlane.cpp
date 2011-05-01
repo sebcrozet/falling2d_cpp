@@ -21,6 +21,8 @@ namespace Falling
 {
     InfinitePlane::InfinitePlane(const Point2D &p, const Vector2D &normal)
     {
+		otree = 0;
+	deleting = false;
 	parent = this;
 	margin = 0.0;
 	pt = p;
