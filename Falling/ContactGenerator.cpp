@@ -26,7 +26,7 @@ namespace Falling
 	Real vFromAcc = s1->getParent()->getAcc() * t * normal;
 	if(s2)
 	    vFromAcc -= s2->getParent()->getAcc() * t * normal;
-	Real fakerest = 0.4;
+	Real fakerest = 0.2;
 	if(ABS(closingVelocity.getX()) < 0.1)
 	{
 	    fakerest = 0;
@@ -47,7 +47,29 @@ namespace Falling
 		s2->getParent()->setAwake(true);
 	}
     }
-
+    
+    void ContactGenerator::PrepareContactDatasForImpulseSolver(std::vector<Collision *> &collisions,Real dt)
+    {
+        for(unsigned int i=0; i<collisions.size(); i++)
+        {
+            Collision *c = collisions[i];
+            int max = c->c.size();
+            c->worstVelocityContact = 0,
+            c->worstVelocityChangeAmount = 0.01;
+            for(int j=0; j<max; j++)
+            {
+                Contact *cnt = c->cnts[j];
+                /*
+                 FIXME: use a more accurate value than -0.05…
+                 */
+                if(cnt->getPenetration() >= -0.05 && cnt->desiredVelocityChange > c->worstVelocityChangeAmount)
+                {
+                    c->worstVelocityChangeAmount = cnt->desiredVelocityChange;
+                    c->worstVelocityContact = cnt;
+                }
+            }
+        }
+    }    
 
     void ContactGenerator::DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &cts,Real dt)
     {
@@ -59,6 +81,8 @@ namespace Falling
 	    int max = c->c.size();
 	    c->worstContact = 0;
 	    c->worstPenetrationAmount = 0.01;
+        c->worstVelocityContact = 0;
+        c->worstVelocityChangeAmount = 0.01;
 	    if(max)
 	    {
 		c->cnts = new Contact *[max];
@@ -137,9 +161,14 @@ namespace Falling
 		    c->cnts[j] = cnt;
 		    if(cnt->getPenetration() > c->worstPenetrationAmount)
 		    {
-			c->worstPenetrationAmount = cnt->getPenetration();
-			c->worstContact = cnt;
+                c->worstPenetrationAmount = cnt->getPenetration();
+                c->worstContact = cnt;
 		    }
+            if(cnt->desiredVelocityChange > c->worstVelocityChangeAmount)
+            {
+                c->worstVelocityChangeAmount = cnt->desiredVelocityChange;
+                c->worstVelocityContact = cnt;
+            }
 		}
 	    }
 	    else

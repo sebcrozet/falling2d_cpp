@@ -29,6 +29,7 @@ namespace Falling
 	    static void applyVelocityChange(Contact *c,Vector2D *rch,Vector2D *vch);
 	    static void solveRelax(std::vector<Contact *> &scs,Real dt);
 	    static void applyVelocityChangeRelax(Contact *c,Vector2D *rch,Vector2D *vch);
-	    static void solve(Island *isl,bool implode, int maxiter);
+      static void applyVelocityChangePerLevel(Contact *c,Vector2D *rch,Vector2D *vch);
+	    static void solve(Island *isl,bool implode, int maxiter, Real dt);
     };
 }

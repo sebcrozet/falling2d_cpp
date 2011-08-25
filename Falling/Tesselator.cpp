@@ -1422,7 +1422,7 @@ namespace Falling
 	// free memory
 	for(int i = 0; i < nbholes; i++)
 		delete[] (ptgraphlist[i]);
-	for(int i = 0; i < pointstodelete.size(); i++)
+	for(unsigned int i = 0; i < pointstodelete.size(); i++)
 		delete pointstodelete[i];
 	delete [](*(ptgraphlist + nbholes));
 	delete[] ptgraphlist;

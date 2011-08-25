@@ -1,5 +1,5 @@
 /* Copyright (C) 2011 CROZET Sébastien
-
+ 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -21,20 +21,50 @@ namespace Falling
 {
     void VitessSolver::integrate(std::vector<RigidBody*> &r,Real dt)
     {
-	for(unsigned int i=0; i<r.size(); i++)
-	{
-	    RigidBody * rb = r[i];
-	    if(rb->isSleeping()) continue;
-	    if(!rb->getShape()->isFixed())
-	    {
-		//rb->updateSleepState(dt);
-		//rb->getV().print();
-		rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt+Vector2D(0, 0.5*G*dt*dt));
-		rb->addV(Vector2D(0,G*dt,0));
-		rb->multV(0.998);
-		rb->setDeltaTeta(-PIX_PER_METTER*rb->getOmega()*dt);
-		rb->setTeta(rb->getTeta()+rb->getDeltaTeta());
-	    }
-	}
+        for(std::vector<RigidBody*>::iterator i = r.begin(); i != r.end(); i++)
+        {
+            RigidBody * rb = *i;
+            if(rb->isSleeping()) continue;
+            if(!rb->getShape()->isFixed())
+            {
+                //rb->updateSleepState(dt);
+                //rb->getV().print();
+                rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt + 0.5 * dt * dt * G);
+                rb->addV(Vector2D(0,G*dt,0));
+                rb->multV(0.998);
+                rb->setDeltaTeta(-PIX_PER_METTER*rb->getOmega()*dt);
+                rb->setTeta(rb->getTeta()+rb->getDeltaTeta());
+            }
+        }
+    }
+    
+    void VitessSolver::integrate_positions(std::vector<RigidBody*> &r, Real dt)
+    {
+        for(std::vector<RigidBody*>::iterator i = r.begin(); i != r.end(); i++)
+        {
+            RigidBody * rb = *i;
+            if(rb->isSleeping()) continue;
+            if(!rb->getShape()->isFixed())
+            {
+                //rb->updateSleepState(dt);
+                //rb->getV().print();
+                rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt+Vector2D(0, 0.5*G*dt*dt));
+                rb->setDeltaTeta(-PIX_PER_METTER*rb->getOmega()*dt);
+                rb->setTeta(rb->getTeta()+rb->getDeltaTeta());
+            }
+        }
+    }
+    void VitessSolver::integrate_velocities(std::vector<RigidBody*> &r, Real dt)
+    {
+        for(std::vector<RigidBody*>::iterator i = r.begin(); i != r.end(); i++)
+        {
+            RigidBody * rb = *i;
+            if(rb->isSleeping()) continue;
+            if(!rb->getShape()->isFixed())
+            {
+                rb->addV(Vector2D(0,G*dt,0));
+                rb->multV(0.998);
+            }
+        }
     }
 }

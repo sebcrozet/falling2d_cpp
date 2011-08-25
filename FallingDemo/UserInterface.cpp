@@ -140,7 +140,7 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
 
 UserInterface::~UserInterface()
 {
-	for(int i = 0; i < ui.size(); i++)
+	for(unsigned int i = 0; i < ui.size(); i++)
 		delete ui[i];
 }
 

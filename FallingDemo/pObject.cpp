@@ -19,8 +19,8 @@
 
 #define SCALE 1.0f
 
-float pObject::poly = 0;
-float pObject::polx = 0;
+Real pObject::poly = 0;
+Real pObject::polx = 0;
 int pObject::icall = 0;
 
 pObject::pObject(Falling::Point2D *pts,int n,bool iscircle, Falling::World &w, ObjectType cir,Falling::Point2D center)  : pts(pts), support(0), diskcenter(center)

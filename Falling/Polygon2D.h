@@ -97,7 +97,7 @@ namespace Falling
 	public:
 
 	    ImplicitPolygon2D(Point2D * ptsId, int n, Polygon2D *parent, int id);
-		~ImplicitPolygon2D();
+		virtual ~ImplicitPolygon2D();
 
 	    virtual int getSupportPoint(const Vector2D &d, Point2D * res) const;
 	    virtual int getSupportPoint(const Vector2D &d, Point2D * res, int o)const;

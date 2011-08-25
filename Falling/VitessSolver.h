@@ -23,5 +23,7 @@ namespace Falling
     {
 	public:
 	    static void integrate(std::vector<RigidBody *> &r,Real dt);
+	    static void integrate_positions(std::vector<RigidBody *> &r,Real dt);
+	    static void integrate_velocities(std::vector<RigidBody *> &r,Real dt);
     };
 }

@@ -14,7 +14,6 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include <vld.h>
 #ifndef Falling_CONFIG
 //////////////////
 #if defined(_WIN32) || defined(__WIN32)
@@ -46,6 +45,7 @@
 
 // TODO: diferenciate compiler instead of platforms
 #if defined(Falling_WINDOWS)
+#       include <vld.h>
 #	include <windows.h>
 #	undef min
 #	undef max

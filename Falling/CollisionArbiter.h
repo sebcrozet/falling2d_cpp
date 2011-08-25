@@ -38,6 +38,8 @@ namespace Falling
 	Collision *nextlvlptre,*prevlvlptr;
 	Contact *worstContact;
 	Real worstPenetrationAmount;
+    Contact *worstVelocityContact;
+    Real worstVelocityChangeAmount;
 	int collisionStackLevel;
 
 	Collision(Shape *sa, Shape *sb);
@@ -48,6 +50,7 @@ namespace Falling
 	void insertInLevele(Collision *);
 	void clearContacts();
 
+    static Collision *inPlaceSortList_impulsion(Collision *lbegin);
 	static Collision *inPlaceSortList(Collision *);
     };
 

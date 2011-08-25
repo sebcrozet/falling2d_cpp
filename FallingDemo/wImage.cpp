@@ -38,7 +38,7 @@ wImage::wImage(int x, int y, int w, int h, std::string path, int stretch)
 
 wImage::~wImage()
 {
-	for(int i = 0; i < shs.size(); i++)
+	for(unsigned int i = 0; i < shs.size(); i++)
 		delete shs[i];
 }
 

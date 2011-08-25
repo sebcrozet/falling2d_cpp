@@ -42,7 +42,7 @@ public:
   Falling::Point2D diskcenter;
   static sf::RenderWindow *rwin;
   static int icall;
-  static float polx,poly;
+  static Real polx,poly;
 
   pObject(
 	  Falling::Point2D * pts,

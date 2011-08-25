@@ -72,6 +72,7 @@ namespace Falling
 	private:
 	public:
 	    static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
+        static void PrepareContactDatasForImpulseSolver(std::vector<Collision *> &collisions,Real dt);
     };
 }
 #define CGEN
