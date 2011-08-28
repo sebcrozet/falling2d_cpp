@@ -1,0 +1,275 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = EFB7A3C4138462AB00DBAA41 /* FallingDemo */;
+		activeTarget = EFB7A3C2138462AB00DBAA41 /* FallingDemo */;
+		addToTargets = (
+			EFCC54CD13845C5200BBB06F /* Falling */,
+		);
+		codeSenseManager = EF414FB0138403F400EDE5CC /* Code sense */;
+		executables = (
+			EFB7A3C4138462AB00DBAA41 /* FallingDemo */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					1117,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					364,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXSymbolsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXSymbolsDataSource_SymbolNameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					16,
+					200,
+					50,
+					475,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXSymbolsDataSource_SymbolTypeIconID,
+					PBXSymbolsDataSource_SymbolNameID,
+					PBXSymbolsDataSource_SymbolTypeID,
+					PBXSymbolsDataSource_ReferenceNameID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					324,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 332612117;
+			PBXWorkspaceStateSaveDate = 332612117;
+		};
+		sourceControlManager = EF414FAF138403F400EDE5CC /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	EF414FAF138403F400EDE5CC /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	EF414FB0138403F400EDE5CC /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	EF414FDA1384042D00EDE5CC /* CollisionArbiter.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1313, 962}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1738}";
+			sepNavWindowFrame = "{{15, 465}, {750, 558}}";
+		};
+	};
+	EF4150041384042D00EDE5CC /* PairManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {713, 1391}}";
+			sepNavSelRange = "{1548, 54}";
+			sepNavVisRange = "{1188, 947}";
+		};
+	};
+	EF4150141384042D00EDE5CC /* SAPsolver.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1313, 6097}}";
+			sepNavSelRange = "{5500, 0}";
+			sepNavVisRange = "{4894, 1319}";
+		};
+	};
+	EF41501A1384042D00EDE5CC /* SubCollision.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 729}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 967}";
+		};
+	};
+	EF41501C1384042D00EDE5CC /* targetver.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 729}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2394}";
+		};
+	};
+	EF41501D1384042D00EDE5CC /* Tesselator.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 21827}}";
+			sepNavSelRange = "{18126, 46}";
+			sepNavVisRange = "{17369, 1410}";
+			sepNavWindowFrame = "{{38, 444}, {750, 558}}";
+		};
+	};
+	EF4150201384042D00EDE5CC /* Vector2D.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {929, 430}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1332}";
+			sepNavWindowFrame = "{{130, 360}, {750, 558}}";
+		};
+	};
+	EF4150221384042D00EDE5CC /* VitessSolver.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 729}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1424}";
+		};
+	};
+	EF4150231384042D00EDE5CC /* VitessSolver.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1313, 729}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 983}";
+		};
+	};
+	EF4150341384046F00EDE5CC /* FallingDemo.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 6149}}";
+			sepNavSelRange = "{285, 0}";
+			sepNavVisRange = "{0, 1712}";
+		};
+	};
+	EF4150361384046F00EDE5CC /* Makefile */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1313, 6136}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2075}";
+		};
+	};
+	EF41503D1384046F00EDE5CC /* stdafx.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {599, 479}}";
+			sepNavSelRange = "{894, 0}";
+			sepNavVisRange = "{0, 971}";
+			sepNavWindowFrame = "{{38, 444}, {750, 558}}";
+		};
+	};
+	EF41503E1384046F00EDE5CC /* targetver.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1313, 724}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1668}";
+		};
+	};
+	EF4150411384046F00EDE5CC /* wContener.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 3770}}";
+			sepNavSelRange = "{1142, 0}";
+			sepNavVisRange = "{4737, 1844}";
+		};
+	};
+	EF4150491384046F00EDE5CC /* wMenu.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1407, 7111}}";
+			sepNavSelRange = "{8460, 40}";
+			sepNavVisRange = "{8037, 1680}";
+			sepNavWindowFrame = "{{61, 423}, {750, 558}}";
+		};
+	};
+	EF41504A1384046F00EDE5CC /* wMenu.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {713, 1677}}";
+			sepNavSelRange = "{2145, 28}";
+			sepNavVisRange = "{1733, 739}";
+		};
+	};
+	EF41504C1384046F00EDE5CC /* wWidget.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1313, 1027}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1546}";
+		};
+	};
+	EFB7A3C2138462AB00DBAA41 /* FallingDemo */ = {
+		activeExec = 0;
+		executables = (
+			EFB7A3C4138462AB00DBAA41 /* FallingDemo */,
+		);
+	};
+	EFB7A3C4138462AB00DBAA41 /* FallingDemo */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = FallingDemo;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	EFCC54CD13845C5200BBB06F /* Falling */ = {
+		activeExec = 0;
+	};
+}

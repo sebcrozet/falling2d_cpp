@@ -1,0 +1,857 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EFB1D3DF1406DCEC00AC3496 /* LCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EFB1D3DE1406DCEC00AC3496 /* LCP.cpp */; };
+		EFB7A3CC1384630900DBAA41 /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A3CB1384630900DBAA41 /* sfml-graphics.framework */; };
+		EFB7A3CF1384633400DBAA41 /* FallingDemo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150341384046F00EDE5CC /* FallingDemo.cpp */; };
+		EFB7A3D01384633400DBAA41 /* FallingDemo.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150351384046F00EDE5CC /* FallingDemo.h */; };
+		EFB7A3D21384633400DBAA41 /* pObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150391384046F00EDE5CC /* pObject.cpp */; };
+		EFB7A3D31384633400DBAA41 /* pObject.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41503A1384046F00EDE5CC /* pObject.h */; };
+		EFB7A3D41384633400DBAA41 /* State.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41503B1384046F00EDE5CC /* State.h */; };
+		EFB7A3D51384633400DBAA41 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41503C1384046F00EDE5CC /* stdafx.cpp */; };
+		EFB7A3D61384633400DBAA41 /* stdafx.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41503D1384046F00EDE5CC /* stdafx.h */; };
+		EFB7A3D71384633400DBAA41 /* targetver.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41503E1384046F00EDE5CC /* targetver.h */; };
+		EFB7A3D81384633400DBAA41 /* UserInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41503F1384046F00EDE5CC /* UserInterface.cpp */; };
+		EFB7A3D91384633400DBAA41 /* UserInterface.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150401384046F00EDE5CC /* UserInterface.h */; };
+		EFB7A3DA1384633400DBAA41 /* wContener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150411384046F00EDE5CC /* wContener.cpp */; };
+		EFB7A3DB1384633400DBAA41 /* wContener.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150421384046F00EDE5CC /* wContener.h */; };
+		EFB7A3DC1384633400DBAA41 /* wDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150431384046F00EDE5CC /* wDialog.cpp */; };
+		EFB7A3DD1384633400DBAA41 /* wDialog.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150441384046F00EDE5CC /* wDialog.h */; };
+		EFB7A3DE1384633400DBAA41 /* wImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150451384046F00EDE5CC /* wImage.cpp */; };
+		EFB7A3DF1384633400DBAA41 /* wImage.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150461384046F00EDE5CC /* wImage.h */; };
+		EFB7A3E01384633400DBAA41 /* wLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150471384046F00EDE5CC /* wLabel.cpp */; };
+		EFB7A3E11384633400DBAA41 /* wLabel.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150481384046F00EDE5CC /* wLabel.h */; };
+		EFB7A3E21384633400DBAA41 /* wMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150491384046F00EDE5CC /* wMenu.cpp */; };
+		EFB7A3E31384633400DBAA41 /* wMenu.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41504A1384046F00EDE5CC /* wMenu.h */; };
+		EFB7A3E41384633400DBAA41 /* wWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41504B1384046F00EDE5CC /* wWidget.cpp */; };
+		EFB7A3E51384633400DBAA41 /* wWidget.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41504C1384046F00EDE5CC /* wWidget.h */; };
+		EFB7A3F013846D1A00DBAA41 /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A3EF13846D1A00DBAA41 /* SFML.framework */; };
+		EFB7A4C413847C2700DBAA41 /* Falling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFCC567113845F3700BBB06F /* Falling.framework */; };
+		EFB7A4C613847C3400DBAA41 /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A4C513847C3400DBAA41 /* sfml-window.framework */; };
+		EFB7A4CD13847C4D00DBAA41 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A4CC13847C4D00DBAA41 /* sfml-system.framework */; };
+		EFCC561813845D9900BBB06F /* VitessSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150221384042D00EDE5CC /* VitessSolver.cpp */; };
+		EFCC561C13845DE000BBB06F /* Vector2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150201384042D00EDE5CC /* Vector2D.cpp */; };
+		EFCC561E13845DE900BBB06F /* Tesselator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41501D1384042D00EDE5CC /* Tesselator.cpp */; };
+		EFCC562013845E4800BBB06F /* AABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FD51384042D00EDE5CC /* AABB.cpp */; };
+		EFCC562113845E4800BBB06F /* CollisionArbiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FD91384042D00EDE5CC /* CollisionArbiter.cpp */; };
+		EFCC562213845E4800BBB06F /* CollisionDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FDB1384042D00EDE5CC /* CollisionDetector.cpp */; };
+		EFCC562313845E4800BBB06F /* ContactBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FDD1384042D00EDE5CC /* ContactBatch.cpp */; };
+		EFCC562413845E4800BBB06F /* ContactGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FDF1384042D00EDE5CC /* ContactGenerator.cpp */; };
+		EFCC562513845E4800BBB06F /* Disk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FE11384042D00EDE5CC /* Disk.cpp */; };
+		EFCC562613845E4800BBB06F /* DiskDiskSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FE41384042D00EDE5CC /* DiskDiskSolver.cpp */; };
+		EFCC562713845E4800BBB06F /* DistanceSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FE61384042D00EDE5CC /* DistanceSolver.cpp */; };
+		EFCC562813845E4800BBB06F /* dllmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FE81384042D00EDE5CC /* dllmain.cpp */; };
+		EFCC562913845E4800BBB06F /* FakeShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FEA1384042D00EDE5CC /* FakeShape.cpp */; };
+		EFCC562A13845E4800BBB06F /* Falling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FEC1384042D00EDE5CC /* Falling.cpp */; };
+		EFCC562B13845E4800BBB06F /* floatTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FF01384042D00EDE5CC /* floatTests.cpp */; };
+		EFCC562C13845E4800BBB06F /* GenericSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FF21384042D00EDE5CC /* GenericSolver.cpp */; };
+		EFCC562D13845E4800BBB06F /* GeometryHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FF41384042D00EDE5CC /* GeometryHelper.cpp */; };
+		EFCC562E13845E4800BBB06F /* ImpulseSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FF61384042D00EDE5CC /* ImpulseSolver.cpp */; };
+		EFCC562F13845E4800BBB06F /* InfinitePlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FF81384042D00EDE5CC /* InfinitePlane.cpp */; };
+		EFCC563013845E4800BBB06F /* Island.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FFA1384042D00EDE5CC /* Island.cpp */; };
+		EFCC563113845E4800BBB06F /* OBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF414FFF1384042D00EDE5CC /* OBB.cpp */; };
+		EFCC563213845E4800BBB06F /* OBBtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150011384042D00EDE5CC /* OBBtree.cpp */; };
+		EFCC563313845E4800BBB06F /* PairManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150031384042D00EDE5CC /* PairManager.cpp */; };
+		EFCC563413845E4800BBB06F /* PenetrationSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150051384042D00EDE5CC /* PenetrationSolver.cpp */; };
+		EFCC563513845E4800BBB06F /* PixelPerfectShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150071384042D00EDE5CC /* PixelPerfectShape.cpp */; };
+		EFCC563613845E4800BBB06F /* PixelPerfectSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150091384042D00EDE5CC /* PixelPerfectSolver.cpp */; };
+		EFCC563713845E4800BBB06F /* PlaneShapeSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41500B1384042D00EDE5CC /* PlaneShapeSolver.cpp */; };
+		EFCC563813845E4800BBB06F /* Point2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41500D1384042D00EDE5CC /* Point2D.cpp */; };
+		EFCC563913845E4800BBB06F /* Polygon2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41500F1384042D00EDE5CC /* Polygon2D.cpp */; };
+		EFCC563A13845E4800BBB06F /* RigidBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150121384042D00EDE5CC /* RigidBody.cpp */; };
+		EFCC563B13845E4800BBB06F /* SAPsolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150141384042D00EDE5CC /* SAPsolver.cpp */; };
+		EFCC563C13845E4800BBB06F /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150161384042D00EDE5CC /* Shapes.cpp */; };
+		EFCC563D13845E4800BBB06F /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150181384042D00EDE5CC /* stdafx.cpp */; };
+		EFCC563E13845E4800BBB06F /* SubCollision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41501A1384042D00EDE5CC /* SubCollision.cpp */; };
+		EFCC564013845E7700BBB06F /* AABB.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FD61384042D00EDE5CC /* AABB.h */; };
+		EFCC564113845E7700BBB06F /* BoundingVolumes.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FD71384042D00EDE5CC /* BoundingVolumes.h */; };
+		EFCC564213845E7700BBB06F /* BoxBoxSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FD81384042D00EDE5CC /* BoxBoxSolver.h */; };
+		EFCC564313845E7700BBB06F /* CollisionArbiter.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FDA1384042D00EDE5CC /* CollisionArbiter.h */; };
+		EFCC564413845E7700BBB06F /* CollisionDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FDC1384042D00EDE5CC /* CollisionDetector.h */; };
+		EFCC564513845E7700BBB06F /* ContactBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FDE1384042D00EDE5CC /* ContactBatch.h */; };
+		EFCC564613845E7700BBB06F /* ContactGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FE01384042D00EDE5CC /* ContactGenerator.h */; };
+		EFCC564713845E7700BBB06F /* Disk.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FE21384042D00EDE5CC /* Disk.h */; };
+		EFCC564813845E7700BBB06F /* DiskBoxSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FE31384042D00EDE5CC /* DiskBoxSolver.h */; };
+		EFCC564913845E7700BBB06F /* DiskDiskSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FE51384042D00EDE5CC /* DiskDiskSolver.h */; };
+		EFCC564A13845E7700BBB06F /* DistanceSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FE71384042D00EDE5CC /* DistanceSolver.h */; };
+		EFCC564B13845E7700BBB06F /* DoubleLinkedList.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FE91384042D00EDE5CC /* DoubleLinkedList.h */; };
+		EFCC564C13845E7700BBB06F /* FakeShape.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FEB1384042D00EDE5CC /* FakeShape.h */; };
+		EFCC564D13845E7700BBB06F /* Falling.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FED1384042D00EDE5CC /* Falling.h */; };
+		EFCC564E13845E7700BBB06F /* floatTests.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FF11384042D00EDE5CC /* floatTests.h */; };
+		EFCC564F13845E7700BBB06F /* GenericSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FF31384042D00EDE5CC /* GenericSolver.h */; };
+		EFCC565013845E7700BBB06F /* GeometryHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FF51384042D00EDE5CC /* GeometryHelper.h */; };
+		EFCC565113845E7700BBB06F /* ImpulseSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FF71384042D00EDE5CC /* ImpulseSolver.h */; };
+		EFCC565213845E7700BBB06F /* InfinitePlane.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FF91384042D00EDE5CC /* InfinitePlane.h */; };
+		EFCC565313845E7700BBB06F /* Island.h in Headers */ = {isa = PBXBuildFile; fileRef = EF414FFB1384042D00EDE5CC /* Island.h */; };
+		EFCC565413845E7700BBB06F /* OBB.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150001384042D00EDE5CC /* OBB.h */; };
+		EFCC565513845E7700BBB06F /* OBBtree.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150021384042D00EDE5CC /* OBBtree.h */; };
+		EFCC565613845E7700BBB06F /* PairManager.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150041384042D00EDE5CC /* PairManager.h */; };
+		EFCC565713845E7700BBB06F /* PenetrationSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150061384042D00EDE5CC /* PenetrationSolver.h */; };
+		EFCC565813845E7700BBB06F /* PixelPerfectShape.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150081384042D00EDE5CC /* PixelPerfectShape.h */; };
+		EFCC565913845E7700BBB06F /* PixelPerfectSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41500A1384042D00EDE5CC /* PixelPerfectSolver.h */; };
+		EFCC565A13845E7700BBB06F /* PlaneShapeSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41500C1384042D00EDE5CC /* PlaneShapeSolver.h */; };
+		EFCC565B13845E7700BBB06F /* Point2D.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41500E1384042D00EDE5CC /* Point2D.h */; };
+		EFCC565C13845E7700BBB06F /* Polygon2D.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150101384042D00EDE5CC /* Polygon2D.h */; };
+		EFCC565D13845E7700BBB06F /* Primitives.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150111384042D00EDE5CC /* Primitives.h */; };
+		EFCC565E13845E7700BBB06F /* RigidBody.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150131384042D00EDE5CC /* RigidBody.h */; };
+		EFCC565F13845E7700BBB06F /* SAPsolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150151384042D00EDE5CC /* SAPsolver.h */; };
+		EFCC566013845E7700BBB06F /* Shapes.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150171384042D00EDE5CC /* Shapes.h */; };
+		EFCC566113845E7700BBB06F /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150191384042D00EDE5CC /* stdafx.h */; };
+		EFCC566213845E7700BBB06F /* SubCollision.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41501B1384042D00EDE5CC /* SubCollision.h */; };
+		EFCC566313845E7700BBB06F /* targetver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41501C1384042D00EDE5CC /* targetver.h */; };
+		EFCC566413845E7700BBB06F /* Tesselator.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41501E1384042D00EDE5CC /* Tesselator.h */; };
+		EFCC566513845E7700BBB06F /* TunningConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = EF41501F1384042D00EDE5CC /* TunningConstants.h */; };
+		EFCC566613845E7700BBB06F /* Vector2D.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150211384042D00EDE5CC /* Vector2D.h */; };
+		EFCC566713845E7700BBB06F /* VitessSolver.h in Headers */ = {isa = PBXBuildFile; fileRef = EF4150231384042D00EDE5CC /* VitessSolver.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		EF414FD51384042D00EDE5CC /* AABB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AABB.cpp; sourceTree = "<group>"; };
+		EF414FD61384042D00EDE5CC /* AABB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AABB.h; sourceTree = "<group>"; };
+		EF414FD71384042D00EDE5CC /* BoundingVolumes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoundingVolumes.h; sourceTree = "<group>"; };
+		EF414FD81384042D00EDE5CC /* BoxBoxSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoxBoxSolver.h; sourceTree = "<group>"; };
+		EF414FD91384042D00EDE5CC /* CollisionArbiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionArbiter.cpp; sourceTree = "<group>"; };
+		EF414FDA1384042D00EDE5CC /* CollisionArbiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollisionArbiter.h; sourceTree = "<group>"; };
+		EF414FDB1384042D00EDE5CC /* CollisionDetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionDetector.cpp; sourceTree = "<group>"; };
+		EF414FDC1384042D00EDE5CC /* CollisionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollisionDetector.h; sourceTree = "<group>"; };
+		EF414FDD1384042D00EDE5CC /* ContactBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactBatch.cpp; sourceTree = "<group>"; };
+		EF414FDE1384042D00EDE5CC /* ContactBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactBatch.h; sourceTree = "<group>"; };
+		EF414FDF1384042D00EDE5CC /* ContactGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContactGenerator.cpp; sourceTree = "<group>"; };
+		EF414FE01384042D00EDE5CC /* ContactGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactGenerator.h; sourceTree = "<group>"; };
+		EF414FE11384042D00EDE5CC /* Disk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Disk.cpp; sourceTree = "<group>"; };
+		EF414FE21384042D00EDE5CC /* Disk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Disk.h; sourceTree = "<group>"; };
+		EF414FE31384042D00EDE5CC /* DiskBoxSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskBoxSolver.h; sourceTree = "<group>"; };
+		EF414FE41384042D00EDE5CC /* DiskDiskSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DiskDiskSolver.cpp; sourceTree = "<group>"; };
+		EF414FE51384042D00EDE5CC /* DiskDiskSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskDiskSolver.h; sourceTree = "<group>"; };
+		EF414FE61384042D00EDE5CC /* DistanceSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DistanceSolver.cpp; sourceTree = "<group>"; };
+		EF414FE71384042D00EDE5CC /* DistanceSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DistanceSolver.h; sourceTree = "<group>"; };
+		EF414FE81384042D00EDE5CC /* dllmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dllmain.cpp; sourceTree = "<group>"; };
+		EF414FE91384042D00EDE5CC /* DoubleLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoubleLinkedList.h; sourceTree = "<group>"; };
+		EF414FEA1384042D00EDE5CC /* FakeShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FakeShape.cpp; sourceTree = "<group>"; };
+		EF414FEB1384042D00EDE5CC /* FakeShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FakeShape.h; sourceTree = "<group>"; };
+		EF414FEC1384042D00EDE5CC /* Falling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Falling.cpp; sourceTree = "<group>"; };
+		EF414FED1384042D00EDE5CC /* Falling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Falling.h; sourceTree = "<group>"; };
+		EF414FF01384042D00EDE5CC /* floatTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = floatTests.cpp; sourceTree = "<group>"; };
+		EF414FF11384042D00EDE5CC /* floatTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floatTests.h; sourceTree = "<group>"; };
+		EF414FF21384042D00EDE5CC /* GenericSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericSolver.cpp; sourceTree = "<group>"; };
+		EF414FF31384042D00EDE5CC /* GenericSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericSolver.h; sourceTree = "<group>"; };
+		EF414FF41384042D00EDE5CC /* GeometryHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryHelper.cpp; sourceTree = "<group>"; };
+		EF414FF51384042D00EDE5CC /* GeometryHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeometryHelper.h; sourceTree = "<group>"; };
+		EF414FF61384042D00EDE5CC /* ImpulseSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImpulseSolver.cpp; sourceTree = "<group>"; };
+		EF414FF71384042D00EDE5CC /* ImpulseSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImpulseSolver.h; sourceTree = "<group>"; };
+		EF414FF81384042D00EDE5CC /* InfinitePlane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfinitePlane.cpp; sourceTree = "<group>"; };
+		EF414FF91384042D00EDE5CC /* InfinitePlane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfinitePlane.h; sourceTree = "<group>"; };
+		EF414FFA1384042D00EDE5CC /* Island.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Island.cpp; sourceTree = "<group>"; };
+		EF414FFB1384042D00EDE5CC /* Island.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Island.h; sourceTree = "<group>"; };
+		EF414FFC1384042D00EDE5CC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		EF414FFF1384042D00EDE5CC /* OBB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OBB.cpp; sourceTree = "<group>"; };
+		EF4150001384042D00EDE5CC /* OBB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBB.h; sourceTree = "<group>"; };
+		EF4150011384042D00EDE5CC /* OBBtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OBBtree.cpp; sourceTree = "<group>"; };
+		EF4150021384042D00EDE5CC /* OBBtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBBtree.h; sourceTree = "<group>"; };
+		EF4150031384042D00EDE5CC /* PairManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairManager.cpp; sourceTree = "<group>"; };
+		EF4150041384042D00EDE5CC /* PairManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PairManager.h; sourceTree = "<group>"; };
+		EF4150051384042D00EDE5CC /* PenetrationSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PenetrationSolver.cpp; sourceTree = "<group>"; };
+		EF4150061384042D00EDE5CC /* PenetrationSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PenetrationSolver.h; sourceTree = "<group>"; };
+		EF4150071384042D00EDE5CC /* PixelPerfectShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PixelPerfectShape.cpp; sourceTree = "<group>"; };
+		EF4150081384042D00EDE5CC /* PixelPerfectShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PixelPerfectShape.h; sourceTree = "<group>"; };
+		EF4150091384042D00EDE5CC /* PixelPerfectSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PixelPerfectSolver.cpp; sourceTree = "<group>"; };
+		EF41500A1384042D00EDE5CC /* PixelPerfectSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PixelPerfectSolver.h; sourceTree = "<group>"; };
+		EF41500B1384042D00EDE5CC /* PlaneShapeSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlaneShapeSolver.cpp; sourceTree = "<group>"; };
+		EF41500C1384042D00EDE5CC /* PlaneShapeSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaneShapeSolver.h; sourceTree = "<group>"; };
+		EF41500D1384042D00EDE5CC /* Point2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Point2D.cpp; sourceTree = "<group>"; };
+		EF41500E1384042D00EDE5CC /* Point2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Point2D.h; sourceTree = "<group>"; };
+		EF41500F1384042D00EDE5CC /* Polygon2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polygon2D.cpp; sourceTree = "<group>"; };
+		EF4150101384042D00EDE5CC /* Polygon2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polygon2D.h; sourceTree = "<group>"; };
+		EF4150111384042D00EDE5CC /* Primitives.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Primitives.h; sourceTree = "<group>"; };
+		EF4150121384042D00EDE5CC /* RigidBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RigidBody.cpp; sourceTree = "<group>"; };
+		EF4150131384042D00EDE5CC /* RigidBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RigidBody.h; sourceTree = "<group>"; };
+		EF4150141384042D00EDE5CC /* SAPsolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPsolver.cpp; sourceTree = "<group>"; };
+		EF4150151384042D00EDE5CC /* SAPsolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPsolver.h; sourceTree = "<group>"; };
+		EF4150161384042D00EDE5CC /* Shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shapes.cpp; sourceTree = "<group>"; };
+		EF4150171384042D00EDE5CC /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shapes.h; sourceTree = "<group>"; };
+		EF4150181384042D00EDE5CC /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
+		EF4150191384042D00EDE5CC /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		EF41501A1384042D00EDE5CC /* SubCollision.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SubCollision.cpp; sourceTree = "<group>"; };
+		EF41501B1384042D00EDE5CC /* SubCollision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubCollision.h; sourceTree = "<group>"; };
+		EF41501C1384042D00EDE5CC /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		EF41501D1384042D00EDE5CC /* Tesselator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tesselator.cpp; sourceTree = "<group>"; };
+		EF41501E1384042D00EDE5CC /* Tesselator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tesselator.h; sourceTree = "<group>"; };
+		EF41501F1384042D00EDE5CC /* TunningConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TunningConstants.h; sourceTree = "<group>"; };
+		EF4150201384042D00EDE5CC /* Vector2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector2D.cpp; sourceTree = "<group>"; };
+		EF4150211384042D00EDE5CC /* Vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector2D.h; sourceTree = "<group>"; };
+		EF4150221384042D00EDE5CC /* VitessSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VitessSolver.cpp; sourceTree = "<group>"; };
+		EF4150231384042D00EDE5CC /* VitessSolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VitessSolver.h; sourceTree = "<group>"; };
+		EF4150341384046F00EDE5CC /* FallingDemo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FallingDemo.cpp; sourceTree = "<group>"; };
+		EF4150351384046F00EDE5CC /* FallingDemo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FallingDemo.h; sourceTree = "<group>"; };
+		EF4150361384046F00EDE5CC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		EF4150391384046F00EDE5CC /* pObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pObject.cpp; sourceTree = "<group>"; };
+		EF41503A1384046F00EDE5CC /* pObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pObject.h; sourceTree = "<group>"; };
+		EF41503B1384046F00EDE5CC /* State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = State.h; sourceTree = "<group>"; };
+		EF41503C1384046F00EDE5CC /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
+		EF41503D1384046F00EDE5CC /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		EF41503E1384046F00EDE5CC /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		EF41503F1384046F00EDE5CC /* UserInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface.cpp; sourceTree = "<group>"; };
+		EF4150401384046F00EDE5CC /* UserInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInterface.h; sourceTree = "<group>"; };
+		EF4150411384046F00EDE5CC /* wContener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wContener.cpp; sourceTree = "<group>"; };
+		EF4150421384046F00EDE5CC /* wContener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wContener.h; sourceTree = "<group>"; };
+		EF4150431384046F00EDE5CC /* wDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wDialog.cpp; sourceTree = "<group>"; };
+		EF4150441384046F00EDE5CC /* wDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wDialog.h; sourceTree = "<group>"; };
+		EF4150451384046F00EDE5CC /* wImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wImage.cpp; sourceTree = "<group>"; };
+		EF4150461384046F00EDE5CC /* wImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wImage.h; sourceTree = "<group>"; };
+		EF4150471384046F00EDE5CC /* wLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wLabel.cpp; sourceTree = "<group>"; };
+		EF4150481384046F00EDE5CC /* wLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wLabel.h; sourceTree = "<group>"; };
+		EF4150491384046F00EDE5CC /* wMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wMenu.cpp; sourceTree = "<group>"; };
+		EF41504A1384046F00EDE5CC /* wMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wMenu.h; sourceTree = "<group>"; };
+		EF41504B1384046F00EDE5CC /* wWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wWidget.cpp; sourceTree = "<group>"; };
+		EF41504C1384046F00EDE5CC /* wWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wWidget.h; sourceTree = "<group>"; };
+		EFB1D3DE1406DCEC00AC3496 /* LCP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LCP.cpp; sourceTree = "<group>"; };
+		EFB7A3C3138462AB00DBAA41 /* FallingDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FallingDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EFB7A3C5138462AB00DBAA41 /* FallingDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FallingDemo-Info.plist"; sourceTree = "<group>"; };
+		EFB7A3CB1384630900DBAA41 /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "/Library/Frameworks/sfml-graphics.framework"; sourceTree = "<absolute>"; };
+		EFB7A3EF13846D1A00DBAA41 /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = /Library/Frameworks/SFML.framework; sourceTree = "<absolute>"; };
+		EFB7A4C513847C3400DBAA41 /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "/Library/Frameworks/sfml-window.framework"; sourceTree = "<absolute>"; };
+		EFB7A4CC13847C4D00DBAA41 /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "/Library/Frameworks/sfml-system.framework"; sourceTree = "<absolute>"; };
+		EFCC54CF13845C5200BBB06F /* Falling-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Falling-Info.plist"; sourceTree = "<group>"; };
+		EFCC567113845F3700BBB06F /* Falling.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Falling.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EFB7A3C1138462AB00DBAA41 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFB7A3CC1384630900DBAA41 /* sfml-graphics.framework in Frameworks */,
+				EFB7A3F013846D1A00DBAA41 /* SFML.framework in Frameworks */,
+				EFB7A4C413847C2700DBAA41 /* Falling.framework in Frameworks */,
+				EFB7A4C613847C3400DBAA41 /* sfml-window.framework in Frameworks */,
+				EFB7A4CD13847C4D00DBAA41 /* sfml-system.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EFCC54CC13845C5200BBB06F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* Falling */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FB11384042D00EDE5CC /* Falling */,
+				EF4150271384046F00EDE5CC /* FallingDemo */,
+				EFCC54CF13845C5200BBB06F /* Falling-Info.plist */,
+				EFCC567113845F3700BBB06F /* Falling.framework */,
+				EFB7A3C3138462AB00DBAA41 /* FallingDemo.app */,
+				EFB7A3C5138462AB00DBAA41 /* FallingDemo-Info.plist */,
+				EFB7A3CB1384630900DBAA41 /* sfml-graphics.framework */,
+				EFB7A3EF13846D1A00DBAA41 /* SFML.framework */,
+				EFB7A4C513847C3400DBAA41 /* sfml-window.framework */,
+				EFB7A4CC13847C4D00DBAA41 /* sfml-system.framework */,
+			);
+			name = Falling;
+			sourceTree = "<group>";
+		};
+		EF414FB11384042D00EDE5CC /* Falling */ = {
+			isa = PBXGroup;
+			children = (
+				EFB1D3DD14066BE000AC3496 /* LCP */,
+				EF414FEC1384042D00EDE5CC /* Falling.cpp */,
+				EF414FED1384042D00EDE5CC /* Falling.h */,
+				EFD1410E140552DF00AD2B2E /* Bounding volumes */,
+				EFD14114140554C100AD2B2E /* Broad phase */,
+				EFD1410F1405536D00AD2B2E /* Shapes */,
+				EFD14111140553F500AD2B2E /* Contact solvers */,
+				EFD14115140554FC00AD2B2E /* Misc */,
+				EFD141161405553400AD2B2E /* Integration & Correction */,
+				EFD14110140553B500AD2B2E /* Primitives */,
+				EFD141131405546E00AD2B2E /* Rigid body */,
+				EF414FFC1384042D00EDE5CC /* Makefile */,
+			);
+			name = Falling;
+			path = ../../Falling;
+			sourceTree = SOURCE_ROOT;
+		};
+		EF4150271384046F00EDE5CC /* FallingDemo */ = {
+			isa = PBXGroup;
+			children = (
+				EF4150341384046F00EDE5CC /* FallingDemo.cpp */,
+				EF4150351384046F00EDE5CC /* FallingDemo.h */,
+				EF4150361384046F00EDE5CC /* Makefile */,
+				EF4150391384046F00EDE5CC /* pObject.cpp */,
+				EF41503A1384046F00EDE5CC /* pObject.h */,
+				EF41503B1384046F00EDE5CC /* State.h */,
+				EF41503C1384046F00EDE5CC /* stdafx.cpp */,
+				EF41503D1384046F00EDE5CC /* stdafx.h */,
+				EF41503E1384046F00EDE5CC /* targetver.h */,
+				EF41503F1384046F00EDE5CC /* UserInterface.cpp */,
+				EF4150401384046F00EDE5CC /* UserInterface.h */,
+				EF4150411384046F00EDE5CC /* wContener.cpp */,
+				EF4150421384046F00EDE5CC /* wContener.h */,
+				EF4150431384046F00EDE5CC /* wDialog.cpp */,
+				EF4150441384046F00EDE5CC /* wDialog.h */,
+				EF4150451384046F00EDE5CC /* wImage.cpp */,
+				EF4150461384046F00EDE5CC /* wImage.h */,
+				EF4150471384046F00EDE5CC /* wLabel.cpp */,
+				EF4150481384046F00EDE5CC /* wLabel.h */,
+				EF4150491384046F00EDE5CC /* wMenu.cpp */,
+				EF41504A1384046F00EDE5CC /* wMenu.h */,
+				EF41504B1384046F00EDE5CC /* wWidget.cpp */,
+				EF41504C1384046F00EDE5CC /* wWidget.h */,
+			);
+			name = FallingDemo;
+			path = ../../FallingDemo;
+			sourceTree = SOURCE_ROOT;
+		};
+		EFB1D3DD14066BE000AC3496 /* LCP */ = {
+			isa = PBXGroup;
+			children = (
+				EFB1D3DE1406DCEC00AC3496 /* LCP.cpp */,
+			);
+			name = LCP;
+			sourceTree = "<group>";
+		};
+		EFD1410E140552DF00AD2B2E /* Bounding volumes */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FD51384042D00EDE5CC /* AABB.cpp */,
+				EF414FD61384042D00EDE5CC /* AABB.h */,
+				EF414FD71384042D00EDE5CC /* BoundingVolumes.h */,
+				EF414FFF1384042D00EDE5CC /* OBB.cpp */,
+				EF4150001384042D00EDE5CC /* OBB.h */,
+				EF4150011384042D00EDE5CC /* OBBtree.cpp */,
+				EF4150021384042D00EDE5CC /* OBBtree.h */,
+			);
+			name = "Bounding volumes";
+			sourceTree = "<group>";
+		};
+		EFD1410F1405536D00AD2B2E /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FF81384042D00EDE5CC /* InfinitePlane.cpp */,
+				EF414FF91384042D00EDE5CC /* InfinitePlane.h */,
+				EF414FE11384042D00EDE5CC /* Disk.cpp */,
+				EF414FE21384042D00EDE5CC /* Disk.h */,
+				EF414FEA1384042D00EDE5CC /* FakeShape.cpp */,
+				EF414FEB1384042D00EDE5CC /* FakeShape.h */,
+				EF4150071384042D00EDE5CC /* PixelPerfectShape.cpp */,
+				EF4150081384042D00EDE5CC /* PixelPerfectShape.h */,
+				EF41500F1384042D00EDE5CC /* Polygon2D.cpp */,
+				EF4150101384042D00EDE5CC /* Polygon2D.h */,
+				EF4150161384042D00EDE5CC /* Shapes.cpp */,
+				EF4150171384042D00EDE5CC /* Shapes.h */,
+			);
+			name = Shapes;
+			sourceTree = "<group>";
+		};
+		EFD14110140553B500AD2B2E /* Primitives */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FF41384042D00EDE5CC /* GeometryHelper.cpp */,
+				EF414FF51384042D00EDE5CC /* GeometryHelper.h */,
+				EF41500D1384042D00EDE5CC /* Point2D.cpp */,
+				EF41500E1384042D00EDE5CC /* Point2D.h */,
+				EF4150111384042D00EDE5CC /* Primitives.h */,
+				EF4150201384042D00EDE5CC /* Vector2D.cpp */,
+				EF4150211384042D00EDE5CC /* Vector2D.h */,
+			);
+			name = Primitives;
+			sourceTree = "<group>";
+		};
+		EFD14111140553F500AD2B2E /* Contact solvers */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FDB1384042D00EDE5CC /* CollisionDetector.cpp */,
+				EF414FDC1384042D00EDE5CC /* CollisionDetector.h */,
+				EF414FD81384042D00EDE5CC /* BoxBoxSolver.h */,
+				EF414FE31384042D00EDE5CC /* DiskBoxSolver.h */,
+				EF414FE41384042D00EDE5CC /* DiskDiskSolver.cpp */,
+				EF414FE51384042D00EDE5CC /* DiskDiskSolver.h */,
+				EF414FE61384042D00EDE5CC /* DistanceSolver.cpp */,
+				EF414FE71384042D00EDE5CC /* DistanceSolver.h */,
+				EF414FF21384042D00EDE5CC /* GenericSolver.cpp */,
+				EF414FF31384042D00EDE5CC /* GenericSolver.h */,
+				EF4150091384042D00EDE5CC /* PixelPerfectSolver.cpp */,
+				EF41500A1384042D00EDE5CC /* PixelPerfectSolver.h */,
+				EF41500B1384042D00EDE5CC /* PlaneShapeSolver.cpp */,
+				EF41500C1384042D00EDE5CC /* PlaneShapeSolver.h */,
+			);
+			name = "Contact solvers";
+			sourceTree = "<group>";
+		};
+		EFD141131405546E00AD2B2E /* Rigid body */ = {
+			isa = PBXGroup;
+			children = (
+				EF4150121384042D00EDE5CC /* RigidBody.cpp */,
+				EF4150131384042D00EDE5CC /* RigidBody.h */,
+				EF41501D1384042D00EDE5CC /* Tesselator.cpp */,
+				EF41501E1384042D00EDE5CC /* Tesselator.h */,
+			);
+			name = "Rigid body";
+			sourceTree = "<group>";
+		};
+		EFD14114140554C100AD2B2E /* Broad phase */ = {
+			isa = PBXGroup;
+			children = (
+				EF41501A1384042D00EDE5CC /* SubCollision.cpp */,
+				EF41501B1384042D00EDE5CC /* SubCollision.h */,
+				EF4150031384042D00EDE5CC /* PairManager.cpp */,
+				EF4150041384042D00EDE5CC /* PairManager.h */,
+				EF414FFA1384042D00EDE5CC /* Island.cpp */,
+				EF414FFB1384042D00EDE5CC /* Island.h */,
+				EF414FD91384042D00EDE5CC /* CollisionArbiter.cpp */,
+				EF414FDA1384042D00EDE5CC /* CollisionArbiter.h */,
+				EF414FDD1384042D00EDE5CC /* ContactBatch.cpp */,
+				EF414FDE1384042D00EDE5CC /* ContactBatch.h */,
+				EF414FDF1384042D00EDE5CC /* ContactGenerator.cpp */,
+				EF414FE01384042D00EDE5CC /* ContactGenerator.h */,
+				EF4150141384042D00EDE5CC /* SAPsolver.cpp */,
+				EF4150151384042D00EDE5CC /* SAPsolver.h */,
+			);
+			name = "Broad phase";
+			sourceTree = "<group>";
+		};
+		EFD14115140554FC00AD2B2E /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FF01384042D00EDE5CC /* floatTests.cpp */,
+				EF414FF11384042D00EDE5CC /* floatTests.h */,
+				EF414FE81384042D00EDE5CC /* dllmain.cpp */,
+				EF414FE91384042D00EDE5CC /* DoubleLinkedList.h */,
+				EF4150181384042D00EDE5CC /* stdafx.cpp */,
+				EF4150191384042D00EDE5CC /* stdafx.h */,
+				EF41501C1384042D00EDE5CC /* targetver.h */,
+				EF41501F1384042D00EDE5CC /* TunningConstants.h */,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
+		EFD141161405553400AD2B2E /* Integration & Correction */ = {
+			isa = PBXGroup;
+			children = (
+				EF414FF61384042D00EDE5CC /* ImpulseSolver.cpp */,
+				EF414FF71384042D00EDE5CC /* ImpulseSolver.h */,
+				EF4150051384042D00EDE5CC /* PenetrationSolver.cpp */,
+				EF4150061384042D00EDE5CC /* PenetrationSolver.h */,
+				EF4150221384042D00EDE5CC /* VitessSolver.cpp */,
+				EF4150231384042D00EDE5CC /* VitessSolver.h */,
+			);
+			name = "Integration & Correction";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		EFCC54C913845C5200BBB06F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFCC564013845E7700BBB06F /* AABB.h in Headers */,
+				EFCC564113845E7700BBB06F /* BoundingVolumes.h in Headers */,
+				EFCC564213845E7700BBB06F /* BoxBoxSolver.h in Headers */,
+				EFCC564313845E7700BBB06F /* CollisionArbiter.h in Headers */,
+				EFCC564413845E7700BBB06F /* CollisionDetector.h in Headers */,
+				EFCC564513845E7700BBB06F /* ContactBatch.h in Headers */,
+				EFCC564613845E7700BBB06F /* ContactGenerator.h in Headers */,
+				EFCC564713845E7700BBB06F /* Disk.h in Headers */,
+				EFCC564813845E7700BBB06F /* DiskBoxSolver.h in Headers */,
+				EFCC564913845E7700BBB06F /* DiskDiskSolver.h in Headers */,
+				EFCC564A13845E7700BBB06F /* DistanceSolver.h in Headers */,
+				EFCC564B13845E7700BBB06F /* DoubleLinkedList.h in Headers */,
+				EFCC564C13845E7700BBB06F /* FakeShape.h in Headers */,
+				EFCC564D13845E7700BBB06F /* Falling.h in Headers */,
+				EFCC564E13845E7700BBB06F /* floatTests.h in Headers */,
+				EFCC564F13845E7700BBB06F /* GenericSolver.h in Headers */,
+				EFCC565013845E7700BBB06F /* GeometryHelper.h in Headers */,
+				EFCC565113845E7700BBB06F /* ImpulseSolver.h in Headers */,
+				EFCC565213845E7700BBB06F /* InfinitePlane.h in Headers */,
+				EFCC565313845E7700BBB06F /* Island.h in Headers */,
+				EFCC565413845E7700BBB06F /* OBB.h in Headers */,
+				EFCC565513845E7700BBB06F /* OBBtree.h in Headers */,
+				EFCC565613845E7700BBB06F /* PairManager.h in Headers */,
+				EFCC565713845E7700BBB06F /* PenetrationSolver.h in Headers */,
+				EFCC565813845E7700BBB06F /* PixelPerfectShape.h in Headers */,
+				EFCC565913845E7700BBB06F /* PixelPerfectSolver.h in Headers */,
+				EFCC565A13845E7700BBB06F /* PlaneShapeSolver.h in Headers */,
+				EFCC565B13845E7700BBB06F /* Point2D.h in Headers */,
+				EFCC565C13845E7700BBB06F /* Polygon2D.h in Headers */,
+				EFCC565D13845E7700BBB06F /* Primitives.h in Headers */,
+				EFCC565E13845E7700BBB06F /* RigidBody.h in Headers */,
+				EFCC565F13845E7700BBB06F /* SAPsolver.h in Headers */,
+				EFCC566013845E7700BBB06F /* Shapes.h in Headers */,
+				EFCC566113845E7700BBB06F /* stdafx.h in Headers */,
+				EFCC566213845E7700BBB06F /* SubCollision.h in Headers */,
+				EFCC566313845E7700BBB06F /* targetver.h in Headers */,
+				EFCC566413845E7700BBB06F /* Tesselator.h in Headers */,
+				EFCC566513845E7700BBB06F /* TunningConstants.h in Headers */,
+				EFCC566613845E7700BBB06F /* Vector2D.h in Headers */,
+				EFCC566713845E7700BBB06F /* VitessSolver.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		EFB7A3C2138462AB00DBAA41 /* FallingDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EFB7A3C8138462AB00DBAA41 /* Build configuration list for PBXNativeTarget "FallingDemo" */;
+			buildPhases = (
+				EFB7A3BF138462AB00DBAA41 /* Resources */,
+				EFB7A3C0138462AB00DBAA41 /* Sources */,
+				EFB7A3C1138462AB00DBAA41 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FallingDemo;
+			productName = FallingDemo;
+			productReference = EFB7A3C3138462AB00DBAA41 /* FallingDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EFCC54CD13845C5200BBB06F /* Falling */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EFCC54D213845C5300BBB06F /* Build configuration list for PBXNativeTarget "Falling" */;
+			buildPhases = (
+				EFCC54C913845C5200BBB06F /* Headers */,
+				EFCC54CA13845C5200BBB06F /* Resources */,
+				EFCC54CB13845C5200BBB06F /* Sources */,
+				EFCC54CC13845C5200BBB06F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Falling;
+			productName = Falling;
+			productReference = EFCC567113845F3700BBB06F /* Falling.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "Falling" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Falling */;
+			productRefGroup = 08FB7794FE84155DC02AAC07 /* Falling */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EFCC54CD13845C5200BBB06F /* Falling */,
+				EFB7A3C2138462AB00DBAA41 /* FallingDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EFB7A3BF138462AB00DBAA41 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EFCC54CA13845C5200BBB06F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EFB7A3C0138462AB00DBAA41 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFB7A3CF1384633400DBAA41 /* FallingDemo.cpp in Sources */,
+				EFB7A3D01384633400DBAA41 /* FallingDemo.h in Sources */,
+				EFB7A3D21384633400DBAA41 /* pObject.cpp in Sources */,
+				EFB7A3D31384633400DBAA41 /* pObject.h in Sources */,
+				EFB7A3D41384633400DBAA41 /* State.h in Sources */,
+				EFB7A3D51384633400DBAA41 /* stdafx.cpp in Sources */,
+				EFB7A3D61384633400DBAA41 /* stdafx.h in Sources */,
+				EFB7A3D71384633400DBAA41 /* targetver.h in Sources */,
+				EFB7A3D81384633400DBAA41 /* UserInterface.cpp in Sources */,
+				EFB7A3D91384633400DBAA41 /* UserInterface.h in Sources */,
+				EFB7A3DA1384633400DBAA41 /* wContener.cpp in Sources */,
+				EFB7A3DB1384633400DBAA41 /* wContener.h in Sources */,
+				EFB7A3DC1384633400DBAA41 /* wDialog.cpp in Sources */,
+				EFB7A3DD1384633400DBAA41 /* wDialog.h in Sources */,
+				EFB7A3DE1384633400DBAA41 /* wImage.cpp in Sources */,
+				EFB7A3DF1384633400DBAA41 /* wImage.h in Sources */,
+				EFB7A3E01384633400DBAA41 /* wLabel.cpp in Sources */,
+				EFB7A3E11384633400DBAA41 /* wLabel.h in Sources */,
+				EFB7A3E21384633400DBAA41 /* wMenu.cpp in Sources */,
+				EFB7A3E31384633400DBAA41 /* wMenu.h in Sources */,
+				EFB7A3E41384633400DBAA41 /* wWidget.cpp in Sources */,
+				EFB7A3E51384633400DBAA41 /* wWidget.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EFCC54CB13845C5200BBB06F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFCC562013845E4800BBB06F /* AABB.cpp in Sources */,
+				EFCC562113845E4800BBB06F /* CollisionArbiter.cpp in Sources */,
+				EFCC562213845E4800BBB06F /* CollisionDetector.cpp in Sources */,
+				EFCC562313845E4800BBB06F /* ContactBatch.cpp in Sources */,
+				EFCC562413845E4800BBB06F /* ContactGenerator.cpp in Sources */,
+				EFCC562513845E4800BBB06F /* Disk.cpp in Sources */,
+				EFCC562613845E4800BBB06F /* DiskDiskSolver.cpp in Sources */,
+				EFCC562713845E4800BBB06F /* DistanceSolver.cpp in Sources */,
+				EFCC562813845E4800BBB06F /* dllmain.cpp in Sources */,
+				EFCC562913845E4800BBB06F /* FakeShape.cpp in Sources */,
+				EFCC562A13845E4800BBB06F /* Falling.cpp in Sources */,
+				EFCC562B13845E4800BBB06F /* floatTests.cpp in Sources */,
+				EFCC562C13845E4800BBB06F /* GenericSolver.cpp in Sources */,
+				EFCC562D13845E4800BBB06F /* GeometryHelper.cpp in Sources */,
+				EFCC562E13845E4800BBB06F /* ImpulseSolver.cpp in Sources */,
+				EFCC562F13845E4800BBB06F /* InfinitePlane.cpp in Sources */,
+				EFCC563013845E4800BBB06F /* Island.cpp in Sources */,
+				EFCC563113845E4800BBB06F /* OBB.cpp in Sources */,
+				EFCC563213845E4800BBB06F /* OBBtree.cpp in Sources */,
+				EFCC563313845E4800BBB06F /* PairManager.cpp in Sources */,
+				EFCC563413845E4800BBB06F /* PenetrationSolver.cpp in Sources */,
+				EFCC563513845E4800BBB06F /* PixelPerfectShape.cpp in Sources */,
+				EFCC563613845E4800BBB06F /* PixelPerfectSolver.cpp in Sources */,
+				EFCC563713845E4800BBB06F /* PlaneShapeSolver.cpp in Sources */,
+				EFCC563813845E4800BBB06F /* Point2D.cpp in Sources */,
+				EFCC563913845E4800BBB06F /* Polygon2D.cpp in Sources */,
+				EFCC563A13845E4800BBB06F /* RigidBody.cpp in Sources */,
+				EFCC563B13845E4800BBB06F /* SAPsolver.cpp in Sources */,
+				EFCC563C13845E4800BBB06F /* Shapes.cpp in Sources */,
+				EFCC563D13845E4800BBB06F /* stdafx.cpp in Sources */,
+				EFCC563E13845E4800BBB06F /* SubCollision.cpp in Sources */,
+				EFCC561E13845DE900BBB06F /* Tesselator.cpp in Sources */,
+				EFCC561C13845DE000BBB06F /* Vector2D.cpp in Sources */,
+				EFCC561813845D9900BBB06F /* VitessSolver.cpp in Sources */,
+				EFB1D3DF1406DCEC00AC3496 /* LCP.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB919408733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB919508733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		EFB7A3C6138462AB00DBAA41 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"~/Documents/SFMLincludes/lib",
+					"/Library/Frameworks/**",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "~/Documents/SFMLincludes/include";
+				INFOPLIST_FILE = "FallingDemo-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_NAME = FallingDemo;
+			};
+			name = Debug;
+		};
+		EFB7A3C7138462AB00DBAA41 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "FallingDemo-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = FallingDemo;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		EFCC54D013845C5200BBB06F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				INFOPLIST_FILE = "Falling-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Falling\"",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_NAME = Falling;
+				SHARED_PRECOMPS_DIR = "";
+			};
+			name = Debug;
+		};
+		EFCC54D113845C5200BBB06F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "Falling-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Falling\"",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Falling;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "Falling" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debug */,
+				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EFB7A3C8138462AB00DBAA41 /* Build configuration list for PBXNativeTarget "FallingDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EFB7A3C6138462AB00DBAA41 /* Debug */,
+				EFB7A3C7138462AB00DBAA41 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EFCC54D213845C5300BBB06F /* Build configuration list for PBXNativeTarget "Falling" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EFCC54D013845C5200BBB06F /* Debug */,
+				EFCC54D113845C5200BBB06F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
