@@ -35,6 +35,11 @@ namespace Falling
 	    // sleep datas
 	    bool sleeping;
 	    Real movment;
+        
+        /*
+         datas for indexing in islands
+         */
+        unsigned int island_index;
 	    //
 	    // position stabilisation detector
 	    int nbrValues;
@@ -64,6 +69,10 @@ namespace Falling
 	    void setAwake(bool awake);
 	    inline bool isSleeping();
 
+        inline unsigned int getIslandIndex()
+        { return island_index; }
+        inline void setIslandIndex(unsigned int new_id)
+        { island_index = new_id; }
 	    inline Vector2D getPos();
 	    inline void setPos(Vector2D);
 	    inline Real getOmega();

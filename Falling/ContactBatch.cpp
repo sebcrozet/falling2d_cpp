@@ -63,7 +63,7 @@ namespace Falling
 	    {
 		// see if scol[i] has to be replaced
 		Vector2D test(Point2D::getMiddle(absA, absB), mid);
-		if(test * test < /* TODO: use more reliable value here */ PROXIMITY_AWARENESS)
+		if(test * test < /* FIXME: use more reliable value here */ PROXIMITY_AWARENESS)
 		{
 		    // replace
 		    cb->depth = depth;

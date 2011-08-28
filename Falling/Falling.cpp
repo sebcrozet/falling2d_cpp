@@ -79,18 +79,50 @@ namespace Falling
         dumpAddDelete();
         if(paused)
             return;
-        checkSleeps(dt);
+        //checkSleeps(dt);
+        /*
         integrate(dt);
         solvePenetrationsAndImpulse(dt);
-        solvePenetrationsAndImpulse(dt);
-        solvePenetrationsAndImpulse(dt);
-        solvePenetrationsAndImpulse(dt);
+        */
+        solvePenetrationsAndImpulseWithLCP(dt);
     }
     
     
     void World::integrate(Real dt)
     {
         VitessSolver::integrate(objs,dt);
+    }
+    
+    void World::solvePenetrationsAndImpulseWithLCP(Real dt)
+    {
+        // solve distances (collision detection)
+        std::vector<Collision *> colls;
+        ca.solve(colls);
+        if(colls.size())
+        {
+            std::vector<Contact *> ctcts;
+            std::stack<Island *> isls,isls2;
+            // Build islands
+            Island::batchIslands(colls,isls);
+            //printf("NBR ISLS ==>  %i\n",isls.size());
+            while(!isls.empty())
+            {
+                Island *isl = isls.top();
+                isl->calculateStackLevels();
+                isl->doit(dt);
+                delete isl;
+                isls.pop();
+            }
+            //
+            //ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
+            /*
+            PenetrationSolver::solve(ctcts);
+            //printf("Nbr islands: %i\n", isls2.size());
+            PenetrationSolver::solve(ctcts);
+            */
+        }
+        integrate(dt);
+        //checkSleeps(dt);
     }
     
     void World::solvePenetrationsAndImpulse(Real dt)

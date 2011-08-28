@@ -23,6 +23,15 @@ namespace Falling
 {
     struct Contact
     {
+        /*
+         Datas for LCP solving (jacobian).
+         */
+        Real jacobian[6]; // v1.x v1.y w1 v2.x v2.y w2
+        Real jacobian_indices[6]; // indices of objects
+        Real bounds[2]; // bounds for lambda
+        /*
+         End of datas for LCP solving.
+         */
 	// TODO: see if there are no ureless datas here (is dvely still useful?)
 	Shape *s1;
 	Shape *s2;
@@ -73,6 +82,7 @@ namespace Falling
 	public:
 	    static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
         static void PrepareContactDatasForImpulseSolver(std::vector<Collision *> &collisions,Real dt);
+        static void PrepareContactDatasInMatrix(Real dt, Collision *c, Real *J, Real *bounds, Real *zeta, int *idx, unsigned int&i_bounds, unsigned int &i_J, unsigned int &i_idx, unsigned int &i_zeta);
     };
 }
 #define CGEN

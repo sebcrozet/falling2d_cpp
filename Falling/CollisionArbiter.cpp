@@ -88,13 +88,16 @@ namespace Falling
   {
     nextlvlptre = 0;
     prevlvlptr = 0;
+      /*
     if(c.size())
     {
       for(unsigned int i = 0; i < c.size(); i++)
         delete cnts[i];
       c.clear();
-      delete cnts;
+      delete[] cnts;
     }
+       */
+      c.clear();
   }
 
   void Collision::removeFromList()

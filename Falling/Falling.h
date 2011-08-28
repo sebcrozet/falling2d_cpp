@@ -55,6 +55,7 @@ namespace Falling
 	    void solve(Real dt);
 	    void integrate(Real dt);
 	    void solvePenetrationsAndImpulse(Real dt);
+        void solvePenetrationsAndImpulseWithLCP(Real dt);
 
 	    void notifyObjectMoved(RigidBody *s);
     };

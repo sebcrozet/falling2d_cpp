@@ -19,15 +19,12 @@
 
 namespace Falling
 {
-    //#pragma region Edge
     /*
      * Constructor
      */
     Edge::Edge(Poly *poly1, Poly *poly2) : p1(poly1), p2(poly2)
     { }
-    //#pragma endregion
 
-    //#pragma region Poly
     /*
      * Constructor
      */
@@ -45,7 +42,6 @@ namespace Falling
     }
 
 
-    //#pragma region As
     void Poly::testAdj()
     {
 		return;
@@ -421,10 +417,8 @@ namespace Falling
 	}
 	else return 0;
     }
-    //#pragma endregion
 
 
-    //#pragma region As peudo-polygon
     /*
      * split(...)
      * Splits this polygon in two parts.
@@ -604,10 +598,7 @@ namespace Falling
 	testAdj();
 	this->testAdj();
     }
-    //#pragma endregion
-    //#pragma endregion
-
-    //#pragma region Point
+    
     /*
      * Constructor.
      */
@@ -716,9 +707,7 @@ namespace Falling
 	if(!adjlist)
 		printf("Should have been deleted...\n");
     }
-    //#pragma endregion
 
-    //#pragma region Tesselations procedures
     /*
      * triangleMarching(...)
      * Finds the triangle containing a given (end) point passing through every triangles
@@ -1115,8 +1104,7 @@ namespace Falling
 	tomerge->triangulate(begin);
 	// end of insertion
     }
-    //#pragma endregion
-    //#pragma region Main function
+    
     void Tesselator::parcgraph(void(*print)(Poly *))
     {
 	// parc triangle graph (breadth first search)
@@ -1648,5 +1636,4 @@ namespace Falling
 	}
 	return nbrres;
     }
-    //#pragma endregion
 }
