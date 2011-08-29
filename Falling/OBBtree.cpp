@@ -24,9 +24,9 @@ namespace Falling
 
     OBBtree::~OBBtree()
 	{
-		if(r != 0)
+		if(r)
 			delete r;
-		if(l != 0)
+		if(l)
 			delete l;
 		delete o;
 	}

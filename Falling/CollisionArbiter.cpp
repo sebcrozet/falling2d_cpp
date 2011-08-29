@@ -370,14 +370,39 @@ namespace Falling
 
   void CollisionArbiter::deleteObject(Shape *s)
   {
+    /*
+     * first, awake every objects in contact with this one
+     */
+    Collision *c = s->getCollisionList()->nexta;
+    while(c->sa != c->sb) // sentinel not reached
+    {
+      if(c->sa == s)
+      {
+        if(c->sb->getParent()->isSleeping())
+          c->sb->getParent()->setAwake(true);
+        c = c->nexta;
+      }
+      else
+      {
+        assert(c->sb == s);
+        if(c->sa->getParent()->isSleeping())
+          c->sa->getParent()->setAwake(true);
+        c = c->nexta;
+      }
+    }
+
+    /*
+     * Then, we can remove safely
+     * from the sap
+     */
     sap.removeObject(s);
     // Free object's collision list sentinels
     // All other collision should have been deleed by SAP,
     // so, head = first collision / tail = second collision
-    Collision *c = s->getCollisionList();
+    c = s->getCollisionList();
     // invalidate the collision list
-    assert((c->sa == c->sb));
-    assert((c->nexta->sa == c->nexta->sb));
+    assert(c->sa == c->sb);
+    assert(c->nexta->sa == c->nexta->sb);
     s->setCollisionList(0, 0);
     // must be sentinels
     // delete it

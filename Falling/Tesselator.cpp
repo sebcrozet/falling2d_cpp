@@ -119,7 +119,7 @@ namespace Falling
 
   /*
    * There is a problem with these delete: it seems that all these objects have
-   * already been deleted¿
+   * already been deleted.
    * And the memory leak detector does not find any leak here!
    * Suse, it seems safe to remove these lines.
    */

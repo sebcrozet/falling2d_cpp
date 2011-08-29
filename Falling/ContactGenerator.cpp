@@ -71,9 +71,6 @@ namespace Falling
         }
     }    
     
-    /*
-     FIXME: use pointers (iterators) instead of base pointer + index!
-     */
     void ContactGenerator::PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx)
     {
         for(std::vector<ContactBackup*>::iterator j = c->c.begin(); j != c->c.end(); j++)
@@ -139,9 +136,6 @@ namespace Falling
             if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT) // use a coefficient of restitution of 0 when the closing velocity is too small => better stability in stacks.
                 extra_v += 1 / dt * relative_velocity * 0.5; // 0.5 = coefficient of restitution.
             *(zeta++) = extra_v;
-            /*
-             FIXME: divide the mass by the number of points on contacts for each body
-             */
             *(J++) = -tangeant.getX();
             *(J++) = -tangeant.getY();
             *(J++) = -relp1.perp(tangeant); // perpendicular product to keep the z component only
