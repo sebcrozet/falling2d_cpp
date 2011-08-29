@@ -1,5 +1,5 @@
 /* Copyright (C) 2011 CROZET Sébastien
- 
+
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -26,59 +26,43 @@
 
 namespace Falling
 {
-    struct Contact;
-    struct QuarterSpace;
-    struct Collision
-    {
-        Shape *sa, *sb;
-        std::vector<ContactBackup *> c;
-        Contact **cnts; // Contact *[]
-        CollisionDetector *cd;	 // Specific collision solver
-        Collision *preva,*prevb,*nexta,*nextb;
-        Collision *nextlvlptre,*prevlvlptr;
-        /*
-         For islands, it's useless to keep a double circular linked list for
-         collisions in levels.
-         There fore, it should be replaced by a list in the island
-         */
-        /*
-         */
-        Contact *worstContact;
-        Real worstPenetrationAmount;
-        Contact *worstVelocityContact;
-        Real worstVelocityChangeAmount;
-        int collisionStackLevel;
-        
-        Collision(Shape *sa, Shape *sb);
-        Collision(Shape *s);
-        ~Collision();
-        void removeFromList();
-        void autoInsert();
-        void insertInLevele(Collision *);
-        void clearContacts();
-        
-        static Collision *inPlaceSortList_impulsion(Collision *lbegin);
-        static Collision *inPlaceSortList(Collision *);
-    };
-    
-    
-    class CollisionArbiter
-    {
-	private:
-	    std::vector<Shape *> s;
-	    SAPsolver sap;
-        
-	    static void addP(Pair *p, Shape *s, Shape *s2);
-	    static void deleteP(Pair &p);
-	    static bool removeP(Pair *p);
-	public:
-	    CollisionArbiter();
-	    ~CollisionArbiter();
-	    void addObject(Shape *s);
-	    void deleteObject(Shape *s);
-	    void solve(std::vector<Collision *> &res);
-	    void notifyObjectMoved(Shape *s);
-    };
+  struct Contact;
+  struct QuarterSpace;
+  struct Collision
+  {
+    Shape *sa, *sb;
+    std::vector<ContactBackup *> c;
+    Contact **cnts; // Contact *[]
+    CollisionDetector *cd;	 // Specific collision solver
+    Collision *preva,*prevb,*nexta,*nextb;
+    int collisionStackLevel;
+
+    Collision(Shape *sa, Shape *sb);
+    Collision(Shape *s);
+    ~Collision();
+    void removeFromList();
+    void autoInsert();
+    void clearContacts();
+  };
+
+
+  class CollisionArbiter
+  {
+    private:
+      std::vector<Shape *> s;
+      SAPsolver sap;
+
+      static void addP(Pair *p, Shape *s, Shape *s2);
+      static void deleteP(Pair &p);
+      static bool removeP(Pair *p);
+    public:
+      CollisionArbiter();
+      ~CollisionArbiter();
+      void addObject(Shape *s);
+      void deleteObject(Shape *s);
+      void solve(std::vector<Collision *> &res);
+      void notifyObjectMoved(Shape *s);
+  };
 }
 #define __COLLISION_ARBITER__
 #endif

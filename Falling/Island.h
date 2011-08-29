@@ -55,10 +55,6 @@ namespace Falling
         void calculateStackLevels();
         void pushToLevelOneChain(Collision *c);
         
-        // TODO: remove test
-        static void verifyLvlPtrChain(Collision *ptr);
-        // end TODO
-        
         inline void insertToLevelOne(Shape *c)
         { graphNodes.push(c); }
         inline bool isEmpty()

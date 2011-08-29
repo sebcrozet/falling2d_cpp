@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "CollisionDetector.h"
-#include "PenetrationSolver.h"
 #include "ContactBatch.h"
 
 

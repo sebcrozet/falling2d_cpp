@@ -18,8 +18,6 @@
 #include "TunningConstants.h"
 #include "math.h"
 #include "Polygon2D.h"
-#include "PenetrationSolver.h"
-#include "ImpulseSolver.h"
 #include "VitessSolver.h"
 #include "Island.h"
 
@@ -54,7 +52,6 @@ namespace Falling
 	    void removeObject(RigidBody *s);
 	    void solve(Real dt);
 	    void integrate(Real dt);
-	    void solvePenetrationsAndImpulse(Real dt);
         void solvePenetrationsAndImpulseWithLCP(Real dt);
 
 	    void notifyObjectMoved(RigidBody *s);

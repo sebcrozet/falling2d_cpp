@@ -31,8 +31,6 @@ namespace Falling
     nextb = 0;
     preva = 0;
     prevb = 0;
-    nextlvlptre = 0;
-    prevlvlptr = 0;
   }
 
   Collision::Collision(Shape *s, Shape *s2)
@@ -41,8 +39,6 @@ namespace Falling
     nextb = 0;
     preva = 0;
     prevb = 0;
-    nextlvlptre = 0;
-    prevlvlptr = 0;
     // choose correct collision detector and order shapes
     int idsum = s->getShapeTypeID() + s2->getShapeTypeID();
     if(idsum == 2)
@@ -86,17 +82,6 @@ namespace Falling
 
   void Collision::clearContacts()
   {
-    nextlvlptre = 0;
-    prevlvlptr = 0;
-      /*
-    if(c.size())
-    {
-      for(unsigned int i = 0; i < c.size(); i++)
-        delete cnts[i];
-      c.clear();
-      delete[] cnts;
-    }
-       */
       c.clear();
   }
 
@@ -145,8 +130,6 @@ namespace Falling
     nextb = 0;
     preva = 0;
     prevb = 0;
-    nextlvlptre = 0;
-    prevlvlptr = 0;
   }
   void Collision::autoInsert()
   {
@@ -201,108 +184,6 @@ namespace Falling
     }
     assert(!ca->nextb);
     assert(!cb->nextb);
-  }
-
-  void Collision::insertInLevele(Collision *c)
-  {
-    assert(!nextlvlptre && !prevlvlptr);
-    nextlvlptre = c->nextlvlptre;
-    prevlvlptr = c;
-    c->nextlvlptre = this;
-    nextlvlptre->prevlvlptr = this;
-  }
-
-  Collision *Collision::inPlaceSortList_impulsion(Collision *lbegin)
-  {
-    Collision *curr = lbegin->nextlvlptre;   // begin with the second element
-    Collision *res = lbegin;
-    Island::verifyLvlPtrChain(lbegin);
-    while(curr != lbegin)
-    {
-      if(curr->worstVelocityChangeAmount > res->worstVelocityChangeAmount)
-        res = curr;
-      curr = curr->nextlvlptre;
-    }
-    //assert(res->worstVelocityChangeAmount < 1000);
-
-    return res;
-  }
-
-  Collision *Collision::inPlaceSortList(Collision *lbegin)
-  {
-    Collision *lend = lbegin->prevlvlptr;
-    Collision *curr = lbegin->nextlvlptre;   // begin with the second element
-    Collision *next = curr; // save next element
-    Collision *res = lbegin;
-    Island::verifyLvlPtrChain(lbegin);
-    while(curr != lbegin)
-    {
-      if(curr->worstPenetrationAmount > res->worstPenetrationAmount)
-        res = curr;
-      curr = curr->nextlvlptre;
-    }
-    assert(res->worstPenetrationAmount < 1000);
-
-    return res;
-    // TODO: use the sort-based algorithm instead of the naive approach
-    // for all, do:
-    while(curr != lend) // lend is a spetial case (handled separately)
-    {
-      next = curr->nextlvlptre;
-      Real currpen = curr->worstPenetrationAmount;
-      while(true) // see stop condition in the next if statement
-      {
-        if(curr->prevlvlptr == lend) // it's a doubly-linked list (so, detect circularity to stop sorting)
-        {
-          res = curr; // save the first element
-          break;
-        }
-        if(curr->prevlvlptr->worstPenetrationAmount < currpen)
-        {
-          // swap
-          // TODO: swap only at last iteration!
-          Collision *prevptr = curr->prevlvlptr;
-          // 6 pointers => 6 affectations
-          prevptr->prevlvlptr->nextlvlptre = curr;
-          curr->prevlvlptr = prevptr->prevlvlptr;
-          prevptr->prevlvlptr = curr;
-          prevptr->nextlvlptre = curr->nextlvlptre;
-          curr->nextlvlptre->prevlvlptr = prevptr;
-          curr->nextlvlptre = prevptr;
-        }
-        else
-          break;
-      }
-      curr = next;
-    }
-    // handle lend case
-    Collision *newend = curr->prevlvlptr;
-    Real currpen = curr->worstPenetrationAmount;
-    while(true) // see stop condition in the next if statment
-    {
-      if(curr->prevlvlptr->worstPenetrationAmount < currpen)
-      {
-        // swap
-        // TODO: swap only at last iteration!
-        Collision *prevptr = curr->prevlvlptr;
-        // 6 pointers => 6 affectations
-        prevptr->prevlvlptr->nextlvlptre = curr;
-        curr->prevlvlptr = prevptr->prevlvlptr;
-        prevptr->prevlvlptr = curr;
-        prevptr->nextlvlptre = curr->nextlvlptre;
-        curr->nextlvlptre->prevlvlptr = prevptr;
-        curr->nextlvlptre = prevptr;
-      }
-      else
-        break;
-      if(curr->prevlvlptr == newend) // it's a doubly-linked list (so, detect circularity to stop sorting)
-      {
-        res = curr;
-        break;
-      }
-    }
-    // done
-    return res;
   }
 
   // Collision arbiter

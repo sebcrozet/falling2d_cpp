@@ -75,15 +75,9 @@ namespace Falling
     void World::solve(Real dt)
     {
         // add and remove objects now
-        // TODO : uncomment the Sleep function
         dumpAddDelete();
         if(paused)
             return;
-        //checkSleeps(dt);
-        /*
-        integrate(dt);
-        solvePenetrationsAndImpulse(dt);
-        */
         solvePenetrationsAndImpulseWithLCP(dt);
     }
     
@@ -116,78 +110,5 @@ namespace Falling
         }
         integrate(dt);
         checkSleeps(dt);
-    }
-    
-    void World::solvePenetrationsAndImpulse(Real dt)
-    {  // solve distances (collision detection)
-        std::vector<Collision *> colls;
-        ca.solve(colls);
-        if(colls.size())
-        {
-            std::vector<Contact *> ctcts;
-            std::stack<Island *> isls,isls2;
-            // Build islands
-            Island::batchIslands(colls,isls);
-            //printf("NBR ISLS ==>  %i\n",isls.size());
-            while(!isls.empty())
-            {
-                // TODO:  avoid this horrible stack transfert
-                isls2.push(isls.top());
-                isls.top()->calculateStackLevels();
-                for(unsigned int i = 0; i < isls.top()->stackLevels.size(); i++)
-                {
-                    //printf("Fixed? %i\n", isls.top()->isnonfix);
-                    //Island::verifyLvlPtrChain(isls.top()->stackLevels[i]);
-                }
-                isls.pop();
-            }
-            //
-            ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
-            //PenetrationSolver::solve(ctcts);
-            //printf("Nbr islands: %i\n", isls2.size());
-            PenetrationSolver::solve(ctcts);
-
-            while(!isls2.empty())
-            {
-                int basecoeff = isls2.top()->getNbrCtcts() / 10;
-                if(basecoeff < 5)
-                    basecoeff = 5;
-                for(int i = 0; i < basecoeff; i++)
-                {
-                    // stack implosion
-                    //PenetrationSolver::solve(ctcts);
-                    PenetrationSolver::solve(isls2.top(), true, (basecoeff-i) / 2);//*basecoeff/2);
-                    // stack explosion
-                    PenetrationSolver::solve(isls2.top(), false, i);//basecoeff);
-                    
-                }
-                isls.push(isls2.top());
-                //delete isls2.top();
-                isls2.pop();
-            }
-            
-            ContactGenerator::PrepareContactDatasForImpulseSolver(colls,dt);
-            ImpulseSolver::solve(ctcts,dt);
-/*
-            while (!isls.empty()) {
-                //ImpulseSolver::solve(ctcts,dt);
-                ImpulseSolver::solve(isls.top(), true, ctcts.size(), dt);
-                ImpulseSolver::solve(isls.top(), false, ctcts.size() / 10, dt);
-                delete isls.top();
-                isls.pop();
-            }
-*/
-
-            // TODO: remove test
-            for(unsigned int i = 0; i < colls.size(); i++)
-            {
-                Collision *c = colls[i];
-                c->collisionStackLevel = -1;
-                c->sa->setStackLevel(-1);
-                c->sb->setStackLevel(-1);
-                c->nextlvlptre = 0;
-                c->prevlvlptr = 0;
-            }
-        }
     }
 }

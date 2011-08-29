@@ -21,69 +21,22 @@
 
 namespace Falling
 {
-    struct Contact
-    {
-        /*
-         Datas for LCP solving (jacobian).
-         */
-        Real jacobian[6]; // v1.x v1.y w1 v2.x v2.y w2
-        Real jacobian_indices[6]; // indices of objects
-        Real bounds[2]; // bounds for lambda
-        /*
-         End of datas for LCP solving.
-         */
-	// TODO: see if there are no ureless datas here (is dvely still useful?)
-	Shape *s1;
-	Shape *s2;
-	private:
-	Real penetration;
-	public:
-	Point2D absoluteContactPoint;
-	Vector2D relContactPoint[2];
-	Vector2D normal, tangeant;
-	Vector2D closingVelocity;
-	Real desiredVelocityChange;
-	Real totalInertia;
-	Real dvel,dvely;
-	Real lin1,lin2;
-	Real angin[2];
-	Real linin[2];
-	Real unitangmov[2];
-	Real unitlinmov[2];
+  struct Contact
+  {
+    /*
+       Datas for LCP solving (jacobian).
+       */
+    Real jacobian[6]; // v1.x v1.y w1 v2.x v2.y w2
+    Real jacobian_indices[6]; // indices of objects
+    Real bounds[2]; // bounds for lambda
+  };
 
-	inline Vector2D toLocal(const Vector2D &v) const;
-	inline Vector2D toGlobal(const Vector2D &v) const;
-	void updateVelChange(Real dt);
-	void awakeIfNeeded();
-	// TODO: for debug
-	inline void setPenetration(Real p)
-	{
-	    penetration = p;
-	    assert(penetration == penetration);
-	}
-	inline Real getPenetration()
-	{
-	    return penetration;
-	}
-	//
-    };
-    inline Vector2D Contact::toLocal(const Vector2D &v) const
-    {
-	return Vector2D(v.dot(normal),v.dot(tangeant));
-    }
-    inline Vector2D Contact::toGlobal(const Vector2D &v) const
-    {
-	return Vector2D(v.getX()*normal.getX()+v.getY()*tangeant.getX(),v.getX()*normal.getY()+v.getY()*tangeant.getY());
-    }
-
-    class ContactGenerator
-    {
-	private:
-	public:
-	    static void DeduceContactsDatas(std::vector<Collision *> &collisions, std::vector<Contact *> &concacts,Real dt);
-        static void PrepareContactDatasForImpulseSolver(std::vector<Collision *> &collisions,Real dt);
-        static void PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
-    };
+  class ContactGenerator
+  {
+    private:
+    public:
+      static void PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
+  };
 }
 #define CGEN
 #endif

@@ -75,14 +75,6 @@ void switchFlagOff(int id, void *userdata)
     ((MachineState *)userdata)->drawstate &= ~MachineState::DRAW_COMPONENTS;
 }
 
-void stepIntegrateSolveEngine(int id, void *userdata)
-{
-	if(id == 201)
-		((MachineState *)userdata)->w.integrate(0.016);
-	else
-		((MachineState *)userdata)->w.solvePenetrationsAndImpulse(0.016);
-}
-
 void changeDrawMode(int id, void *userdata)
 {
   if(id == 1004)
@@ -109,11 +101,6 @@ void initParseMenuCallback(void *userdata, wMenuItem *mi)
       mi->setOnItemClicked(pauseEngine);
       mi->setOnItemReleased(pauseEngine);
     }
-  else if(mi->getId() > 200 && mi->getId() <= 202)
-  {
-	mi->setUserDatas(userdata);
-	mi->setOnItemClicked(stepIntegrateSolveEngine);
-  }
   else if(mi->getId() >= 1001 && mi->getId() <= 1002)
     {
       mi->setUserDatas(userdata);
@@ -158,8 +145,6 @@ UserInterface::UserInterface(MachineState &ms)
                  ">> :_?_1002 Show components\n"
                  ";_=_ SE\n"
                  ";_?_200 LE\n"
-		 ":_201 Integrate\n"
-		 ":_202 Solve\n"
                  ";_=_ SE\n"
                  ";_?@_A_1004 LY\n"
                  ";_?_A_1005 LYPTS\n"
