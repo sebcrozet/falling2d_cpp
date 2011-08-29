@@ -18,7 +18,7 @@
 #include "stdafx.h"
 // TODO: remove include (usefull only for debug)
 #include "Island.h"
-#include <iostream.h>
+#include <iostream>
 // end TODO
 
 namespace Falling
@@ -421,6 +421,8 @@ namespace Falling
                 {
                     nbrCtcts++;
                     total_contacts_number += next->c.size();
+                    next->sa->set_number_of_contacts(next->sa->get_total_number_of_contacts() + next->c.size());
+                    next->sb->set_number_of_contacts(next->sb->get_total_number_of_contacts() + next->c.size());
                     if(next->sa == sh)
                     {
                         if(next->c.size())
@@ -539,6 +541,8 @@ namespace Falling
                     isl->pushToLevelOneChain(next);
                     next->collisionStackLevel = 1;
                     isl->total_contacts_number += next->c.size();
+                    next->sa->set_number_of_contacts(next->sa->get_total_number_of_contacts() + next->c.size());
+                    next->sb->set_number_of_contacts(next->sb->get_total_number_of_contacts() + next->c.size());
                 }
                 else /* the next item is at level 2 wrt this node */
                 {
@@ -571,10 +575,18 @@ namespace Falling
         {
             Collision *c = *i;
             c->collisionStackLevel = -1;
+            /*
+             FIXME:
+             here we modify sa and sb.
+             However, it could be sheaper to iterate through 
+             each rigid body one by one an reset the attributes
+             */
             c->sa->setStackLevel(-1);
             c->sb->setStackLevel(-1);
+            c->sa->set_number_of_contacts(0);
+            c->sb->set_number_of_contacts(0);
         }
-        // Make a depth first research
+        // Make a depth first search in the collision graph
         for(unsigned int i=0; i<colls.size(); i++)
         {
             /*
@@ -610,6 +622,8 @@ namespace Falling
                         while(next->sa != next->sb)
                         {
                             isl->total_contacts_number += next->c.size();
+                            next->sa->set_number_of_contacts(next->sa->get_total_number_of_contacts() + next->c.size());
+                            next->sb->set_number_of_contacts(next->sb->get_total_number_of_contacts() + next->c.size());
                             if(next->sa == coll)
                             {
                                 if(next->c.size() > 0)
@@ -647,6 +661,13 @@ namespace Falling
     {
         Real invdt = 1.0 / dt;
         total_contacts_number *= 2; // normal constraint + friction constraint
+        /*
+         first, see if all objects are sleeping
+         */
+        std::vector<RigidBody*>::iterator body = bodies_involved.begin();
+        for(; body != bodies_involved.end() && (*body)->isSleeping(); body++) ;
+        if(body == bodies_involved.end())
+            return; // no resolution to do: the whole stack is sleeping (so lazy…)
         /*
          build the matrices
          */
@@ -690,16 +711,17 @@ namespace Falling
         /*
          indexes
          */
-        unsigned i_bounds = 0;
-        unsigned i_J = 0;
-        unsigned i_idx = 0;
-        unsigned i_zeta = 0;
+        Real *i_bounds = bounds;
+        Real *i_J = J;
+        int *i_idx = idx;
+        Real *i_zeta = zeta;
+        Real *i_lambda = lambda;
         for(std::vector< std::vector<Collision*> >::iterator i = stackLevels_lcp.begin(); i != stackLevels_lcp.end(); i++)
         {
             for(std::vector<Collision*>::iterator  j = i->begin(); j != i->end(); j++)
             {
                 Collision *curr_col = *j;
-                ContactGenerator::PrepareContactDatasInMatrix(dt, curr_col, J, bounds, zeta, idx, i_bounds, i_J, i_idx, i_zeta);
+                ContactGenerator::PrepareContactDatasInMatrix(dt, curr_col, i_J, i_bounds, i_zeta, i_lambda, i_idx);
             }
         }
         
@@ -709,37 +731,43 @@ namespace Falling
         // FIXME: optimize using pointers' arichmetic
         for(unsigned int i = 0; i < total_contacts_number; i++)
         {
-            Real vax1 = idx[i*2] >= 0 ? vomega[idx[i * 2] * 3] * invdt : 0.;
-            Real vay1 =idx[i*2] >= 0 ?  vomega[idx[i * 2] * 3 + 1] * invdt + G : 0.;
-            Real w1 = idx[i*2] >= 0 ? vomega[idx[i * 2] * 3 + 2] * invdt : 0.;
-            
-            Real vax2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3] * invdt :0.;
-            Real vay2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 1] * invdt + G:0.;
-            Real w2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 2] * invdt:0.;
-            
+            Real vax1 = vomega[idx[i * 2] * 3] * invdt;
+            Real vay1 = vomega[idx[i * 2] * 3 + 1] * invdt + G;
+            Real w1 = vomega[idx[i * 2] * 3 + 2] * invdt;
             unsigned i23 = i * 2 * 3;
-            unsigned i123 = i * 2 * 3 + 3;
-            nu[i] = zeta[i] - (J[i23] * vax1 + J[i23 + 1] * vay1 + J[i23 + 2] * w1 + 
-                       J[i123] * vax2 + J[i123 + 1] * vay2 + J[i123 + 2] * w2);
+            nu[i] = zeta[i] - (J[i23] * vax1 + J[i23 + 1] * vay1 + J[i23 + 2] * w1);
+            if(idx[i*2+1] >= 0)
+            {
+                Real vax2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3] * invdt :0.;
+                Real vay2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 1] * invdt + G:0.;
+                Real w2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 2] * invdt:0.;
+                
+                unsigned i23p3 = i * 2 * 3 + 3;
+                nu[i] -= J[i23p3] * vax2 + J[i23p3 + 1] * vay2 + J[i23p3 + 2] * w2;
+            }
             
         }
         //### B:
         // FIXME: use arithmetic on pointers
         for(unsigned int i = 0; i < total_contacts_number; i++)
         {
-            Real im1 = idx[i * 2] >= 0 ? mi[idx[i * 2] * 2] : 0.;
-            Real ii1 = idx[i * 2] >= 0 ? mi[idx[i * 2] * 2 + 1] : 0.;
+            Real im1 = mi[idx[i * 2] * 2];
+            Real ii1 = mi[idx[i * 2] * 2 + 1];
             
-            Real im2 = idx[i*2+1] >= 0 ? mi[idx[i * 2 + 1] * 2]:0.;
-            Real ii2 = idx[i*2+1] >= 0 ? mi[idx[i * 2 + 1] * 2 + 1]:0.;
             B[i * 3] = J[i * 6] * im1;
             B[i * 3 + 1] = J[i * 6 + 1] * im1;
             B[i * 3 + 2] = J[i * 6 + 2] * ii1;
             
-            // go to next line because we work with the transpose matrix
-            B[(i + total_contacts_number) * 3] = J[i * 6 + 3] * im2;
-            B[(i + total_contacts_number) * 3 + 1] = J[i * 6 + 4] * im2;
-            B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;            
+            if(idx[i*2+1] >= 0)
+            {
+                Real im2 = mi[idx[i * 2 + 1] * 2];
+                Real ii2 = mi[idx[i * 2 + 1] * 2 + 1];
+                // go to next line because we work with the transpose matrix
+                B[(i + total_contacts_number) * 3] = J[i * 6 + 3] * im2;
+                B[(i + total_contacts_number) * 3 + 1] = J[i * 6 + 4] * im2;
+                B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;    
+            }
+                    
         }
         
         /*
@@ -748,6 +776,21 @@ namespace Falling
         Real *a = new Real[3 * bodies_involved.size()]; // B * lambda: actually, the lambda buffer is less useful than this one for the integration step!
         solve(J, B, nu, lambda, bounds, a, idx, total_contacts_number, bodies_involved.size());
         
+        /*
+         copy back the lambda buffer for warm starting the engine:
+         */
+        i_lambda = lambda;
+        for(std::vector< std::vector<Collision*> >::iterator i = stackLevels_lcp.begin(); i != stackLevels_lcp.end(); i++)
+        {
+            for(std::vector<Collision*>::iterator  j = i->begin(); j != i->end(); j++)
+            {
+                for(std::vector<ContactBackup*>::iterator ctct = (*j)->c.begin(); ctct != (*j)->c.end(); ctct++)
+                {
+                    (*ctct)->lambda = *(i_lambda++);
+                    (*ctct)->frictionlambda = *(i_lambda++);
+                }
+            }
+        }
         /*
          last, integrate:
          V_2 = V_1 + dt (M^-1 * J^t * lambda + M^-1 * F_ext)
@@ -759,10 +802,35 @@ namespace Falling
             Real d_vx = dt * a[i * 3];
             Real d_vy = dt * a[i * 3 + 1];// + G;
             Real d_omega = dt * a[i * 3 + 2];
+            /*
+             when we compute the energy to determine if the object must be awaken,
+             the effect of gravity (or, actually, any external force) must be removed
+             from the velocity correction since it is the amount of velocity needed to kill
+             the gravity which will be introduced in the next integration!
+             */
+            Real d_vy_without_acceleration = d_vy + dt * G;
+            /*
+             see if we need to awake some bodies
+             */
             RigidBody *rb = bodies_involved[i]; 
+            
+            if(rb->isSleeping())
+            {
+                if(d_vx * d_vx + d_vy_without_acceleration * d_vy_without_acceleration + d_omega * d_omega > SLEEPLIMIT)
+                {
+                    rb->setAwake(true);
+                    rb->addV(Vector2D(d_vx, d_vy, 0));
+                    rb->addRV(d_omega);
+                }
+            }
+            else
+            {
+                rb->addV(Vector2D(d_vx, d_vy, 0));
+                rb->addRV(d_omega);
+            }
+            
+
             //std::cout << d_vx << " and " << d_vy << " ando " << d_omega << std::endl;
-            rb->addV(Vector2D(d_vx, d_vy, 0));
-            rb->addRV(d_omega);
             /*
             rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt);
             rb->setDeltaTeta(-PIX_PER_METTER*rb->getOmega()*dt);
@@ -783,6 +851,7 @@ namespace Falling
         delete[] vomega;
         delete[] mi;
         delete[] a;
+        delete[] zeta;
     }
     
     /*
@@ -803,8 +872,7 @@ namespace Falling
             int b2 = idx[i * 2 + 1];
             for(unsigned j = 0; j < 3; j++)
             {
-                if(b1 >= 0)
-                    a[b1 * 3 + j] += B[i * 3 + j] * lambda[i]; 
+                a[b1 * 3 + j] += B[i * 3 + j] * lambda[i]; 
                 if(b2 >= 0)
                     a[b2 * 3 + j] += B[i * 3 + s * 3 + j] * lambda[i]; 
             }
@@ -824,23 +892,28 @@ namespace Falling
         /*
          solve the system
          */
-        for(unsigned iter = 0; iter < 100; iter++) // FIXME: 100 = MAX_ITER
+        unsigned iter;
+        for(iter = 0; iter < MAX_LCP_ITERATIONS; iter++) // 100 = MAX_ITER
         {
+            /*
+             measure the variation of all lambdas over one iteration.
+             allow to exit the solver sooner.
+             Is it worth it?
+             */
+            Real d_lambda_accu = 0.0;
             for(unsigned i = 0; i < s; i++)
             {
                 int b1 = idx[i * 2] * 3;
                 int b2 = idx[i * 2 + 1] * 3;
                 
                 Real d_lambda_i = nu[i];
-                if(b1 >= 0)
-                    d_lambda_i -= J[6 * i] * a[b1] +
-                                + J[6 * i + 1] * a[b1 + 1] +
-                                + J[6 * i + 2] * a[b1 + 2];
+                d_lambda_i -= J[6 * i] * a[b1] +
+                            + J[6 * i + 1] * a[b1 + 1] +
+                            + J[6 * i + 2] * a[b1 + 2];
                 if(b2 >= 0)
                     d_lambda_i -= J[6 * i + 3] * a[b2] +
                                 + J[6 * i + 3 + 1] * a[b2 + 1] +
                                 + J[6 * i + 3 + 2] * a[b2 + 2];
-                
                 d_lambda_i /= d[i];
                 /*
                  clamp the value such that: lambda- <= lambda <= lambda+
@@ -851,13 +924,22 @@ namespace Falling
                  
                 for(unsigned j = 0; j < 3; j++)
                 {
-                    if(b1 >= 0)
-                        a[b1 + j] += d_lambda_i * B[i * 3 + j];
+                    Real da = d_lambda_i * B[i * 3 + j];
+                    a[b1 + j] += da;
+                    d_lambda_accu += ABS(da);
                     if(b2 >= 0)
-                        a[b2 + j] += d_lambda_i * B[i * 3 + s * 3 + j];
+                    {
+                        da = d_lambda_i * B[i * 3 + s * 3 + j];
+                        a[b2 + j] += da;
+                        d_lambda_accu += ABS(da);
+
+                    }
                 }
             }
+            if(d_lambda_accu < 6 * s)
+                break;
         }
+        std::cout << "iterations: " << iter << std::endl;
         delete[] d;
     }
 }

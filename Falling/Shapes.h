@@ -40,6 +40,7 @@ namespace Falling
 	    // Collision graph infos
 	    Collision *collisions,*collisionsTail; // <- CollisionTail is useless (juste for debug)
 	    int collisionStackLevel;
+        unsigned int total_number_of_contacts;
 
 	    // TODO: remove, for debug
 	    bool deleting;
@@ -59,6 +60,10 @@ namespace Falling
 	    inline void setCollisionList(Collision *,Collision *);
 	    inline void setStackLevel(int level);
 	    inline int getStackLevel() const;
+        inline int get_total_number_of_contacts() const
+        { return total_number_of_contacts; }
+        inline void set_number_of_contacts(Real n_cnts)
+        { total_number_of_contacts = n_cnts; }
 	    //
 	    virtual Real getSurface() const = 0;
 	    virtual Real getInertiaMomentum(Real m) const = 0;

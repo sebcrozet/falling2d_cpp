@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "ContactGenerator.h"
-
+#include <iostream>
 
 namespace Falling
 {
@@ -48,7 +48,7 @@ namespace Falling
         }
     }
     
-    void ContactGenerator::PrepareContactDatasForImpulseSolver(std::vector<Collision *> &collisions,Real dt)
+    void ContactGenerator::PrepareContactDatasForImpulseSolver(std::vector<Collision *> &collisions,Real)
     {
         for(unsigned int i=0; i<collisions.size(); i++)
         {
@@ -74,11 +74,8 @@ namespace Falling
     /*
      FIXME: use pointers (iterators) instead of base pointer + index!
      */
-    void ContactGenerator::PrepareContactDatasInMatrix(Real dt, Collision *c, Real *J, Real *bounds, Real *zeta, int *idx, unsigned int&i_bounds, unsigned int &i_J, unsigned int &i_idx, unsigned int &i_zeta)
+    void ContactGenerator::PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx)
     {
-        /* FIXME: what do we do with sleeping objects? */
-        // if(c->sa->getParent()->isSleeping() && c->sb->getParent()->isSleeping())
-        //    continue; // do not overwrite cached datas
         for(std::vector<ContactBackup*>::iterator j = c->c.begin(); j != c->c.end(); j++)
         {
             ContactBackup *cb = *j;
@@ -88,7 +85,6 @@ namespace Falling
             Vector2D norm = cb->normal;
             
             
-            // cnt->setPenetration(c->c[j]->depth - 2.0 * PROXIMITY_AWARENESS); // FIXME: no penetration correction for now!
             if(a->isFixed())
             {
                 a = b;
@@ -101,66 +97,75 @@ namespace Falling
             Vector2D tangeant = Vector2D(-norm.getY(),norm.getX());
             // now calculate relative points of contact.
             Vector2D relp1 = a->toTranslatedInv(middle);
+            Real relative_velocity = -(a->getParent()->getV() * norm - relp1.cross(Vector2D(0,0,a->getParent()->getOmega())) * norm);
             Vector2D relp2;
             if(b)
+            {    
                 relp2 = b->toTranslatedInv(middle);
+                relative_velocity += b->getParent()->getV() * norm - relp2.cross(Vector2D(0,0,b->getParent()->getOmega())) * norm;
+            }
+            
             /*
              Prepare contact for the LCP solver.
              This is a normal constsraint: J = (-n -(r_1 * n) n (r_2 * n))
              */
-            J[i_J++] = norm.getX();
-            J[i_J++] = norm.getY();
-            J[i_J++] = relp1.perp(norm); // perpendicular product to keep the z component only
-            bounds[i_bounds++] = 0;
-            bounds[i_bounds++] = MACHINE_MAX; // infinite
-            idx[i_idx++] = a->getParent()->getIslandIndex();
+            *(J++) = norm.getX();
+            *(J++) = norm.getY();
+            *(J++) = relp1.perp(norm); // perpendicular product to keep the z component only
+            *(bounds++) = 0;
+            *(bounds++) = MACHINE_MAX; // infinite
+            *(idx++) = a->getParent()->getIslandIndex();
             if(b)
             {
-                idx[i_idx++] = b->getParent()->getIslandIndex();
-                J[i_J++] = -norm.getX();
-                J[i_J++] = -norm.getY();
-                J[i_J++] = -relp2.perp(norm);
+                *(idx++) = b->getParent()->getIslandIndex();
+                *(J++) = -norm.getX();
+                *(J++) = -norm.getY();
+                *(J++) = -relp2.perp(norm);
             }
             else
             {
-                idx[i_idx++] = -1;
-                J[i_J++] = 0;
-                J[i_J++] = 0;
-                J[i_J++] = 0;
+                *(idx++) = -1;
+                *(J++) = 0;
+                *(J++) = 0;
+                *(J++) = 0;
             }
             /*
              Coefficient to correct the penetration.
              Don't correct anything when it's visibly unnoticeable (<= 2 * PROXIMITY_AWARENESS)
              */
-            zeta[i_zeta++] = cb->depth <= 2 * PROXIMITY_AWARENESS ? 0. : 0.8 / dt * cb->depth; // apply a supplementary force proportional to the penetration depth
-
+            Real extra_v = 0;
+            if(cb->depth > 2 * PROXIMITY_AWARENESS)
+                extra_v += 0.8 / dt * cb->depth; // apply an artificial force proportional to the penetration depth
+            if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT) // use a coefficient of restitution of 0 when the closing velocity is too small => better stability in stacks.
+                extra_v += 1 / dt * relative_velocity * 0.5; // 0.5 = coefficient of restitution.
+            *(zeta++) = extra_v;
             /*
              FIXME: divide the mass by the number of points on contacts for each body
              */
-            J[i_J++] = -tangeant.getX();
-            J[i_J++] = -tangeant.getY();
-            J[i_J++] = -relp1.perp(tangeant); // perpendicular product to keep the z component only
+            *(J++) = -tangeant.getX();
+            *(J++) = -tangeant.getY();
+            *(J++) = -relp1.perp(tangeant); // perpendicular product to keep the z component only
             
-            bounds[i_bounds++] = -0.5 * (a->getParent()->getM() + (b ? b->getParent()->getM() : 0.0)) * G;
-            bounds[i_bounds++] = 0.5 * (a->getParent()->getM() + (b ? b->getParent()->getM() : 0.0)) * G;
-            idx[i_idx++] = a->getParent()->getIslandIndex();
+            *(bounds++) = -0.5 * (a->getParent()->getM() / a->get_total_number_of_contacts() + (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
+            *(bounds++) = 0.5 * (a->getParent()->getM() / a->get_total_number_of_contacts() + (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
+            *(idx++) = a->getParent()->getIslandIndex();
             if(b)
             {
-                idx[i_idx++] = b->getParent()->getIslandIndex();
-                J[i_J++] = tangeant.getX();
-                J[i_J++] = tangeant.getY();
-                J[i_J++] = relp2.perp(tangeant);
+                *(idx++) = b->getParent()->getIslandIndex();
+                *(J++) = tangeant.getX();
+                *(J++) = tangeant.getY();
+                *(J++) = relp2.perp(tangeant);
             }
             else
             {
-                idx[i_idx++] = -1;
-                J[i_J++] = 0;
-                J[i_J++] = 0;
-                J[i_J++] = 0;
+                *(idx++) = -1;
+                *(J++) = 0;
+                *(J++) = 0;
+                *(J++) = 0;
             }
-            zeta[i_zeta++] = 0.; // friction doesn't work.
-             
-            
+            *(zeta++) = 0.; // friction doesn't work.
+            *(lambda++) = cb->lambda; // warm start the solver
+            *(lambda++) = cb->frictionlambda; // warm start the solver
         }
     }
     

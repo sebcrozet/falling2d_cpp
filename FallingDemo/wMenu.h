@@ -44,8 +44,8 @@ private:
   void (*onItemReleased)(int,void*);
 public:
   wMenuItem(
-    std::string path1,
-    std::string path2,
+    const std::string &path1,
+    const std::string &path2,
     int itemtype,
     int group,
     int id,
@@ -108,13 +108,13 @@ public:
   wMenuBar(int x, int y, bool orientation, bool visible);
 
   static wMenuBar *fromFileDescriptor(
-    std::string filePath,
+    const std::string &filePath,
     bool orientation,
     void *userdata,
     void (*itemCreated)(void *,wMenuItem*)
   );
   static wMenuBar *fromStringDescriptor(
-    std::string descr,
+    const std::string &descr,
     bool orientation,
     void *userdata,
     void (*itemCreated)(void *,wMenuItem*)

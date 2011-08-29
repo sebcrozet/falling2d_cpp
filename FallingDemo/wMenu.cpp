@@ -18,8 +18,8 @@
 #include "wMenu.h"
 
 wMenuItem::wMenuItem(
-	std::string path1, 
-	std::string path2, 
+	const std::string &path1, 
+	const std::string &path2, 
 	int type, 
 	int group, 
 	int id, 
@@ -267,7 +267,7 @@ wMenuBar::wMenuBar(int, int, bool orientation, bool visible)
 { }
 
 wMenuBar *wMenuBar::fromFileDescriptor(
-  std::string ,
+  const std::string& ,
   bool ,
   void *,
   void (*)(void *,wMenuItem*))
@@ -306,7 +306,7 @@ wMenuBar *wMenuBar::fromFileDescriptor(
 	 	and ends with the end line marker \n.
  */
 wMenuBar *wMenuBar::fromStringDescriptor(
-  std::string descr,
+  const std::string &descr,
   bool orientation,
   void *userdata,
   void (*itemCreated)(void *userdata, wMenuItem *))

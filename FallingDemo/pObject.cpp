@@ -47,6 +47,7 @@ pObject::pObject(Falling::Point2D *pts,int n,bool iscircle, Falling::World &w, O
       w.addObject(rb);
       break;
     case pObject::O_CIRCLE:
+            nb= 10;
       rb = Falling::RigidBody::build_circularBody(
              center,
              nb,
@@ -117,7 +118,7 @@ void pObject::draw(const MachineState &ms)
              pos.getX()*SCALE,
              pos.getY()*SCALE,
              nb,
-             sf::Color(r,g,b),
+             rb->isSleeping() ? sf::Color(0,0,0) : sf::Color(r,g,b),
              ms.selectedObj == this ? 4.f : (ms.drawstate & MachineState::DRAW_BORDERS) ? 3.f : 0.f,
              ms.selectedObj == this ? sf::Color(255, 255, 255) : sf::Color(r - 70, g - 70,b - 70)
            );

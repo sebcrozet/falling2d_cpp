@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "wImage.h"
 
-wImage::wImage(int x, int y, int w, int h, std::string path, int stretch)
+wImage::wImage(int x, int y, int w, int h, const std::string &path, int stretch)
   : wWidget(x, y, w, h, true, -2),
     stretchMode(stretch)
 {
@@ -107,7 +107,7 @@ bool wImage::setSize(float w, float h)
   return false;
 }
 
-bool wImage::testPredefShape(std::string descr, float w, float h)
+bool wImage::testPredefShape(const std::string &descr, float w, float h)
 {
   if(descr == "TR")
     shapeTickR(w, h);

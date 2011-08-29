@@ -21,9 +21,10 @@
 class wLabel : public wWidget
 {
 private:
-  sf::String dTitle;
+  sf::String *dTitle;
 public:
-  wLabel(int x, int y, std::string text, int fontSize);
+  wLabel(int x, int y, const std::string &text, int fontSize);
+  ~wLabel();
   void draw(sf::RenderWindow &rw);
   void close();
   void setText(const std::string &text,int r, int g, int b);

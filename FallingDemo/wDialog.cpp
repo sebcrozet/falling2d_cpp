@@ -18,11 +18,11 @@
 #include "wDialog.h"
 
 
-wDialog::wDialog(float x, float y, std::string title)
+wDialog::wDialog(float x, float y, const std::string &title)
   : wContener(x,y,10,10,true,2,2,-2,wContener::alignTopBottom, wContener::wrapBoth),
     corp(0,0, 200,200, true, -2, 2, 2,wContener::alignLeftRight, wContener::wrapBoth),
     buttonArea(0, 0, 200, 50, true, -2, 2, 2, wContener::alignLeftRight, wContener::wrapBoth),
-    separator(0, 0, 2, 2, "SE", wImage::STRETCH_W),
+    separator(0, 0, 2, 2, std::string("SE"), wImage::STRETCH_W),
     titlebar(x,y,title,19),
     dragging(false)
 {
@@ -126,7 +126,7 @@ void wDialog::close()
 /*
  * static mechods
  */
-wDialog *wDialog::getErrorDialog(float x, float y, std::string text)
+wDialog *wDialog::getErrorDialog(float x, float y, const std::string &text)
 {
   wDialog *res = new wDialog(x, y, "ERROR");
   res->addCorpChild(new wImage(0,0, 50, 50, "ER", wImage::STRETCH_NONE));
@@ -134,7 +134,7 @@ wDialog *wDialog::getErrorDialog(float x, float y, std::string text)
   return res;
 }
 
-wDialog *wDialog::getWarningDialog(float x, float y, std::string text)
+wDialog *wDialog::getWarningDialog(float x, float y, const std::string &text)
 {
   wDialog *res = new wDialog(x, y, "ERROR");
   res->addCorpChild(new wImage(0,0, 50, 50, "WA", wImage::STRETCH_NONE));

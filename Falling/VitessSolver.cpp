@@ -30,7 +30,7 @@ namespace Falling
                 //rb->updateSleepState(dt);
                 //rb->getV().print();
                 rb->addV(Vector2D(0,G*dt,0));
-                rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt);// + 0.5 * dt * dt * G);
+                rb->setPos(rb->getPos()+rb->getV()*PIX_PER_METTER*dt);
                 rb->multV(0.998); // damping
                 rb->setDeltaTeta(-PIX_PER_METTER*rb->getOmega()*dt);
                 rb->setTeta(rb->getTeta()+rb->getDeltaTeta());

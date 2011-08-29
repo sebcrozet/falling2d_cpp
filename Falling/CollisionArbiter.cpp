@@ -214,9 +214,7 @@ namespace Falling
 
   Collision *Collision::inPlaceSortList_impulsion(Collision *lbegin)
   {
-    Collision *lend = lbegin->prevlvlptr;
     Collision *curr = lbegin->nextlvlptre;   // begin with the second element
-    Collision *next = curr; // save next element
     Collision *res = lbegin;
     Island::verifyLvlPtrChain(lbegin);
     while(curr != lbegin)
@@ -424,9 +422,11 @@ namespace Falling
       {
         // TODO: useless, find a way to do it before integration
         // Wake up objects
+          
         printf("Collision lost!\n");
         ((Collision*)p[i].e)->sa->getParent()->setAwake(true);
         ((Collision*)p[i].e)->sb->getParent()->setAwake(true);
+           
       }
     }
     /*while(!todel.empty())

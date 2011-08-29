@@ -31,9 +31,11 @@ namespace Falling
 	Point2D relPtB;
 	Real depth;
 	Vector2D normal;
+    Real lambda; // used to warm-start the solver
+    Real frictionlambda;
 
 	inline ContactBackup()
-	    :relPtA(Point2D()), relPtB(Point2D()), depth(0), normal(Vector2D())
+	    :relPtA(Point2D()), relPtB(Point2D()), depth(0), normal(Vector2D()), lambda(0.), frictionlambda(0.)
 	{ }
 	inline ContactBackup(
 		const Point2D &pa,
@@ -41,6 +43,7 @@ namespace Falling
 		ImplicitShape *A,
 		ImplicitShape *B
 		)
+        : lambda(0.), frictionlambda(0.)
 	{
 	    setDatas(pa, pb, A, B);
 	}
@@ -66,7 +69,9 @@ namespace Falling
 	    : relPtA(pa),
 	    relPtB(pb),
 	    depth(depth),
-	    normal(n)
+	    normal(n),
+        lambda(0.),
+        frictionlambda(0.)
 	{ }
     };
 

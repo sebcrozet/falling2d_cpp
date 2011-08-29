@@ -57,8 +57,10 @@ namespace Falling
 	    DoubleLinkedList<Point *> *parc2 = parc->getnext();
 	    do
 	    {
+        /*
 		if(parc2->getValue() == parc->getValue())
 		    printf("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOON il disait vrai!!!!");
+        */
 		parc2 = parc2->getnext();
 	    }
 	    while(parc2 != parc);
@@ -114,12 +116,21 @@ namespace Falling
 	adj->getValue()->replace(this, 0);
 	adj->getprev()->getValue()->replace(this, 0);
 	adj->getnext()->getValue()->replace(this, 0);
+
+  /*
+   * There is a problem with these delete: it seems that all these objects have
+   * already been deleted¿
+   * And the memory leak detector does not find any leak here!
+   * Suse, it seems safe to remove these lines.
+   */
+  /*
 	if(adj->getValue()->isnull())
 	    delete adj->getValue();
 	if(adj->getnext()->getValue()->isnull())
 	    delete adj->getnext()->getValue();
 	if(adj->getprev()->getValue()->isnull())
 	    delete adj->getprev()->getValue();
+      */
 	adj->DestroyList();
 	pts->DestroyList();
 	delete this;
@@ -704,8 +715,10 @@ namespace Falling
     void Point::removeAdjascent(Poly *toremove)
     {
 	adjlist = DoubleLinkedList<Poly *>::RemoveExisting(adjlist, toremove);
+  /*
 	if(!adjlist)
 		printf("Should have been deleted...\n");
+    */
     }
 
     /*

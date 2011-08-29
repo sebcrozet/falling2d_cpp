@@ -113,16 +113,9 @@ namespace Falling
                 delete isl;
                 isls.pop();
             }
-            //
-            //ContactGenerator::DeduceContactsDatas(colls,ctcts,dt);
-            /*
-            PenetrationSolver::solve(ctcts);
-            //printf("Nbr islands: %i\n", isls2.size());
-            PenetrationSolver::solve(ctcts);
-            */
         }
         integrate(dt);
-        //checkSleeps(dt);
+        checkSleeps(dt);
     }
     
     void World::solvePenetrationsAndImpulse(Real dt)

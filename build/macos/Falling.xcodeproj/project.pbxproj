@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		EFB1D3DF1406DCEC00AC3496 /* LCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EFB1D3DE1406DCEC00AC3496 /* LCP.cpp */; };
-		EFB7A3CC1384630900DBAA41 /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A3CB1384630900DBAA41 /* sfml-graphics.framework */; };
 		EFB7A3CF1384633400DBAA41 /* FallingDemo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150341384046F00EDE5CC /* FallingDemo.cpp */; };
 		EFB7A3D01384633400DBAA41 /* FallingDemo.h in Sources */ = {isa = PBXBuildFile; fileRef = EF4150351384046F00EDE5CC /* FallingDemo.h */; };
 		EFB7A3D21384633400DBAA41 /* pObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150391384046F00EDE5CC /* pObject.cpp */; };
@@ -31,10 +30,11 @@
 		EFB7A3E31384633400DBAA41 /* wMenu.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41504A1384046F00EDE5CC /* wMenu.h */; };
 		EFB7A3E41384633400DBAA41 /* wWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41504B1384046F00EDE5CC /* wWidget.cpp */; };
 		EFB7A3E51384633400DBAA41 /* wWidget.h in Sources */ = {isa = PBXBuildFile; fileRef = EF41504C1384046F00EDE5CC /* wWidget.h */; };
-		EFB7A3F013846D1A00DBAA41 /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A3EF13846D1A00DBAA41 /* SFML.framework */; };
 		EFB7A4C413847C2700DBAA41 /* Falling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFCC567113845F3700BBB06F /* Falling.framework */; };
-		EFB7A4C613847C3400DBAA41 /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A4C513847C3400DBAA41 /* sfml-window.framework */; };
-		EFB7A4CD13847C4D00DBAA41 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFB7A4CC13847C4D00DBAA41 /* sfml-system.framework */; };
+		EFC91A79140A938D00B6D902 /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC91A78140A938D00B6D902 /* SFML.framework */; };
+		EFC91A80140A93C200B6D902 /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC91A7B140A93C200B6D902 /* sfml-graphics.framework */; };
+		EFC91A82140A93C200B6D902 /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC91A7D140A93C200B6D902 /* sfml-system.framework */; };
+		EFC91A83140A93C200B6D902 /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC91A7E140A93C200B6D902 /* sfml-window.framework */; };
 		EFCC561813845D9900BBB06F /* VitessSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150221384042D00EDE5CC /* VitessSolver.cpp */; };
 		EFCC561C13845DE000BBB06F /* Vector2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF4150201384042D00EDE5CC /* Vector2D.cpp */; };
 		EFCC561E13845DE900BBB06F /* Tesselator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF41501D1384042D00EDE5CC /* Tesselator.cpp */; };
@@ -213,10 +213,12 @@
 		EFB1D3DE1406DCEC00AC3496 /* LCP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LCP.cpp; sourceTree = "<group>"; };
 		EFB7A3C3138462AB00DBAA41 /* FallingDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FallingDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFB7A3C5138462AB00DBAA41 /* FallingDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FallingDemo-Info.plist"; sourceTree = "<group>"; };
-		EFB7A3CB1384630900DBAA41 /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "/Library/Frameworks/sfml-graphics.framework"; sourceTree = "<absolute>"; };
-		EFB7A3EF13846D1A00DBAA41 /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = /Library/Frameworks/SFML.framework; sourceTree = "<absolute>"; };
-		EFB7A4C513847C3400DBAA41 /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "/Library/Frameworks/sfml-window.framework"; sourceTree = "<absolute>"; };
-		EFB7A4CC13847C4D00DBAA41 /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "/Library/Frameworks/sfml-system.framework"; sourceTree = "<absolute>"; };
+		EFC91A78140A938D00B6D902 /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = ../../../../../../System/Library/Frameworks/SFML.framework; sourceTree = "<group>"; };
+		EFC91A7A140A93C200B6D902 /* sfml-audio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-audio.framework"; path = "../../../../../../System/Library/Frameworks/sfml-audio.framework"; sourceTree = "<group>"; };
+		EFC91A7B140A93C200B6D902 /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "../../../../../../System/Library/Frameworks/sfml-graphics.framework"; sourceTree = "<group>"; };
+		EFC91A7C140A93C200B6D902 /* sfml-network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-network.framework"; path = "../../../../../../System/Library/Frameworks/sfml-network.framework"; sourceTree = "<group>"; };
+		EFC91A7D140A93C200B6D902 /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "../../../../../../System/Library/Frameworks/sfml-system.framework"; sourceTree = "<group>"; };
+		EFC91A7E140A93C200B6D902 /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "../../../../../../System/Library/Frameworks/sfml-window.framework"; sourceTree = "<group>"; };
 		EFCC54CF13845C5200BBB06F /* Falling-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Falling-Info.plist"; sourceTree = "<group>"; };
 		EFCC567113845F3700BBB06F /* Falling.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Falling.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -226,11 +228,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFB7A3CC1384630900DBAA41 /* sfml-graphics.framework in Frameworks */,
-				EFB7A3F013846D1A00DBAA41 /* SFML.framework in Frameworks */,
+				EFC91A79140A938D00B6D902 /* SFML.framework in Frameworks */,
+				EFC91A80140A93C200B6D902 /* sfml-graphics.framework in Frameworks */,
+				EFC91A82140A93C200B6D902 /* sfml-system.framework in Frameworks */,
+				EFC91A83140A93C200B6D902 /* sfml-window.framework in Frameworks */,
 				EFB7A4C413847C2700DBAA41 /* Falling.framework in Frameworks */,
-				EFB7A4C613847C3400DBAA41 /* sfml-window.framework in Frameworks */,
-				EFB7A4CD13847C4D00DBAA41 /* sfml-system.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,16 +249,18 @@
 		08FB7794FE84155DC02AAC07 /* Falling */ = {
 			isa = PBXGroup;
 			children = (
+				EFC91A7A140A93C200B6D902 /* sfml-audio.framework */,
+				EFC91A7B140A93C200B6D902 /* sfml-graphics.framework */,
+				EFC91A7C140A93C200B6D902 /* sfml-network.framework */,
+				EFC91A7D140A93C200B6D902 /* sfml-system.framework */,
+				EFC91A7E140A93C200B6D902 /* sfml-window.framework */,
+				EFC91A78140A938D00B6D902 /* SFML.framework */,
 				EF414FB11384042D00EDE5CC /* Falling */,
 				EF4150271384046F00EDE5CC /* FallingDemo */,
 				EFCC54CF13845C5200BBB06F /* Falling-Info.plist */,
 				EFCC567113845F3700BBB06F /* Falling.framework */,
 				EFB7A3C3138462AB00DBAA41 /* FallingDemo.app */,
 				EFB7A3C5138462AB00DBAA41 /* FallingDemo-Info.plist */,
-				EFB7A3CB1384630900DBAA41 /* sfml-graphics.framework */,
-				EFB7A3EF13846D1A00DBAA41 /* SFML.framework */,
-				EFB7A4C513847C3400DBAA41 /* sfml-window.framework */,
-				EFB7A4CC13847C4D00DBAA41 /* sfml-system.framework */,
 			);
 			name = Falling;
 			sourceTree = "<group>";
@@ -657,11 +661,13 @@
 		1DEB919408733D9F0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_DEBUGGING_SYMBOLS = full;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = "_GLIBCXX_FULLY_DYNAMIC_STRING=1";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -672,20 +678,28 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-D_GLIBCXX_FULLY_DYNAMIC_STRING",
+					"$(OTHER_CFLAGS)",
+				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
 		1DEB919508733D9F0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_DEBUGGING_SYMBOLS = full;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = "_GLIBCXX_FULLY_DYNAMIC_STRING=1";
 				GCC_UNROLL_LOOPS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -696,8 +710,15 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LLVM_LTO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-D_GLIBCXX_FULLY_DYNAMIC_STRING",
+					"$(OTHER_CFLAGS)",
+				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = "";
 			};
 			name = Release;
 		};
@@ -705,6 +726,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"~/Documents/SFMLincludes/lib",
@@ -716,18 +738,20 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = _GLIBCXX_FULLY_DYNAMIC_STRING;
 				HEADER_SEARCH_PATHS = "~/Documents/SFMLincludes/include";
 				INFOPLIST_FILE = "FallingDemo-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
+				LLVM_LTO = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-enable-fully-dynamic-string",
+					"$(OTHER_CFLAGS)",
 				);
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = FallingDemo;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -735,23 +759,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../SFMLincludes/lib\"",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = _GLIBCXX_FULLY_DYNAMIC_STRING;
 				INFOPLIST_FILE = "FallingDemo-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
+				LLVM_LTO = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-enable-fully-dynamic-string",
+					"$(OTHER_CFLAGS)",
 				);
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = FallingDemo;
+				SDKROOT = "";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -760,31 +791,36 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "_GLIBCXX_FULLY_DYNAMIC_STRING=1";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "_GLIBCXX_FULLY_DYNAMIC_STRING=1";
+				GCC_REUSE_STRINGS = YES;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "Falling-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Falling\"",
 				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
+				LLVM_LTO = YES;
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Falling;
+				SDKROOT = "";
 				SHARED_PRECOMPS_DIR = "";
 			};
 			name = Debug;
@@ -793,31 +829,37 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "_GLIBCXX_FULLY_DYNAMIC_STRING=1";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "_GLIBCXX_FULLY_DYNAMIC_STRING=1";
+				GCC_REUSE_STRINGS = YES;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "Falling-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Falling\"",
 				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
+				LLVM_LTO = YES;
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Falling;
-				ZERO_LINK = NO;
+				SDKROOT = "";
+				SHARED_PRECOMPS_DIR = "";
 			};
 			name = Release;
 		};

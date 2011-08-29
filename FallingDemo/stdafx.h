@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #pragma once
-
+#define _GLIBCXX_FULLY_DYNAMIC_STRING 1
 #include "targetver.h"
 
 #include <stdio.h>

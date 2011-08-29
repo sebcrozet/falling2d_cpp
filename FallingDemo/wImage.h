@@ -37,9 +37,9 @@ private:
   bool useShape;
 
 public:
-  wImage(int x, int y, int w, int h, std::string path, int strech);
+  wImage(int x, int y, int w, int h, const std::string &path, int strech);
   virtual ~wImage();
-  bool testPredefShape(std::string descr, float w, float h);
+  bool testPredefShape(const std::string &descr, float w, float h);
   // Predefine shapes creation
   void shapeWarning(float w, float h);
   void shapeStop(float w, float h);
