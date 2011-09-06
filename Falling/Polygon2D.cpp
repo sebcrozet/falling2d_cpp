@@ -176,7 +176,36 @@ namespace Falling
             !(studiedpt.isInLine(chpts[0], chpts[1])) &&
             !(studiedpt.isInLine(chpts[0], chpts[chpts.size()-1])))
           chpts.push_back(studiedpt);
-        else printf("ah voila");
+        else
+        {
+          Vector2D v1, v2;
+          unsigned int rep_id;
+          if(studiedpt.isInLine(chpts[chpts.size()-2], chpts[chpts.size()-1]))
+          {
+            v1 = Vector2D(chpts[chpts.size()-2], chpts[chpts.size()-1]);
+            v2 = Vector2D(chpts[chpts.size()-2], studiedpt);
+            if(v1 * v1 < v2 * v2)
+              chpts[chpts.size()-1] = studiedpt;
+          }
+          else if(studiedpt.isInLine(chpts[0], chpts[1]))
+          {
+            assert(true);
+            v1 = Vector2D(chpts[0], chpts[1]);
+            v2 = Vector2D(chpts[0], studiedpt);
+            if(v1 * v1 < v2 * v2)
+              chpts[1] = studiedpt;
+          }
+          else if(studiedpt.isInLine(chpts[0], chpts[chpts.size()-1]))
+          {
+            assert(true);
+            v1 = Vector2D(chpts[0], chpts[chpts.size()-1]);
+            v2 = Vector2D(chpts[0], studiedpt);
+            if(v1 * v1 < v2 * v2)
+              chpts[chpts.size()-1] = studiedpt;
+          }
+          assert(v1 * v2 >= 0);
+          //assert(v1 * v1 >= v2 * v2);
+        }
       }
       else
         chpts.push_back(studiedpt);
@@ -195,7 +224,10 @@ namespace Falling
           Vector2D rs(studiedpt, rp);
           Vector2D ts(studiedpt, tmp);
           if(ts * ts < rs * rs) // nearest point is selected
+          {
+            assert(rs * ts >= 0); // rs and ts must have the same direction!
             rp = tmp;
+          }
         }
       }
       studiedpt = rp;
@@ -636,7 +668,7 @@ namespace Falling
     int a = 0, ires;
     ires = 0;
     // TODO: remove: brute force
-    if(pts[a].exactEquals(ref))
+    if(pts[0].exactEquals(ref))
       ires = 1;
     else
     {
@@ -648,7 +680,15 @@ namespace Falling
             ires = a;
         }
         else
-          ires = a + 1;
+        {
+          ires = a == nbrPts - 1 ?  0 : a + 1;
+        }
+      }
+      while(pts[ires].exactEquals(ref))
+      {
+        ires++;
+        if(ires == nbrPts)
+          ires = 0;
       }
     }
 
@@ -718,7 +758,7 @@ namespace Falling
     return pts[ires];
   }
 
-  int ImplicitPolygon2D::naiveClimb(int ibase, int imax, Vector2D &v) const
+  int ImplicitPolygon2D::naiveClimb(int ibase, int imax, const Vector2D &v) const
   {
     Real lastDot = -MACHINE_MAX, dx = v.getX(), dy = v.getY();
     int i, ires = ibase;
@@ -736,16 +776,108 @@ namespace Falling
     return ires;
   }
 
+  /*
+   * Find the support point in one direction in the convex hull of the polygons:
+   * {P(t_0) , P(t_0 + dt)}.
+   * This is usefull for continuous collision dection, that's why its called a
+   * "countinuous support point".
+   */
+#if 0
+  void ImplicitPolygon2D::getContinuousSupportPoint(const Vector2D &od, Point2D *res, int *opt, int *opt_old) const
+  {
+    /*
+     * find the support points for the two states of the object
+     * and select the best one.
+     */
+    Point2D p, p_old;
+    /*
+     * new support point
+     */
+    *opt = getSupportPoint(od, &p);
+
+    /*
+     * old support point
+     */
+    Vector2D d = toRotatedInv_old(od);
+    *opt_old = getSupportPoint_not_transformed(d, &p_old);
+    *res = toGlobal_old(p_old);
+
+    /*
+     * the better one is returned
+     */
+    if(od * p > od * p_old)
+      *res = p;
+    else
+      *res = p_old;
+  }
+
+  /*
+   * same thing but with the hill climbing algorithme. Notice that, this time,
+   * there is no way to diferenciate this function other than by changing the
+   * function name (in both cases, two optimization indices are needed).
+   */
+  void ImplicitPolygon2D::getContinuousSupportPoint_with_opt_values(const Vector2D &od, Point2D *res, int *opt, int *opt_old) const
+  {
+    /*
+     * find the support points for the two states of the object
+     * and select the best one.
+     */
+    Point2D p, p_old;
+    /*
+     * new support point
+     */
+    *opt = getSupportPoint(od, &p, *opt);
+
+    /*
+     * old support point
+     */
+    Vector2D d = toRotatedInv_old(od);
+    *opt_old = getSupportPoint_not_transformed(d, &p_old, *opt_old);
+    *res = toGlobal_old(p_old);
+
+    /*
+     * the better one is returned
+     */
+    if(od * p > od * p_old)
+      *res = p;
+    else
+      *res = p_old;
+  }
+#endif
+
+
+  /*
+   * support point retrieval with binary search
+   */
+  int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res) const
+  {
+    Vector2D d = toRotatedInv(od);
+    int ires = getSupportPoint_not_transformed(d, res);
+    *res = toGlobal(*res);
+    return ires;
+  }
+
+  /*
+   * support point retrieval with hill climbing
+   */
+  int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res, int o) const
+  {
+    Vector2D d = toRotatedInv(od);
+    o = getSupportPoint_not_transformed(d, res, o);
+    *res = toGlobal(*res);
+    return o;
+  }
+
   ////////////////////////////////////////////
   //			 BINARY SEARCH    //
   //					  //
   // Retrieves s(d) suporting point of      //
   // current convex polygon using binary    //
-  // search. Algorithm is O(log(n))         //
+  // search (with a kind of implicit Dobkin-Kirkpatrick
+  // hierarchy. Algorithm is O(log(n))         //
   ////////////////////////////////////////////
-  int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res) const
+  int ImplicitPolygon2D::getSupportPoint_not_transformed(const Vector2D &d, Point2D *res) const
   {
-    Vector2D d = toRotatedInv(od);
     int ires;
     if(nbrPts < 8) // n - 1 < 3 * log(n) pour n < 8
       ires = naiveClimb(0, nbrPts - 1, d);
@@ -761,13 +893,13 @@ namespace Falling
       {
         if(!upa)
         {
-          *res = toGlobal(pts[0]);
+          *res = pts[0];
           return 0;
         }
       }
       else if(vb_1.dot(d) > 0)
       {
-        *res = toGlobal(pts[b]);
+        *res = pts[b];
         return b;
       }
       while(true)
@@ -777,7 +909,7 @@ namespace Falling
                  vc_1(pts[c-1],pts[c]);
 
         bool upc = vc.dot(d) > 0;
-        if(!upc	&& vc_1.dot(d) > 0)
+        if(!upc && vc_1.dot(d) > 0)
         {
           ires = c;
           break;
@@ -820,7 +952,7 @@ namespace Falling
         }
       }
     }
-    *res = toGlobal(pts[ires]);
+    *res = pts[ires];
     return ires;
   }
 
@@ -835,9 +967,8 @@ namespace Falling
   // this algorithm to run in near-constant //
   // time (geometric coherence).            //
   ////////////////////////////////////////////
-  int ImplicitPolygon2D::getSupportPoint(const Vector2D &od, Point2D *res, int o) const
+  int ImplicitPolygon2D::getSupportPoint_not_transformed(const Vector2D &d, Point2D *res, int o) const
   {
-    Vector2D d = toRotatedInv(od);
     int n = tmod(o + 1, nbrPts);
     int p = tmodinv(o - 1, nbrPts);
     Real dx = d.getX(),
@@ -870,7 +1001,7 @@ namespace Falling
         while(dotn >= dotp);
       }
     }
-    *res = toGlobal(pts[o]);
+    *res = pts[o];
     return o;
   }
 

@@ -19,94 +19,106 @@
 
 namespace Falling
 {
-    InfinitePlane::InfinitePlane(const Point2D &p, const Vector2D &normal)
-    {
-		otree = 0;
-	deleting = false;
-	parent = this;
-	margin = 0.0;
-	pt = p;
-	dir = normal.direction();
-	perpdir = Vector2D(-dir.getY(), dir.getX());
-	spt = p + perpdir;
-	fixedobj = true;
-    }
+  InfinitePlane::InfinitePlane(const Point2D &p, const Vector2D &normal)
+  {
+    otree = 0;
+    deleting = false;
+    parent = this;
+    margin = 0.0;
+    pt = p;
+    dir = normal.direction();
+    perpdir = Vector2D(-dir.getY(), dir.getX());
+    spt = p + perpdir;
+    fixedobj = true;
+  }
 
-    Real InfinitePlane::getBoundingSphereRadius() const
-    {
-	return MACHINE_EPSILON / 2;
-    }
-    Vector2D InfinitePlane::getCenter() const
-    {
-	return pt;
-    }
-    int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res) const
-    {
-	*res = pt;
-	return 0;
-    }
-    int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res, int) const
-    {
-	*res = pt;
-	return 0;
-    }
+  Real InfinitePlane::getBoundingSphereRadius() const
+  {
+    return MACHINE_EPSILON / 2;
+  }
+  Vector2D InfinitePlane::getCenter() const
+  {
+    return pt;
+  }
+  int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res) const
+  {
+    *res = pt;
+    return 0;
+  }
+  int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res, int) const
+  {
+    *res = pt;
+    return 0;
+  }
+  /*
+  void InfinitePlane::getContinuousSupportPoint(const Vector2D &, Point2D *res, int *, int *)
+  {
+    // *opt = *opt_old = 0; // is it really useful to set them to zero?
+    *res = pt;
+  }
+  void InfinitePlane::getContinuousSupportPoint_with_opt_values(const Vector2D &, Point2D *res, int *, int *)
+  {
+    // *opt = *opt_old = 0; // is it really useful to set them to zero?
+    *res = pt;
+  }
+  */
 
 
-    int InfinitePlane::getShapeTypeID() const
+  int InfinitePlane::getShapeTypeID() const
+  {
+    return 100;
+  }
+  Real InfinitePlane::getInertiaMomentum(Real) const
+  {
+    return MACHINE_MAX;
+  }
+  Real InfinitePlane::getSurface() const
+  {
+    return MACHINE_MAX;
+  }
+  void InfinitePlane::updateAABB()
+  {
+    if(dir.getX() == 0)
     {
-	return 100;
+      if(dir.getY() < 0)
+      {
+        aabb_ym = pt.getY();
+        aabb_yM = MACHINE_MAX / 2;
+      }
+      else
+      {
+        aabb_yM = pt.getY();
+        aabb_ym = -MACHINE_MAX / 2;
+      }
+      aabb_xm = - MACHINE_MAX / 2;
+      aabb_xM = MACHINE_MAX / 2;
     }
-    Real InfinitePlane::getInertiaMomentum(Real) const
+    else if(dir.getY() == 0)
     {
-	return MACHINE_MAX;
+      if(dir.getX() < 0)
+      {
+        aabb_xm = pt.getX();
+        aabb_xM = MACHINE_MAX / 2;
+      }
+      else
+      {
+        aabb_xM = pt.getX();
+        aabb_xm = - MACHINE_MAX / 2;
+      }
+      aabb_ym = - MACHINE_MAX / 2;
+      aabb_yM = MACHINE_MAX / 2;
     }
-    Real InfinitePlane::getSurface() const
+    else
     {
-	return MACHINE_MAX;
+      aabb_ym = - MACHINE_MAX / 2;
+      aabb_yM = MACHINE_MAX / 2;
+      aabb_xm = - MACHINE_MAX / 2;
+      aabb_xM = MACHINE_MAX / 2;
     }
-    void InfinitePlane::updateAABB()
-    {
-	if(dir.getX() == 0)
-	{
-	    if(dir.getY() < 0)
-	    {
-		aabb_ym = pt.getY();
-		aabb_yM = MACHINE_MAX / 2;
-	    }
-	    else
-	    {
-		aabb_yM = pt.getY();
-		aabb_ym = -MACHINE_MAX / 2;
-	    }
-	    aabb_xm = - MACHINE_MAX / 2;
-	    aabb_xM = MACHINE_MAX / 2;
-	}
-	else if(dir.getY() == 0)
-	{
-	    if(dir.getX() < 0)
-	    {
-		aabb_xm = pt.getX();
-		aabb_xM = MACHINE_MAX / 2;
-	    }
-	    else
-	    {
-		aabb_xM = pt.getX();
-		aabb_xm = - MACHINE_MAX / 2;
-	    }
-	    aabb_ym = - MACHINE_MAX / 2;
-	    aabb_yM = MACHINE_MAX / 2;
-	}
-	else
-	{
-	    aabb_ym = - MACHINE_MAX / 2;
-	    aabb_yM = MACHINE_MAX / 2;
-	    aabb_xm = - MACHINE_MAX / 2;
-	    aabb_xM = MACHINE_MAX / 2;
-	}
-    }
+  }
 
-    bool InfinitePlane::containsPoint(const Point2D &testpt) const
-    {
-	return testpt.isLeftTo(pt, spt) >= 0;
-    }
+  bool InfinitePlane::containsPoint(const Point2D &testpt) const
+  {
+    return testpt.isLeftTo(pt, spt) >= 0;
+  }
 }

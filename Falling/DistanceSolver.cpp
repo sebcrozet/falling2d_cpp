@@ -18,6 +18,7 @@
 #include "TunningConstants.h"
 #include "DistanceSolver.h"
 #include <stdlib.h>
+#include <iostream>
 
 namespace Falling
 {
@@ -88,7 +89,9 @@ namespace Falling
         else
         {
             if(!gjk_buildMarginedSimplexWithOrigin())
+            {
                 return 0; // error in GJK precision (origin not in the cso)
+            }
             EPAsolver es(*this);
             dist = (es.getPenetrationDepth(pA, pB).magnitude());
         }
@@ -534,7 +537,6 @@ namespace Falling
                 if(sg->getdist() <= MACHINE_EPSILON)
                 {
                     distnull = true;
-                    delete sg;
                     return;
                 }
             }
@@ -546,7 +548,6 @@ namespace Falling
                 if(sg->getdist() <= MACHINE_EPSILON)
                 {
                     distnull = true;
-                    delete sg2;
                     return;
                 }
             }
@@ -559,25 +560,23 @@ namespace Falling
             sg2 = sg->cut(pa, pb, pa - pb);
             if(sg->isValid())
             {
-                if(sg->getdist() < MACHINE_EPSILON)
+                sd.push(sg);
+                if(sg->getdist() <= MACHINE_EPSILON)
                 {
                     distnull = true;
-                    delete sg;
                     return;
                 }
-                sd.push(sg);
             }
             else
                 delete sg;
             if(sg2->isValid())
             {
-                if(sg->getdist() < MACHINE_EPSILON)
+                sd.push(sg2);
+                if(sg->getdist() <= MACHINE_EPSILON)
                 {
                     distnull = true;
-                    delete sg2;
                     return;
                 }
-                sd.push(sg2);
             }
             else
                 delete sg2;

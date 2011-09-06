@@ -326,10 +326,9 @@ namespace Falling
         res.push_back((Collision*)p[i].e);
       else if(collisionLost)
       {
-        // TODO: useless, find a way to do it before integration
         // Wake up objects
           
-        printf("Collision lost!\n");
+        //printf("Collision lost!\n");
         ((Collision*)p[i].e)->sa->getParent()->setAwake(true);
         ((Collision*)p[i].e)->sb->getParent()->setAwake(true);
            

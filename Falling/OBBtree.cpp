@@ -19,52 +19,52 @@
 
 namespace Falling
 {
-    OBBtree::OBBtree(OBBtree *r, OBBtree *l, OBB *o) : r(r), l(l), o(o)
-    { }
+  OBBtree::OBBtree(OBBtree *r, OBBtree *l, OBB *o) : r(r), l(l), o(o)
+  { }
 
-    OBBtree::~OBBtree()
-	{
-		if(r)
-			delete r;
-		if(l)
-			delete l;
-		delete o;
-	}
+  OBBtree::~OBBtree()
+  {
+    if(r)
+      delete r;
+    if(l)
+      delete l;
+    delete o;
+  }
 
-    void OBBtree::traverseTree(OBBtree *a, OBBtree *b, std::vector<OBBIntersection*> &res)
+  void OBBtree::traverseTree(OBBtree *a, OBBtree *b, std::vector<OBBIntersection*> &res)
+  {
+    std::stack<OBBtree *> s;
+
+    while(true)
     {
-	std::stack<OBBtree *> s;
-
-	while(true)
-	{
-	    if(a->o->intersects(b->o))
-	    {
-		if(a->isLeaf() && b->isLeaf())
-		    res.push_back(new OBBIntersection(a->o, b->o));
-		else if(b->isLeaf() || (!a->isLeaf() && a->o->getAire() > b->o->getAire()))
-		{
-		    s.push(a->r);
-		    s.push(b);
-		    a = a->l;
-		    continue;
-		}
-		else
-		{
-		    s.push(a);
-		    s.push(b->r);
-		    b = b->l;
-		    continue;
-		}
-	    }
-	    if(s.empty())
-		break;
-	    b = s.top();
-	    s.pop();
-	    a = s.top();
-	    s.pop();
-	}
+      if(a->o->intersects(b->o))
+      {
+        if(a->isLeaf() && b->isLeaf())
+          res.push_back(new OBBIntersection(a->o, b->o));
+        else if(b->isLeaf() || (!a->isLeaf() && a->o->getAire() > b->o->getAire()))
+        {
+          s.push(a->r);
+          s.push(b);
+          a = a->l;
+          continue;
+        }
+        else
+        {
+          s.push(a);
+          s.push(b->r);
+          b = b->l;
+          continue;
+        }
+      }
+      if(s.empty())
+        break;
+      b = s.top();
+      s.pop();
+      a = s.top();
+      s.pop();
     }
+  }
 
-    OBBIntersection::OBBIntersection(OBB *o1, OBB *o2) : o1(o1), o2(o2)
-    { }
+  OBBIntersection::OBBIntersection(OBB *o1, OBB *o2) : o1(o1), o2(o2)
+  { }
 }

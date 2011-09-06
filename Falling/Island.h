@@ -35,7 +35,8 @@ namespace Falling
         // end TODO
 	private:
         int nbrCtcts;
-        std::vector<Collision *> stackLevels;
+        std::vector<Collision *> stackLevels; // useless if velocity propagation is not used (not yet implemented…)
+        std::vector<Collision *> contacts_involved;
         std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
         /*
          for lcp
@@ -48,6 +49,7 @@ namespace Falling
          */
         
         static void batchIsland(Island *isl,Shape *coll); // recursive call
+        static void batchIsland_without_sleeping(Island *isl,Shape *coll); // recursive call
         
     public:
         Island();
@@ -64,12 +66,15 @@ namespace Falling
         
         
         static void batchIslands(std::vector<Collision *> &colls,std::stack<Island *> &islands);
+        static void batchIslands_without_sleeping(std::vector<Collision *> &colls,std::stack<Island *> &islands);
         
         /* 
          for lcp
          */
+        void solve_stack(Real doit, unsigned int iterations_number);
+        void solve_stack_without_sleeping(Real doit, unsigned int iterations_number);
         void doit(Real doit);
-        void solve(Real *J, Real *B, Real *nu, Real *lambda, Real *bounds, Real *a, int *idx, unsigned int s, unsigned int n);
+        void solve(Real *J, Real *B, Real *nu, Real *lambda, Real *bounds, Real *a, int *idx, unsigned int s, unsigned int n, unsigned int iterations_number);
         /*
          end: for lcp
          */

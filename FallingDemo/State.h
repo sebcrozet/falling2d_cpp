@@ -34,13 +34,19 @@ struct MachineState
     DRAW_POINTS,
     DRAW_MOVE,
     DRAW_CIRCLE,
+    DRAW_CIRCLE_CONTINUOUS,
     DRAW_SQUARE,
     DRAW_PLANE
   };
   enum DrawState
   {
     DRAW_COMPONENTS = 1,
-    DRAW_BORDERS = 2
+    DRAW_BORDERS = 2,
+    DRAW_AABBS = 4,
+    DRAW_OBB_TREE = 8,
+    DRAW_SLEEPING_BLACK = 16,
+    DRAW_OBB_LEAVES = 32,
+    DRAW_COLLISION_COUPLES = 64
   };
 
   inline MachineState(sf::RenderWindow &renderWin)
@@ -72,6 +78,7 @@ struct MachineState
   // 
   float elapsedPhysicsTime;
   //
+  std::vector<Falling::Collision *> colls;
 };
 
 class UserInterface;

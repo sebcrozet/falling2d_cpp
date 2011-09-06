@@ -50,9 +50,9 @@ namespace Falling
 	    }
 	    void addObject(RigidBody *s);
 	    void removeObject(RigidBody *s);
-	    void solve(Real dt);
+        std::vector<Collision *> solve(Real dt);
 	    void integrate(Real dt);
-        void solvePenetrationsAndImpulseWithLCP(Real dt);
+        std::vector<Collision *> solvePenetrationsAndImpulseWithLCP(Real dt);
 
 	    void notifyObjectMoved(RigidBody *s);
     };

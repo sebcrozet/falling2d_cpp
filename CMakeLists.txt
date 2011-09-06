@@ -19,7 +19,7 @@ add_library(
 # to make the demo application
 project(falling_demo)
 set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-include_directories(Falling ../SFMLincludes)
+include_directories(Falling ../SFMLincludes FallingDemo/Box2d)
 link_directories(./bin/${CMAKE_BUILD_TYPE})
 file(
   GLOB_RECURSE

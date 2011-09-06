@@ -17,9 +17,14 @@
 #ifndef __FALLING_USER_INTERFACE_
 #include "stdafx.h"
 #include "wMenu.h"
+#ifdef _USE_BOX_2D_
+#include "State_box2d.h"
+#include "pObject_box2d.h"
+#else
 #include "State.h"
-#include "wDialog.h"
 #include "pObject.h"
+#endif
+#include "wDialog.h"
 
 
 class UserInterface
@@ -27,7 +32,7 @@ class UserInterface
   std::vector<wWidget *> ui;
   bool absorbMouse;
 
-public:
+  public:
   UserInterface(MachineState &ms);
   ~UserInterface();
   bool dispatchEvent(sf::Event ev, MachineState &ms);

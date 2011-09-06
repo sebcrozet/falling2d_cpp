@@ -72,13 +72,17 @@ namespace Falling
     
     
     // return type should be void
-    void World::solve(Real dt)
+    std::vector<Collision *> World::solve(Real dt)
     {
-        // add and remove objects now
-        dumpAddDelete();
-        if(paused)
-            return;
-        solvePenetrationsAndImpulseWithLCP(dt);
+      // add and remove objects now
+      dumpAddDelete();
+      std::vector<Collision *> colls;
+      if(paused)
+      {
+        ca.solve(colls);
+        return colls;
+      }
+      return solvePenetrationsAndImpulseWithLCP(dt);
     }
     
     
@@ -87,15 +91,17 @@ namespace Falling
         VitessSolver::integrate(objs,dt);
     }
     
-    void World::solvePenetrationsAndImpulseWithLCP(Real dt)
+    /*
+     * the return value should be void. Collisions is returned only for debug
+     */
+    std::vector<Collision *> World::solvePenetrationsAndImpulseWithLCP(Real dt)
     {
         // solve distances (collision detection)
         std::vector<Collision *> colls;
         ca.solve(colls);
         if(colls.size())
         {
-            std::vector<Contact *> ctcts;
-            std::stack<Island *> isls,isls2;
+            std::stack<Island *> isls;
             // Build islands
             Island::batchIslands(colls,isls);
             //printf("NBR ISLS ==>  %i\n",isls.size());
@@ -110,5 +116,6 @@ namespace Falling
         }
         integrate(dt);
         checkSleeps(dt);
+        return colls;
     }
 }

@@ -21,40 +21,48 @@
 
 namespace Falling
 {
-    class OBB
-    {
-	private:
-	    ImplicitShape *parent;
-	    Vector2D pts[4];
-	    Vector2D axis[2];
-	    Real origin[2];
-	    Real aire;
-	    int obbid;
+  class OBB
+  {
+    private:
+      ImplicitShape *parent;
+      Vector2D pts[4];
+      Vector2D axis[2];
+      Real origin[2];
+      Real aire;
+      int obbid;
 
-	    bool intersects2axis(OBB *o);
-	public:
-	    OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, Real aire, int obbid);
-	    bool intersects(OBB *o);
-	    bool intersectsPlane(InfinitePlane *p);
-	    void getMedialAxis(Point2D *center, Point2D *refpt);
-	    Point2D getCenter() const;
-	    void translate(const Vector2D &);
-	    inline Real getAire() const;
-	    inline int getID() const;
-	    inline ImplicitShape *getParent() const;
-    };
-    inline Real OBB::getAire() const
-    {
-	return aire;
-    }
-    inline int OBB::getID() const
-    {
-	return obbid;
-    }
-    inline ImplicitShape *OBB::getParent() const
-    {
-	return parent;
-    }
+      bool intersects2axis(OBB *o);
+    public:
+      /*
+       * FIXME: to remove: for debug (display)
+       */
+      inline Vector2D get_pt(int i)
+      { return pts[i]; }
+      /*
+       * end to remove
+       */
+      OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, Real aire, int obbid);
+      bool intersects(OBB *o);
+      bool intersectsPlane(InfinitePlane *p);
+      void getMedialAxis(Point2D *center, Point2D *refpt);
+      Point2D getCenter() const;
+      void translate(const Vector2D &);
+      inline Real getAire() const;
+      inline int getID() const;
+      inline ImplicitShape *getParent() const;
+  };
+  inline Real OBB::getAire() const
+  {
+    return aire;
+  }
+  inline int OBB::getID() const
+  {
+    return obbid;
+  }
+  inline ImplicitShape *OBB::getParent() const
+  {
+    return parent;
+  }
 }
 
 #define _OBB

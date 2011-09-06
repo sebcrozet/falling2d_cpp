@@ -23,3 +23,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics.hpp>
+
+//#define _USE_BOX_2D_
+#include "Box2D/Box2D.h"
+#ifdef _USE_BOX_2D_
+#endif
