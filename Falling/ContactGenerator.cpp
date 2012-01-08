@@ -174,6 +174,10 @@ namespace Falling
              Don't correct anything when it's visibly unnoticeable (<= 2 * PROXIMITY_AWARENESS)
              */
             Real extra_v = 0;
+            /*
+             * FIXME: if pseudo velocities are used, the next two lines must be
+             * removed.
+             */
             if(cb->depth > 2 * PROXIMITY_AWARENESS)
                 extra_v += 0.8 / dt * cb->depth; // apply an artificial force proportional to the penetration depth
             if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT) // use a coefficient of restitution of 0 when the closing velocity is too small => better stability in stacks.
@@ -203,6 +207,67 @@ namespace Falling
             *(zeta++) = 0.; // friction doesn't work.
             *(lambda++) = cb->lambda; // warm start the solver
             *(lambda++) = cb->frictionlambda; // warm start the solver
+        }
+    }
+
+    void ContactGenerator::PrepareContactDatasInMatrix_position_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx)
+    {
+        for(std::vector<ContactBackup*>::iterator j = c->c.begin(); j != c->c.end(); j++)
+        {
+            ContactBackup *cb = *j;
+            Shape *a = c->sa;
+            Shape *b = c->sb;
+            Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA), b->toGlobal(cb->relPtB));
+            Vector2D norm = cb->normal;
+            std::cout << cb->normal.getX() << " and " << cb->normal.getY() << std::endl;
+
+            if(a->isFixed() || a->getParent()->isFakeSleeping())
+            {
+                a = b;
+                b = 0;
+                norm.reflect();
+            }
+            else if(b->isFixed() || b->getParent()->isFakeSleeping())
+                b = 0;
+            // now calculate relative points of contact.
+            Vector2D relp1 = a->toTranslatedInv(middle);
+            Vector2D relp2;
+            if(b)
+                relp2 = b->toTranslatedInv(middle);
+
+            /*
+             Prepare contact for the LCP solver.
+             This is a normal constsraint: J = (-n -(r_1 * n) n (r_2 * n))
+             */
+            *(J++) = norm.getX();
+            *(J++) = norm.getY();
+            *(J++) = relp1.perp(norm); // perpendicular product to keep the z component only
+            *(bounds++) = 0;
+            *(bounds++) = MACHINE_MAX; // infinite
+            *(idx++) = a->getParent()->getIslandIndex();
+            if(b)
+            {
+                *(idx++) = b->getParent()->getIslandIndex();
+                *(J++) = -norm.getX();
+                *(J++) = -norm.getY();
+                *(J++) = -relp2.perp(norm);
+            }
+            else
+            {
+                *(idx++) = -1;
+                *(J++) = 0;
+                *(J++) = 0;
+                *(J++) = 0;
+            }
+            /*
+             Coefficient to correct the penetration.
+             Don't correct anything when it's visibly unnoticeable (<= 2 * PROXIMITY_AWARENESS)
+             */
+            Real extra_v = 0;
+            if(cb->depth > 2 * PROXIMITY_AWARENESS)
+                extra_v = 0.8 * cb->depth;
+            *(zeta++) = extra_v;
+            *(lambda++) = 0;
         }
     }
 }

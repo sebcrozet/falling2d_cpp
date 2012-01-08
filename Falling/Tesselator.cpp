@@ -1464,116 +1464,116 @@ namespace Falling
 	    int nbptsholes[],
 	    std::stack<Poly *> &remaining)
     {
-	// parc triangle graph (breadth first search)
-	std::queue<Poly *> polys;
-	polys.push(currpt->adjlist->getValue());
-	currpt->adjlist->getValue()->parcstate = true;
-	while(!polys.empty())
-	{
-	    Poly *pol = polys.front();
-	    polys.pop();
-	    // enqueue adjascent polygons
-	    DoubleLinkedList<Edge *> *curre = pol->adj;
-	    for(int i = 0; i < 3; i++)
-	    {
-		Poly *pp = curre->getValue()->getOther(pol);
-		if(pp && !pp->parcstate)
-		{
-		    pp->parcstate = true;
-		    polys.push(pp);
-		}
-		curre = curre->getnext();
-	    }
-	    // handle current triangle
-	    // calculate the triangle's centroid
-	    Point2D centroid =
-		Point2D::getMiddle(
-			pol->pts->getprev()->getValue()->pt,
-			pol->pts->getnext()->getValue()->pt);
-	    centroid =  pol->pts->getValue()->pt + (centroid - pol->pts->getValue()->pt)*(2./3.);
-	    // determine degree of inclusion of the point
-	    int inclusiondegree = 0;
-	    bool includedinbase = Point2D::pointInPolygon(centroid,pts,nbpts);
-	    if(!includedinbase)
-	    {
-		if(removeMode & 24)
-		{
-		    // remove this triangle
-		    pol->removeFromGraphAndDelete();
-		    continue;
-		}
-	    }
-	    else
-	    {
-		if(removeMode & 4)
-		{
-		    remaining.push(pol);
-		    continue;
-		}
-		inclusiondegree = 1;
-	    }
-	    bool breakcode = false;
-	    for(int i = 0; !breakcode && i < nbholes; i++)
-	    {
-		centroid =
-		    Point2D::getMiddle(
-			    Point2D::getMiddle(pol->pts->getValue()->pt, pol->pts->getnext()->getValue()->pt),
-			    pol->pts->getprev()->getValue()->pt);
-		if(Point2D::pointInPolygon(centroid,holespts[i],nbptsholes[i]))
-		{
-		    if(removeMode & 4)
-		    {
-			// do not remove
-			breakcode = true;
-			remaining.push(pol);
-		    }
-		    else if (removeMode & 8)
-		    {
-			// remove it
-			pol->removeFromGraphAndDelete();
-			breakcode = true;
-		    }
-		    inclusiondegree++;
-		}
-		else
-		{
-		    if(removeMode & (16))
-		    {
-			// remove it
-			pol->removeFromGraphAndDelete();
-			breakcode = true;
-		    }
-		    else if(removeMode & 32)
-		    {
-			// do not remove
-			breakcode = true;
-			remaining.push(pol);
-		    }
-		}
-	    }
-	    if(breakcode)
-		continue;
-	    if(inclusiondegree == 0)
-		pol->removeFromGraphAndDelete();
-	    else if((inclusiondegree & 1))
-	    {
-		// odd
-		if((removeMode & 2) || ((removeMode & 32) && !includedinbase))
-		    pol->removeFromGraphAndDelete();
-		else
-		    remaining.push(pol);
-	    }
-	    else
-	    {
-		// even
-		if((removeMode & 1))
-		    pol->removeFromGraphAndDelete();
-		else
-		    remaining.push(pol);
-	    }
-	    // next
-	}
-	// END: of bad-triangles deletion
+      // parc triangle graph (breadth first search)
+      std::queue<Poly *> polys;
+      polys.push(currpt->adjlist->getValue());
+      currpt->adjlist->getValue()->parcstate = true;
+      while(!polys.empty())
+      {
+        Poly *pol = polys.front();
+        polys.pop();
+        // enqueue adjascent polygons
+        DoubleLinkedList<Edge *> *curre = pol->adj;
+        for(int i = 0; i < 3; i++)
+        {
+          Poly *pp = curre->getValue()->getOther(pol);
+          if(pp && !pp->parcstate)
+          {
+            pp->parcstate = true;
+            polys.push(pp);
+          }
+          curre = curre->getnext();
+        }
+        // handle current triangle
+        // calculate the triangle's centroid
+        Point2D centroid =
+          Point2D::getMiddle(
+              pol->pts->getprev()->getValue()->pt,
+              pol->pts->getnext()->getValue()->pt);
+        centroid =  pol->pts->getValue()->pt + (centroid - pol->pts->getValue()->pt)*(2./3.);
+        // determine degree of inclusion of the point
+        int inclusiondegree = 0;
+        bool includedinbase = Point2D::pointInPolygon(centroid,pts,nbpts);
+        if(!includedinbase)
+        {
+          if(removeMode & 24)
+          {
+            // remove this triangle
+            pol->removeFromGraphAndDelete();
+            continue;
+          }
+        }
+        else
+        {
+          if(removeMode & 4)
+          {
+            remaining.push(pol);
+            continue;
+          }
+          inclusiondegree = 1;
+        }
+        bool breakcode = false;
+        for(int i = 0; !breakcode && i < nbholes; i++)
+        {
+          centroid =
+            Point2D::getMiddle(
+                Point2D::getMiddle(pol->pts->getValue()->pt, pol->pts->getnext()->getValue()->pt),
+                pol->pts->getprev()->getValue()->pt);
+          if(Point2D::pointInPolygon(centroid,holespts[i],nbptsholes[i]))
+          {
+            if(removeMode & 4)
+            {
+              // do not remove
+              breakcode = true;
+              remaining.push(pol);
+            }
+            else if (removeMode & 8)
+            {
+              // remove it
+              pol->removeFromGraphAndDelete();
+              breakcode = true;
+            }
+            inclusiondegree++;
+          }
+          else
+          {
+            if(removeMode & (16))
+            {
+              // remove it
+              pol->removeFromGraphAndDelete();
+              breakcode = true;
+            }
+            else if(removeMode & 32)
+            {
+              // do not remove
+              breakcode = true;
+              remaining.push(pol);
+            }
+          }
+        }
+        if(breakcode)
+          continue;
+        if(inclusiondegree == 0)
+          pol->removeFromGraphAndDelete();
+        else if((inclusiondegree & 1))
+        {
+          // odd
+          if((removeMode & 2) || ((removeMode & 32) && !includedinbase))
+            pol->removeFromGraphAndDelete();
+          else
+            remaining.push(pol);
+        }
+        else
+        {
+          // even
+          if((removeMode & 1))
+            pol->removeFromGraphAndDelete();
+          else
+            remaining.push(pol);
+        }
+        // next
+      }
+      // END: of bad-triangles deletion
     }
 
     // returns the final number of polygons

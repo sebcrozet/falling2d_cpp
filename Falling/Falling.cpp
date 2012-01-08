@@ -101,14 +101,13 @@ namespace Falling
         ca.solve(colls);
         if(colls.size())
         {
-            std::stack<Island *> isls;
+            std::stack<Island *> isls; // FIXME: use a vector instead.
             // Build islands
             Island::batchIslands(colls,isls);
             //printf("NBR ISLS ==>  %i\n",isls.size());
             while(!isls.empty())
             {
                 Island *isl = isls.top();
-                isl->calculateStackLevels();
                 isl->doit(dt);
                 delete isl;
                 isls.pop();

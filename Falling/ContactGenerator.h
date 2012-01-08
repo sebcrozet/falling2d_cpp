@@ -37,6 +37,7 @@ namespace Falling
     public:
       static void PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
       static void PrepareContactDatasInMatrix_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
+      static void PrepareContactDatasInMatrix_position_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
   };
 }
 #define CGEN

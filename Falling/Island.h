@@ -35,15 +35,16 @@ namespace Falling
         // end TODO
 	private:
         int nbrCtcts;
-        std::vector<Collision *> stackLevels; // useless if velocity propagation is not used (not yet implemented…)
-        std::vector<Collision *> contacts_involved;
         std::queue<Shape *> graphNodes; // first graph's nodes for breadth first search.
         /*
          for lcp
          */
         unsigned int total_contacts_number;
+        /*
+         * FIXME: do we really need both?
+         */
         std::vector<RigidBody *> bodies_involved;
-        std::vector< std::vector<Collision *> > stackLevels_lcp;
+        std::vector<Collision *> contacts_involved;
         /*
          end: for lcp
          */
@@ -55,12 +56,17 @@ namespace Falling
         Island();
         ~Island();
         void calculateStackLevels();
-        void pushToLevelOneChain(Collision *c);
+        inline
+        void add_contact(Collision *c)
+        { contacts_involved.push_back(c); }
+        inline
+          void add_body(RigidBody *rb)
+          { bodies_involved.push_back(rb); }
         
         inline void insertToLevelOne(Shape *c)
         { graphNodes.push(c); }
         inline bool isEmpty()
-        { return graphNodes.empty(); }
+        { return false; }//return graphNodes.empty(); }
         inline int getNbrCtcts()
         { return nbrCtcts; }
         
@@ -73,6 +79,7 @@ namespace Falling
          */
         void solve_stack(Real doit, unsigned int iterations_number);
         void solve_stack_without_sleeping(Real doit, unsigned int iterations_number);
+        void solve_positions_without_sleeping(Real dt, unsigned int iterations_number);
         void doit(Real doit);
         void solve(Real *J, Real *B, Real *nu, Real *lambda, Real *bounds, Real *a, int *idx, unsigned int s, unsigned int n, unsigned int iterations_number);
         /*

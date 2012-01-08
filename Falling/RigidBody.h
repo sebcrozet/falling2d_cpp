@@ -24,6 +24,7 @@
 
 namespace Falling
 {
+  class Joint;
   class FALLINGAPI RigidBody
   {
     private:
@@ -36,6 +37,8 @@ namespace Falling
       bool sleeping;
       bool fake_sleeping;
       Real movment;
+      // joints
+      //std::vector<Joint *> joints;
 
       /*
          datas for indexing in islands

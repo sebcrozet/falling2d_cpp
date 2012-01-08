@@ -134,7 +134,7 @@ namespace Falling
 	    Real teta
 	    )
     {
-	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, 1, pos, true, teta, fixed);
+	Polygon2D *pp=new Polygon2D(pts, n, 0, 0, 0, Tesselator::ODD_IS_SOLID, pos, true, teta, fixed);
 	return new RigidBody(pp,m*pp->getSurface(),pp->getCentroid(),teta);
     }
 

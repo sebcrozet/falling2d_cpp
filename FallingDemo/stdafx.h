@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #pragma once
-#define _GLIBCXX_FULLY_DYNAMIC_STRING 1
+//#define _GLIBCXX_FULLY_DYNAMIC_STRING 1
 #include "targetver.h"
 
 #include <stdio.h>
@@ -25,6 +25,6 @@
 #include <SFML/Graphics.hpp>
 
 //#define _USE_BOX_2D_
-#include "Box2D/Box2D.h"
 #ifdef _USE_BOX_2D_
+#include "Box2D/Box2D.h"
 #endif
