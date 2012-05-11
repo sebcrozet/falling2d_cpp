@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
 # make the falling2d library
+set(CMAKE_CXX_FLAGS_DEBUG -g)
 project(falling2d)
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 file(
@@ -37,4 +38,4 @@ target_link_libraries(
   sfml-window
   sfml-graphics
   )
-  
+

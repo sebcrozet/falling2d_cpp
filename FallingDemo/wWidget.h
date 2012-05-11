@@ -47,7 +47,7 @@ public:
   bool setY(float y);
   inline bool contains(float x, float y)
   {
-    return isVisible && rect.Contains(x, y);
+    return isVisible && rect.contains(x, y);
   }
   inline Rect getRect() const
   {

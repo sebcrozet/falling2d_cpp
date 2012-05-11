@@ -53,7 +53,7 @@ void toogledFixedItem(int, void *userdata)
 
 void exitApplication(int, void *userdata)
 {
-  ((MachineState *)userdata)->rwin.Close();
+  ((MachineState *)userdata)->rwin.close();
 }
 
 void pauseEngine(int, void *userdata)
@@ -204,23 +204,22 @@ bool UserInterface::dispatchEvent(sf::Event ev, MachineState &ms)
 {
   for(unsigned int i = 0; i < ui.size(); i++)
   {
-    ms.rwin.SetView(wWidget::view);
-    sf::Vector2f mp = ms.rwin.ConvertCoords(
-        MAX(ms.rwin.GetInput().GetMouseX(),0),
-        MAX(ms.rwin.GetInput().GetMouseY(),0));
+    ms.rwin.setView(wWidget::view);
+    // FIXME: is conversion ok?
+    sf::Vector2i mp = sf::Mouse::getPosition (ms.rwin);
     if(ui[i]->interpretEvent(ev, mp.x, mp.y))
     {
-      if(ev.Type == sf::Event::MouseButtonPressed)
+      if(ev.type == sf::Event::MouseButtonPressed)
         absorbMouse = true;
       return true;
     }
   }
-  if(absorbMouse && ev.Type == sf::Event::MouseButtonReleased)
+  if(absorbMouse && ev.type == sf::Event::MouseButtonReleased)
   {
     absorbMouse = false;
     return true;
   }
-  return (ev.Type == sf::Event::MouseMoved && absorbMouse);
+  return (ev.type == sf::Event::MouseMoved && absorbMouse);
 }
 
 void UserInterface::draw(MachineState &ms)

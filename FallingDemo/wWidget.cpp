@@ -29,23 +29,23 @@ wWidget::~wWidget()
 bool wWidget::setSize(float w, float h)
 {
   if(h >= 0)
-    rect.Bottom = rect.Top + h;
+    rect.height = h;
   if(w >= 0)
-    rect.Right = rect.Left + w;
+    rect.width = w;
   return true;
 }
 bool wWidget::setCoords(float x, float y)
 {
-  return translate(x - rect.Left, y - rect.Top);
+  return translate(x - rect.left, y - rect.top);
 }
 
 bool wWidget::setX(float x)
 {
-  return translate(x - rect.Left, 0);
+  return translate(x - rect.left, 0);
 }
 bool wWidget::setY(float y)
 {
-  return translate(0,y - rect.Top);
+  return translate(0, y - rect.top);
 }
 bool wWidget::setRect(float x, float y, float w, float h)
 {
@@ -55,6 +55,7 @@ bool wWidget::setRect(float x, float y, float w, float h)
 }
 bool wWidget::translate(float x, float y)
 {
-  rect.Offset(x,y);
+  rect.left += x;
+  rect.top += y;
   return true;
 }

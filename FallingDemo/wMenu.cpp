@@ -108,7 +108,7 @@ bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)
     return false;
   if(!wContener::interpretEvent(ev, mx, my) && (!sw || !sw->getIsVisible() || !sw->interpretEvent(ev, mx, my)))
     {
-      if(ev.Type == sf::Event::MouseMoved)
+      if(ev.type == sf::Event::MouseMoved)
         {
           if(!wWidget::contains(mx, my))
             {
@@ -118,7 +118,7 @@ bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)
           else
             highlighted = true;
         }
-      else if(ev.Type == sf::Event::MouseButtonPressed)
+      else if(ev.type == sf::Event::MouseButtonPressed)
         {
           if(wWidget::contains(mx, my))
             {
@@ -148,7 +148,7 @@ bool wMenuItem::interpretEvent(sf::Event &ev, float mx, float my)
                 }
             }
         }
-      else if(ev.Type == sf::Event::MouseButtonReleased)
+      else if(ev.type == sf::Event::MouseButtonReleased)
         {
           if(!checkbox && !checkgroup && toogled)
             {
@@ -190,14 +190,13 @@ void wMenuItem::draw(sf::RenderWindow &rw)
                 greycolor = 200;
             }
         }
-      rw.Draw(
-        sf::Shape::Rectangle(
-          wWidget::rect.Left,
-          wWidget::rect.Top,
-          wWidget::rect.Right,
-          wWidget::rect.Bottom,
-          sf::Color(greycolor,greycolor,greycolor,100), 2, sf::Color(greycolor,greycolor,greycolor,200))
-      );
+      sf::RectangleShape rs (sf::Vector2f (wWidget::rect.width,
+                                           wWidget::rect.height));
+      rs.setPosition (wWidget::rect.left, wWidget::rect.top);
+      rs.setOutlineThickness(2);
+      rs.setOutlineColor(sf::Color(greycolor,greycolor,greycolor,100));
+      rs.setFillColor(sf::Color(greycolor,greycolor,greycolor,200));
+      rw.draw (rs);
     } // else do not draw the rounding rectangle but only the content
   // draw text & image
   if(sw && sw->getIsVisible())
@@ -211,9 +210,9 @@ void wMenuItem::updateSubMenuLocation()
   if(sw)
     {
       if(!orientation)
-        sw->setCoords(rect.Left, rect.Bottom + 10);
+        sw->setCoords(rect.left, rect.top + rect.height + 10);
       else
-        sw->setCoords(rect.Right + 10, rect.Top);
+        sw->setCoords(rect.left + rect.width + 10, rect.top);
     }
 }
 void wMenuItem::setSubChildPopupMenu(bool orient, wWidget *mb)
@@ -513,7 +512,11 @@ void wMenuBar::close()
 
 void wMenuBar::draw(sf::RenderWindow &rw)
 {
-  rw.Draw(sf::Shape::Rectangle(wWidget::rect.Left, wWidget::rect.Top, wWidget::rect.Right, wWidget::rect.Bottom, sf::Color(20,20,20,50)));
+  sf::RectangleShape rs (sf::Vector2f (wWidget::rect.width,
+                                       wWidget::rect.height));
+  rs.setPosition (wWidget::rect.left, wWidget::rect.top);
+  rs.setFillColor(sf::Color(20, 20, 20, 50));
+  rw.draw (rs);
   wContener::draw(rw);
 }
 
@@ -525,7 +528,7 @@ bool wMenuBar::interpretEvent(sf::Event &ev, float mx, float my)
       if(fils[i]->getIsVisible())
         {
           bool inter = fils[i]->interpretEvent(ev, mx, my);
-          if(ev.Type == sf::Event::MouseButtonPressed)
+          if(ev.type == sf::Event::MouseButtonPressed)
             {
               if(inter)
                 {

@@ -38,23 +38,23 @@ bool wDialog::interpretEvent(sf::Event &ev, float mx, float my)
 {
   if(!wContener::interpretEvent(ev, mx, my))
     {
-      if(ev.Type == sf::Event::MouseMoved)
+      if(ev.type == sf::Event::MouseMoved)
         {
           if(dragging)
             {
               float dx = mx - lastx;
               float dy = my - lasty;
-              if(rect.Left + dx < 0)
-                dx = -rect.Left;
-              if(rect.Top + dy < 0)
-                dy = -rect.Top;
+              if(rect.left + dx < 0)
+                dx = -rect.left;
+              if(rect.top + dy < 0)
+                dy = -rect.top;
               wContener::translate(dx, dy);
               lastx = mx;
               lasty = my;
               return true;
             }
         }
-      else if(ev.Type == sf::Event::MouseButtonPressed)
+      else if(ev.type == sf::Event::MouseButtonPressed)
         {
 
           if(wWidget::contains(mx , my))
@@ -64,7 +64,7 @@ bool wDialog::interpretEvent(sf::Event &ev, float mx, float my)
               lasty = my;
             }
         }
-      else if(ev.Type == sf::Event::MouseButtonReleased)
+      else if(ev.type == sf::Event::MouseButtonReleased)
         {
           if(dragging)
             {
@@ -80,7 +80,13 @@ bool wDialog::interpretEvent(sf::Event &ev, float mx, float my)
 
 void wDialog::draw(sf::RenderWindow &rw)
 {
-  rw.Draw(sf::Shape::Rectangle(wWidget::rect.Left, wWidget::rect.Top, wWidget::rect.Right, wWidget::rect.Bottom, sf::Color(20,20,20,10)));
+  sf::RectangleShape rs = sf::RectangleShape(sf::Vector2f (
+                                               wWidget::rect.width,
+                                               wWidget::rect.height));
+  rs.setOrigin (rect.left, rect.top);
+  rs.setFillColor (sf::Color(20,20,20,10));
+
+  rw.draw (rs);
   wContener::draw(rw);
 }
 

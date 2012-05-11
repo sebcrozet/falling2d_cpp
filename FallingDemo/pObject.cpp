@@ -103,121 +103,125 @@ void pObject::toogleFixed()
 
 void pObject::draw(const MachineState &ms)
 {
-  sf::Shape sh;
-  Falling::Vector2D pos;
-
   icall = 0;
   poly = rb->getPos().getY();
   polx = rb->getPos().getX();
   switch(otype)
     {
     case pObject::O_CIRCLE:
-      pos = rb->getPos();
-      sh = sf::Shape::Circle(
-             pos.getX()*SCALE,
-             pos.getY()*SCALE,
-             nb,
-             rb->isSleeping() && (ms.drawstate & MachineState::DRAW_SLEEPING_BLACK) ? sf::Color(0,0,0) : sf::Color(r,g,b),
-             ms.selectedObj == this ? 4.f : (ms.drawstate & MachineState::DRAW_BORDERS) ? 3.f : 0.f,
-             ms.selectedObj == this ? sf::Color(255, 255, 255) : sf::Color(r - 70, g - 70,b - 70)
-           );
-      ms.rwin.Draw(sh);
-      ms.rwin.Draw(
-        sf::Shape::Circle(
-          pos.getX(),
-          pos.getY(),
-          3, sf::Color(r - 70, g - 70, b - 70), 2
-        )
-      );
+      {
+        Falling::Vector2D pos = rb->getPos();
+        sf::CircleShape sh(nb);
+        sh.setOrigin(nb, nb);
+        sh.setPosition(pos.getX() * SCALE, pos.getY() * SCALE);
+        sh.setFillColor(rb->isSleeping() &&
+                        (ms.drawstate & MachineState::DRAW_SLEEPING_BLACK) ?
+                        sf::Color(0,0,0) : sf::Color(r,g,b));
+        sh.setOutlineThickness(ms.selectedObj == this ? 1.f :
+                               (ms.drawstate & MachineState::DRAW_BORDERS) ?
+                               1.f : 0.f);
+        sh.setOutlineColor(ms.selectedObj == this ?
+                           sf::Color(255, 255, 255) :
+                           sf::Color(r - 70, g - 70,b - 70));
+        ms.rwin.draw(sh);
+
+        sh = sf::CircleShape(3);
+        sh.setOrigin(3, 3);
+        sh.setOutlineThickness(1);
+        sh.setFillColor(sf::Color(r - 70, g - 70, b - 70));
+        sh.setPosition(pos.getX(), pos.getY());
+        ms.rwin.draw(sh);
+      }
       break;
     case pObject::O_POLY:
-
-      if(p->getNbrSubShapes())
+      {
+        if(p->getNbrSubShapes())
         {
           if(!rb->isFixed() || (ms.drawstate & MachineState::DRAW_COMPONENTS))
-            {
-              for(int j = 0; j < p->getNbrSubShapes(); j++)
-                {
-                  sf::Shape sh;
-                  int rrand;
-                  int grand;
-                  int brand;
-                  if(ms.drawstate & MachineState::DRAW_COMPONENTS)
-                    {
-                      srand(r+j);
-                      rrand = rand()%255;
-                      grand = rand()%255;
-                      brand = rand()%255;
-                    }
-		  else if(rb->isSleeping() && (ms.drawstate & MachineState::DRAW_SLEEPING_BLACK))
-		  {
-		      rrand = grand = brand = 0;
-		  }
-		  else
-                    {
-                      rrand = r;
-                      grand = g;
-                      brand = b;
-                    }
-                  for(int i = 0; i < p->getSubShape(j)->getNbrPts(); i++)
-                    {
-                      Falling::Point2D ptsi = p->toGlobal(p->getSubShape(j)->getPts()[i]);
-                      sh.AddPoint(
-                        ptsi.getX()*SCALE,
-                        ptsi.getY()*SCALE,
-                        sf::Color(rrand,grand,brand)
-                      );
-                    }
-                  ms.rwin.Draw(sh);
-                }
-            }
-          else
-            {
-              for(int j = 0; j < p->getNbrSubShapes(); j++)
-                {
-                  sf::Shape sh;
-                  for(int i = 0; i < p->getSubShape(j)->getNbrPts(); i++)
-                    {
-                      Falling::Point2D ptsi = p->toGlobal(p->getSubShape(j)->getPts()[i]);
-                      sh.AddPoint(
-                        ptsi.getX()*SCALE,
-                        ptsi.getY()*SCALE,
-                        sf::Color(r,g,b)
-                      );
-                    }
-                  ms.rwin.Draw(sh);
-                }
-            }
-        }
-      {
-        int j = nb-1;
-        if(ms.drawstate & MachineState::DRAW_BORDERS || ms.selectedObj == this)
           {
-
-            for(int i = 0; i < nb; j = i,i++)
+            for(int j = 0; j < p->getNbrSubShapes(); j++)
+            {
+              sf::ConvexShape sh(p->getSubShape(j)->getNbrPts());
+              int rrand;
+              int grand;
+              int brand;
+              if(ms.drawstate & MachineState::DRAW_COMPONENTS)
               {
-                Falling::Point2D vptsi = p->toGlobal(pts[j]);
-                Falling::Point2D vptsi1 = p->toGlobal(pts[i]);
-                ms.rwin.Draw(
-                  sf::Shape::Line(
-                    vptsi.getX()*SCALE,
-                    vptsi.getY()*SCALE,
-                    vptsi1.getX()*SCALE,
-                    vptsi1.getY()*SCALE,
-                    ms.selectedObj == this ? 4.f : 3.f,
-                    ms.selectedObj == this ? sf::Color(255, 255, 255) : sf::Color(r - 70, g - 70,b - 70)
-                  )
-                );
+                srand(r + j);
+                rrand = rand() % 255;
+                grand = rand() % 255;
+                brand = rand() % 255;
               }
+              else if(rb->isSleeping() &&
+                  (ms.drawstate & MachineState::DRAW_SLEEPING_BLACK))
+              {
+                rrand = grand = brand = 0;
+              }
+              else
+              {
+                rrand = r;
+                grand = g;
+                brand = b;
+              }
+              for(int i = 0; i < p->getSubShape(j)->getNbrPts(); i++)
+              {
+                Falling::Point2D ptsi = p->toGlobal(
+                    p->getSubShape(j)->getPts()[i]
+                    );
+                sh.setPoint(i, sf::Vector2f(ptsi.getX() * SCALE,
+                      ptsi.getY() * SCALE));
+              }
+              sh.setFillColor(sf::Color(rrand, grand, brand));
+              ms.rwin.draw(sh);
+            }
           }
+          else
+          {
+            for(int j = 0; j < p->getNbrSubShapes(); j++)
+            {
+              sf::ConvexShape sh(p->getSubShape(j)->getNbrPts());
+              for(int i = 0; i < p->getSubShape(j)->getNbrPts(); i++)
+              {
+                Falling::Point2D ptsi = p->toGlobal(
+                                          p->getSubShape(j)->getPts()[i]
+                                        );
+                sh.setPoint(i, sf::Vector2f(ptsi.getX()*SCALE,
+                                            ptsi.getY()*SCALE));
+              }
+              sh.setFillColor(sf::Color(r,g,b));
+              ms.rwin.draw(sh);
+            }
+          }
+        }
       }
-      ms.rwin.Draw(
-        sf::Shape::Circle(
-          p->toGlobal(Falling::Point2D(0,0)).getX(),
-          p->toGlobal(Falling::Point2D(0,0)).getY(),
-          1, sf::Color(r - 70, g - 70, b - 70),2
-        )
-      );
+      {
+        int j = nb - 1;
+        if(ms.drawstate & MachineState::DRAW_BORDERS || ms.selectedObj == this)
+        {
+          for(int i = 0; i < nb; j = i, ++i)
+          {
+            Falling::Point2D vptsi = p->toGlobal(pts[j]);
+            Falling::Point2D vptsi1 = p->toGlobal(pts[i]);
+
+            sf::Vertex vertices[2];
+            sf::Color c = ms.selectedObj == this ? sf::Color(255, 255, 255) :
+                                                   sf::Color(r-70, g-70, b-70);
+            vertices[0] = sf::Vertex(sf::Vector2f(vptsi.getX() * SCALE,
+                                                  vptsi.getY() * SCALE), c);
+            vertices[1] = sf::Vertex(sf::Vector2f(vptsi1.getX() * SCALE,
+                                                  vptsi1.getY() * SCALE), c);
+            ms.rwin.draw (vertices, 2, sf::LinesStrip);
+            // FIXME: ms.selectedObj == this ? 4.f : 3.f,
+          }
+        }
+      }
+      {
+        sf::CircleShape sf(1);
+        sf.setPosition(p->toGlobal(Falling::Point2D(0,0)).getX(),
+                       p->toGlobal(Falling::Point2D(0,0)).getY());
+        sf.setFillColor(sf::Color(r - 70, g - 70, b - 70));
+        ms.rwin.draw(sf);
+      }
       break;
     case pObject::O_PLANE:
       // build a list of all points on the screen
@@ -227,81 +231,86 @@ void pObject::draw(const MachineState &ms)
       sf::Vector2f cvpt;
       Falling::Point2D inter1;
       Falling::Point2D inter2;
-      
-      cvpt = ms.rwin.ConvertCoords(0, 0, &ms.rwin.GetDefaultView());
+
+      cvpt = ms.rwin.convertCoords(sf::Vector2i(0, 0),
+                                   ms.rwin.getDefaultView());
       screenpts[0] = Falling::Point2D(cvpt.x, cvpt.y);
-      cvpt = ms.rwin.ConvertCoords(ms.rwin.GetWidth(), 0, &ms.rwin.GetDefaultView());
+      cvpt = ms.rwin.convertCoords(sf::Vector2i(ms.rwin.getSize().x, 0),
+                                   ms.rwin.getDefaultView());
       screenpts[1] = Falling::Point2D(cvpt.x, cvpt.y);
-      cvpt = ms.rwin.ConvertCoords(ms.rwin.GetWidth(), ms.rwin.GetHeight(), &ms.rwin.GetDefaultView());
+      cvpt = ms.rwin.convertCoords(sf::Vector2i(ms.rwin.getSize().x,
+                                                ms.rwin.getSize().y),
+                                   ms.rwin.getDefaultView());
       screenpts[2] = Falling::Point2D(cvpt.x, cvpt.y);
-      cvpt = ms.rwin.ConvertCoords(0, ms.rwin.GetHeight(), &ms.rwin.GetDefaultView());
+      cvpt = ms.rwin.convertCoords(sf::Vector2i(0, ms.rwin.getSize().y),
+                                   ms.rwin.getDefaultView());
       screenpts[3] = Falling::Point2D(cvpt.x, cvpt.y);
       screenpts[4] = screenpts[0];
 
       int transition = 0;
       int inters = 0;
-      sf::Shape polyshape;
+      std::vector<Falling::Point2D> pts;
       for(unsigned i = 0; i < 5; i++)
       {
-	  if(rb->containsPoint(screenpts[i]))
-	  {
-	      if(transition == -1)
-	      {
-		  // transition not contained -> contained
-		  // determine the plane's intersection with the corresponding segment
-		  if(Falling::Point2D::intersectLines(screenpts[i - 1], screenpts[i], diskcenter + u, diskcenter, &inter1))
-		  {
-		      // add the point on the list
-		      polyshape.AddPoint(
-			      inter1.getX(),
-			      inter1.getY(),
-			      sf::Color(200, 200, 200)
-			      );
-		      inters++;
-		  }
-	      }
-	      polyshape.AddPoint(
-		      screenpts[i].getX(),
-		      screenpts[i].getY(),
-		      sf::Color(200, 200, 200)
-		      );
-	      //add the point
-	      transition = 1;
-	  }
-	  else 
-	  {
-	      // point not contained
-	      if(transition == 1)
-	      {
-		  // transition contained -> not contained
-		  // determine the plane's intersection with the corresponding segment
-		  if(Falling::Point2D::intersectLines(screenpts[i - 1], screenpts[i], diskcenter + u, diskcenter, &inter2))
-		  {
-		      // add the point on the list
-		      polyshape.AddPoint(
-			      inter2.getX(),
-			      inter2.getY(),
-			      sf::Color(200, 200, 200)
-			      );
-		      inters++;
-		  }
-	      }
-	      transition = -1;
-	  }
+        if(rb->containsPoint(screenpts[i]))
+        {
+          if(transition == -1)
+          {
+            // transition not contained -> contained
+            // determine the plane's intersection with the corresponding segment
+            if(Falling::Point2D::intersectLines(screenpts[i - 1],
+                                                screenpts[i],
+                                                diskcenter + u,
+                                                diskcenter,
+                                                &inter1))
+            {
+              // add the point on the list
+              pts.push_back (inter1);
+              inters++;
+            }
+          }
+          pts.push_back (screenpts[i]);
+          //add the point
+          transition = 1;
+        }
+        else
+        {
+          // point not contained
+          if(transition == 1)
+          {
+            // transition contained -> not contained
+            // determine the plane's intersection with the corresponding segment
+            if(Falling::Point2D::intersectLines(screenpts[i - 1],
+                                                screenpts[i],
+                                                diskcenter + u,
+                                                diskcenter,
+                                                &inter2))
+            {
+              // add the point on the list
+              pts.push_back (inter2);
+              inters++;
+            }
+          }
+          transition = -1;
+        }
       }
-      ms.rwin.Draw(polyshape);
+
+      sf::ConvexShape polyshape(pts.size());
+      for (int i = 0; i < pts.size(); ++i) {
+        polyshape.setPoint(i, sf::Vector2f(pts[i].getX(), pts[i].getY()));
+      }
+      ms.rwin.draw(polyshape);
       if(inters == 2)
       {
-	  ms.rwin.Draw(
-		  sf::Shape::Line(
-		      inter1.getX(),
-		      inter1.getY(),
-		      inter2.getX(),
-		      inter2.getY(),
-		      ms.selectedObj == this? 4.0f : 3.f,
-		      ms.selectedObj == this? sf::Color(255, 255, 255) : sf::Color(100, 100, 100) 
-		      )
-		  );
+        sf::Vertex vertices[2];
+        sf::Color c (200, 200, 200);
+        vertices[0] = sf::Vertex(sf::Vector2f(inter1.getX(),
+                                              inter1.getY()), c);
+        vertices[1] = sf::Vertex(sf::Vector2f(inter2.getX(),
+                                              inter2.getY()), c);
+        ms.rwin.draw (vertices, 2, sf::LinesStrip);
+        //FIXME ms.selectedObj == this? 4.0f : 3.f,
+        //FIXME ms.selectedObj == this? sf::Color(255, 255, 255) : sf::Color(100, 100, 100)
       }
       break;
     }

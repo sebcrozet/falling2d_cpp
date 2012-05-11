@@ -20,10 +20,10 @@
 wLabel::wLabel(int x, int y, const std::string &text, int fontSize)
   : wWidget(x, y, 0,0 , true, -2)
 {
-  dTitle = new sf::String(text, sf::Font::GetDefaultFont(), fontSize);
-  dTitle->SetX(x);
-  dTitle->SetY(y);
-  wWidget::setSize(dTitle->GetRect().GetWidth(), dTitle->GetRect().GetHeight() + 2);
+  dTitle = new sf::Text(text, sf::Font::getDefaultFont(), fontSize);
+  dTitle->setPosition (x, y);
+  wWidget::setSize(dTitle->getGlobalBounds ().width,
+                   dTitle->getGlobalBounds ().height + 2);
 }
 
 wLabel::~wLabel()
@@ -31,14 +31,15 @@ wLabel::~wLabel()
 
 void wLabel::draw(sf::RenderWindow &rw)
 {
-  rw.Draw(*dTitle);
+  rw.draw(*dTitle);
 }
 
 void wLabel::setText(const std::string &s, int r, int g, int b)
 {
-  dTitle->SetText(sf::Unicode::Text(s));
-  dTitle->SetColor(sf::Color(r,g,b));
-  wWidget::setSize(dTitle->GetRect().GetWidth(), dTitle->GetRect().GetHeight() + 2);
+  dTitle->setString(s);
+  dTitle->setColor(sf::Color(r,g,b));
+  sf::FloatRect fr = dTitle->getGlobalBounds();
+  wWidget::setSize(fr.width, fr.height + 2);
 }
 
 bool wLabel::setSize(float, float)
@@ -48,7 +49,7 @@ bool wLabel::setSize(float, float)
 
 bool wLabel::translate(float x, float y)
 {
-  dTitle->Move(x, y);
+  dTitle->move(x, y);
   return wWidget::translate(x, y);
 }
 

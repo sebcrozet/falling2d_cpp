@@ -20,14 +20,13 @@
 
 int main(int, char**)
 {
-  sf::WindowSettings ws;
-  ws.AntialiasingLevel = 0;
+  sf::ContextSettings cs;
+  cs.antialiasingLevel = 0;
   sf::RenderWindow rw(
-      sf::VideoMode(800,600,32),
-      "Falling Demo v0.1",
-      sf::Style::Close | sf::Style::Resize,
-      ws
-      );
+    sf::VideoMode(800,600,32),
+    "Falling Demo v0.1",
+    sf::Style::Close | sf::Style::Resize,
+    cs);
 
   MachineState ms(rw);
   // pause the engine at the beginning
@@ -38,19 +37,19 @@ int main(int, char**)
   UserInterface ui(ms);
   sf::Clock cl;
   sf::Clock pcl;
-  while(rw.IsOpened())
+  while (rw.isOpen())
   {
     sf::Event ev;
-    cl.Reset();
-    while(rw.GetEvent(ev))
+    cl.restart();
+    while(rw.pollEvent(ev))
       ::dispatchEvent(ev, ms,ui);
-    float bph = cl.GetElapsedTime();
+    float bph = cl.getElapsedTime().asSeconds();
     ms.colls = ms.w.solve(0.016f);
-    ms.elapsedPhysicsTime = cl.GetElapsedTime() - bph;
+    ms.elapsedPhysicsTime = cl.getElapsedTime().asSeconds() - bph;
     draw(ms, ui);
-    float elpstmr = cl.GetElapsedTime();
+    float elpstmr = cl.getElapsedTime().asSeconds ();
     if(elpstmr < 0.016)
-      sf::Sleep(0.016 - elpstmr);
+      sf::sleep(sf::seconds (0.016 - elpstmr));
   }
   return 0;
 }
@@ -58,7 +57,7 @@ int main(int, char**)
 void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
 {
   if(ms.rbuttondown)
-    ms.rwin.GetDefaultView().Move(ms.oldx - realx, ms.oldy - realy);
+    ;// FIXME:ms.rwin.getDefaultView().move(ms.oldx - realx, ms.oldy - realy);
   else if(ms.selectedObj)
     return;
   else
@@ -70,8 +69,8 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
         break;
       case MachineState::DRAW_MOVE:
         /*
-           if(ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Left)
-           || ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Right))
+           if(ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Left)
+           || ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Right))
            */
         if(ms.lbuttondown)
         {
@@ -89,8 +88,8 @@ void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
       case MachineState::DRAW_CIRCLE:
       case MachineState::DRAW_PLANE:
       case MachineState::DRAW_SQUARE:
-        /*if(ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Left)
-          || ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Right))
+        /*if(ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Left)
+          || ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Right))
           */
         if(ms.lbuttondown)
         {
@@ -155,7 +154,7 @@ void mousePushed(MachineState &ms, float x, float y)
         ms.vpts.clear();
         // then add point
       case MachineState::DRAW_POINTS:
-        ms.vpts.push_back(Falling::Point2D(x/SCALE, y/SCALE));
+        ms.vpts.push_back(Falling::Point2D(x / SCALE, y / SCALE));
         break;
       default:
         break;
@@ -166,10 +165,10 @@ void mousePushed(MachineState &ms, float x, float y)
 void makePolyFromvptsList(MachineState &ms)
 {
   int n = ms.vpts.size();
-  if(n>=3)
+  if(n >= 3)
   {
     Falling::Point2D *pts = new Falling::Point2D[n];
-    for(int i=0; i<n; i++)
+    for(int i = 0; i < n; i++)
       pts[i] = ms.vpts[i];
     ms.objs.push_back(
         new pObject(
@@ -202,18 +201,6 @@ void mouseReleased(MachineState &ms, float x, float y)
         // nothing to do...
         break;
       case MachineState::DRAW_SQUARE:
-      case MachineState::DRAW_MOVE:
-        if(ms.buttonstate == MachineState::DRAW_MOVE)
-        {
-          if(ms.vpts.size() < 3)
-          {
-            ms.vpts.clear();
-            return;
-          }
-          ms.vpts.push_back(Falling::Point2D(x/SCALE,y/SCALE));
-        }
-        else
-        {
           // create a rectangle adding the two missing points
           ul = ms.vpts[0];
           dr = ms.vpts[1];
@@ -222,7 +209,15 @@ void mouseReleased(MachineState &ms, float x, float y)
           ms.vpts.push_back(Falling::Point2D(ul.getX(), dr.getY()));
           ms.vpts.push_back(dr);
           ms.vpts.push_back(Falling::Point2D(dr.getX(), ul.getY()));
-        }
+          makePolyFromvptsList(ms);
+          break;
+      case MachineState::DRAW_MOVE:
+          if(ms.vpts.size() < 3)
+          {
+            ms.vpts.clear();
+            return;
+          }
+          //ms.vpts.push_back(Falling::Point2D(x / SCALE,y / SCALE));
         makePolyFromvptsList(ms);
         break;
       case MachineState::DRAW_CIRCLE:
@@ -267,56 +262,46 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
   ///////////////////////////
   // handle non-gui events //
   ///////////////////////////
-  ms.rwin.SetView(ms.rwin.GetDefaultView());
-  if(ev.Type == sf::Event::Closed)
-    ms.rwin.Close();
-  else if(ev.Type == sf::Event::MouseButtonReleased)
+  ms.rwin.setView(ms.rwin.getDefaultView());
+  if(ev.type == sf::Event::Closed)
+    ms.rwin.close();
+  else if(ev.type == sf::Event::MouseButtonReleased)
   {
-    sf::Vector2f pos =
-      ms.rwin.ConvertCoords(
-          MAX(ev.MouseButton.X,0),
-          MAX(ev.MouseButton.Y,0),
-          &ms.rwin.GetDefaultView()
-          );
+    sf::Vector2i pos = sf::Mouse::getPosition (ms.rwin);
     mouseReleased(ms, pos.x, pos.y);
-    if(ev.MouseButton.Button == sf::Mouse::Left)
+    if(ev.mouseButton.button == sf::Mouse::Left)
       ms.lbuttondown = false;
-    else if(ev.MouseButton.Button == sf::Mouse::Right)
+    else if(ev.mouseButton.button == sf::Mouse::Right)
       ms.rbuttondown = false;
   }
-  else if(ev.Type == sf::Event::MouseButtonPressed)
+  else if(ev.type == sf::Event::MouseButtonPressed)
   {
-    if(ev.MouseButton.Button == sf::Mouse::Left)
+    if(ev.mouseButton.button == sf::Mouse::Left)
       ms.lbuttondown = true;
-    else if(ev.MouseButton.Button == sf::Mouse::Right)
+    else if(ev.mouseButton.button == sf::Mouse::Right)
       ms.rbuttondown = true;
     sf::Vector2f pos =
-      ms.rwin.ConvertCoords(
-          MAX(ev.MouseButton.X,0),
-          MAX(ev.MouseButton.Y,0),
-          &ms.rwin.GetDefaultView());
-    ms.oldx = ev.MouseButton.X;
-    ms.oldy = ev.MouseButton.Y;
+      ms.rwin.convertCoords(sf::Mouse::getPosition (ms.rwin),
+                            ms.rwin.getDefaultView());
+    ms.oldx = ev.mouseButton.x;
+    ms.oldy = ev.mouseButton.y;
     mousePushed(ms, pos.x, pos.y);
   }
-  else if(ev.Type == sf::Event::MouseMoved)
+  else if(ev.type == sf::Event::MouseMoved)
   {
-    //ms.lbuttondown = ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Left);
-    //ms.rbuttondown =  ms.rwin.GetInput().IsMouseButtonDown(sf::Mouse::Right);
+    //ms.lbuttondown = ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Left);
+    //ms.rbuttondown =  ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Right);
     sf::Vector2f pos =
-      ms.rwin.ConvertCoords(
-          MAX(ev.MouseMove.X,0),
-          MAX(ev.MouseMove.Y,0),
-          &ms.rwin.GetDefaultView()
-          );
-    mouseMoved(ms, pos.x, pos.y, ev.MouseMove.X, ev.MouseMove.Y);
-    ms.oldx = ev.MouseMove.X;
-    ms.oldy = ev.MouseMove.Y;
+      ms.rwin.convertCoords(sf::Mouse::getPosition (ms.rwin),
+                            ms.rwin.getDefaultView());
+    mouseMoved(ms, pos.x, pos.y, ev.mouseMove.x, ev.mouseMove.y);
+    ms.oldx = ev.mouseMove.x;
+    ms.oldy = ev.mouseMove.y;
   }
-  else if(ev.Type == sf::Event::KeyPressed)
+  else if(ev.type == sf::Event::KeyPressed)
   {
     int inc;
-    if(ev.Key.Code == sf::Key::Return)
+    if(ev.key.code == sf::Keyboard::Return)
     {
       if(ms.buttonstate == MachineState::DRAW_POINTS)
         makePolyFromvptsList(ms);
@@ -328,75 +313,70 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
       ms.objs[i]->incrementLimit(inc);
 
   }
-  else if(ev.Type == sf::Event::Resized)
+  else if(ev.type == sf::Event::Resized)
   {
-    ms.rwin.GetDefaultView().SetHalfSize(
-        ev.Size.Width / 2.f,
-        ev.Size.Height / 2.f
-        );
-    wWidget::view.SetHalfSize(
-        ev.Size.Width / 2.f,
-        ev.Size.Height / 2.f
-        );
-    wWidget::view.SetCenter(
-        ev.Size.Width / 2.f,
-        ev.Size.Height / 2.f
-        );
+    // FIXME: ms.rwin.getDefaultView().setSize(ev.size.width, ev.size.height);
+    wWidget::view.setSize(ev.size.width, ev.size.height);
+    wWidget::view.setCenter(ev.size.width / 2.f, ev.size.height / 2.f);
   }
 }
 
 
-   void exploreOBBtree(sf::RenderWindow &screen, Falling::OBBtree *t, Falling::Vector2D v, int deepness, int curr, Falling::Shape *csh, bool leaves_only)
+   void exploreOBBtree(sf::RenderWindow& screen,
+                       Falling::OBBtree* t,
+                       Falling::Vector2D v,
+                       int               deepness,
+                       int               curr,
+                       Falling::Shape*   csh,
+                       bool              leaves_only)
    {
-   if(!t)
-     return;
-   float ux = v.getX();
-   float uy = v.getY();
-//if(curr == deepness)
-//{
+     if(!t)
+       return;
+     float ux = v.getX();
+     float uy = v.getY();
+     //if(curr == deepness)
+     //{
 
-   Falling::OBB *o = t->o;
-   Falling::Vector2D obb_pts[] = {csh->toRotated(o->get_pt(0)), csh->toRotated(o->get_pt(1)), csh->toRotated(o->get_pt(2)), csh->toRotated(o->get_pt(3))};
-   if(!leaves_only || (!t->r && !t->l))//t->isLeaf());
-   {
-     screen.Draw(
-         sf::Shape::Line(
-           ux + obb_pts[0].getX(),
-           uy + obb_pts[0].getY(),
-           ux + obb_pts[1].getX(),
-           uy + obb_pts[1].getY(),
-           3,
-           sf::Color(0,0,0)));
-     screen.Draw(
-         sf::Shape::Line(
-           ux + obb_pts[1].getX(),
-           uy + obb_pts[1].getY(),
-           ux + obb_pts[2].getX(),
-           uy + obb_pts[2].getY(),
-           3,
-           sf::Color(0,0,0)));
-     screen.Draw(
-         sf::Shape::Line(
-           ux + obb_pts[2].getX(),
-           uy + obb_pts[2].getY(),
-           ux + obb_pts[3].getX(),
-           uy + obb_pts[3].getY(),
-           3,
-           sf::Color(0,0,0))
-         );
-     screen.Draw(
-         sf::Shape::Line(
-           ux + obb_pts[3].getX(),
-           uy + obb_pts[3].getY(),
-           ux + obb_pts[0].getX(),
-           uy + obb_pts[0].getY(),
-           3,
-           sf::Color(0,0,0))
-         );
+     Falling::OBB *o = t->o;
+     Falling::Vector2D obb_pts[] = {csh->toRotated(o->get_pt(0)),
+                                    csh->toRotated(o->get_pt(1)),
+                                    csh->toRotated(o->get_pt(2)),
+                                    csh->toRotated(o->get_pt(3))};
+     sf::Vertex vertices[5];
+     if(!leaves_only || (!t->r && !t->l))//t->isLeaf());
+     {
+       for (int i = 0; i < 4; ++i)
+       {
+         vertices[i] = sf::Vertex (sf::Vector2f(obb_pts[i].getX () + ux,
+                                                obb_pts[i].getY () + uy));
+       }
+       vertices[4] = vertices[0];
+       screen.draw (vertices, 5, sf::LinesStrip);
+     }
+     exploreOBBtree(screen,t->r, v, deepness, curr+1, csh, leaves_only);
+     exploreOBBtree(screen,t->l, v, deepness, curr+1, csh, leaves_only);
    }
-   exploreOBBtree(screen,t->r, v, deepness, curr+1, csh, leaves_only);
-   exploreOBBtree(screen,t->l, v, deepness, curr+1, csh, leaves_only);
-   }
+
+void drawLine (const Falling::Vector2D& va,
+               const Falling::Vector2D& vb,
+               const sf::Color&         c,
+               sf::RenderWindow&        rwin)
+{
+   sf::Vertex vertices[2];
+   vertices[0] = sf::Vertex (sf::Vector2f(va.getX (), va.getY ()), c);
+   vertices[1] = sf::Vertex (sf::Vector2f(vb.getX (), vb.getY ()), c);
+   rwin.draw (vertices, 2, sf::LinesStrip);
+}
+
+void drawLine (float xa,
+               float ya,
+               float xb,
+               float yb,
+               const sf::Color&         c,
+               sf::RenderWindow&        rwin)
+{
+  drawLine (Falling::Vector2D (xa, ya), Falling::Vector2D (xb, yb), c, rwin);
+}
 
 void drawDrawingShape(MachineState &ms, UserInterface &)
 {
@@ -408,53 +388,51 @@ void drawDrawingShape(MachineState &ms, UserInterface &)
     case MachineState::DRAW_MOVE:
       for(unsigned int i = 0; i + 1 < ms.vpts.size(); i++)
       {
-        ms.rwin.Draw(
-            sf::Shape::Line(
-              ms.vpts[i].getX() * SCALE,
-              ms.vpts[i].getY() * SCALE,
-              ms.vpts[i+1].getX() * SCALE,
-              ms.vpts[i+1].getY() * SCALE,
-              3.f,
-              sf::Color(95,95,95)
-              )
-            );
+        drawLine (
+          ms.vpts[i].getX() * SCALE,
+          ms.vpts[i].getY() * SCALE,
+          ms.vpts[i+1].getX() * SCALE,
+          ms.vpts[i+1].getY() * SCALE,
+          sf::Color (95, 95, 95),
+          ms.rwin);
       }
       if(ms.vpts.size() > 2)
-        ms.rwin.Draw(
-            sf::Shape::Line(
-              ms.vpts[0].getX() * SCALE,
-              ms.vpts[0].getY() * SCALE,
-              ms.vpts[ms.vpts.size()-1].getX() * SCALE,
-              ms.vpts[ms.vpts.size()-1].getY() * SCALE,
-              3.f,
-              sf::Color(130,130,130)
-              )
-            );
+        drawLine (
+          ms.vpts[0].getX() * SCALE,
+          ms.vpts[0].getY() * SCALE,
+          ms.vpts[ms.vpts.size()-1].getX() * SCALE,
+          ms.vpts[ms.vpts.size()-1].getY() * SCALE,
+          sf::Color (130, 130, 130),
+          ms.rwin);
       break;
     case MachineState::DRAW_CIRCLE:
-      // only two points to describe the circle
-      ms.rwin.Draw(sf::Shape::Circle(
-            ms.vpts[0].getX(),
-            ms.vpts[0].getY(),
-            Falling::Vector2D(ms.vpts[0], ms.vpts[1]).magnitude(),
-            sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
+      {
+        // only two points to describe the circle
+        sf::CircleShape sh;
+        float magn = Falling::Vector2D(ms.vpts[0], ms.vpts[1]).magnitude();
+        sh = sf::CircleShape(magn);
+        sh.setOrigin(magn, magn);
+        sh.setPosition (ms.vpts[0].getX(), ms.vpts[0].getY());
+        sh.setOutlineThickness (1);
+        sh.setOutlineColor (sf::Color(95, 95, 95, 200));
+        ms.rwin.draw(sh);
+      }
       break;
     case MachineState::DRAW_SQUARE:
-      ms.rwin.Draw(sf::Shape::Rectangle(
-            ms.vpts[0].getX(),
-            ms.vpts[0].getY(),
-            ms.vpts[1].getX(),
-            ms.vpts[1].getY(),
-            sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
+      {
+        sf::RectangleShape rs = sf::RectangleShape(sf::Vector2f (
+                       ABS(ms.vpts[0].getX() - ms.vpts[1].getX()),
+                       ABS(ms.vpts[0].getY() - ms.vpts[1].getY())));
+        rs.setPosition (MIN (ms.vpts[0].getX(), ms.vpts[1].getX()),
+                        MIN (ms.vpts[0].getY(), ms.vpts[1].getY()));
+        rs.setOutlineThickness (1);
+        rs.setOutlineColor (sf::Color(130, 130, 130));
+        rs.setFillColor (sf::Color(95, 95, 95, 200));
+        ms.rwin.draw (rs);
+      }
       break;
     case MachineState::DRAW_PLANE:
-      ms.rwin.Draw(sf::Shape::Line(
-            ms.vpts[0].getX(),
-            ms.vpts[0].getY(),
-            ms.vpts[1].getX(),
-            ms.vpts[1].getY(),
-            2,
-            sf::Color(95,95,95,200), 3, sf::Color(130,130,130)));
+      drawLine (ms.vpts[0], ms.vpts[1], sf::Color (130, 130, 130), ms.rwin);
       break;
     default:
       break;
@@ -464,8 +442,8 @@ void drawDrawingShape(MachineState &ms, UserInterface &)
 void draw(MachineState &ms, UserInterface &ui)
 {
 
-  ms.rwin.Clear(sf::Color(200,191,231));
-  ms.rwin.SetView(ms.rwin.GetDefaultView());
+  ms.rwin.clear(sf::Color(200,191,231));
+  ms.rwin.setView(ms.rwin.getDefaultView());
   if(!ms.selectedObj)
     drawDrawingShape(ms, ui);
 
@@ -477,29 +455,70 @@ void draw(MachineState &ms, UserInterface &ui)
         continue; // don't try to draw an infinite plane's aabb…
     if(ms.drawstate & MachineState::DRAW_AABBS)
     {
-      ms.rwin.Draw(sf::Shape::Line(csh->get_aabb_xm(),csh->get_aabb_ym(), csh->get_aabb_xM(), csh->get_aabb_ym(),1,sf::Color(0,0,0)));
-      ms.rwin.Draw(sf::Shape::Line(csh->get_aabb_xM(),csh->get_aabb_yM(), csh->get_aabb_xM(), csh->get_aabb_ym(),1,sf::Color(0,0,0)));
-      ms.rwin.Draw(sf::Shape::Line(csh->get_aabb_xm(),csh->get_aabb_ym(), csh->get_aabb_xm(), csh->get_aabb_yM(),1,sf::Color(0,0,0)));
-      ms.rwin.Draw(sf::Shape::Line(csh->get_aabb_xM(),csh->get_aabb_yM(), csh->get_aabb_xm(), csh->get_aabb_yM(),1,sf::Color(0,0,0)));
+      // FIXME: uggly: pack each point on one Vertex[4] and draw an LineStrip
+      drawLine (
+        csh->get_aabb_xm(),
+        csh->get_aabb_ym(),
+        csh->get_aabb_xM(),
+        csh->get_aabb_ym(),
+        sf::Color (0, 0, 0),
+        ms.rwin);
+      drawLine (
+        csh->get_aabb_xM(),
+        csh->get_aabb_yM(),
+        csh->get_aabb_xM(),
+        csh->get_aabb_ym(),
+        sf::Color (0, 0, 0),
+        ms.rwin);
+      drawLine (
+        csh->get_aabb_xm(),
+        csh->get_aabb_ym(),
+        csh->get_aabb_xm(),
+        csh->get_aabb_yM(),
+        sf::Color (0, 0, 0),
+        ms.rwin);
+      drawLine (
+        csh->get_aabb_xM(),
+        csh->get_aabb_yM(),
+        csh->get_aabb_xm(),
+        csh->get_aabb_yM(),
+        sf::Color (0, 0, 0),
+        ms.rwin);
     }
 
-    if(ms.drawstate & MachineState::DRAW_OBB_TREE || ms.drawstate & MachineState::DRAW_OBB_LEAVES)
-       exploreOBBtree(ms.rwin, csh->getOtree(), csh->getPos(), 10, 0, csh, (ms.drawstate & MachineState::DRAW_OBB_LEAVES) && !(ms.drawstate & MachineState::DRAW_OBB_TREE));
+    if(ms.drawstate & MachineState::DRAW_OBB_TREE ||
+       ms.drawstate & MachineState::DRAW_OBB_LEAVES)
+       exploreOBBtree(ms.rwin,
+                      csh->getOtree(),
+                      csh->getPos(),
+                      10,
+                      0,
+                      csh,
+                      (ms.drawstate & MachineState::DRAW_OBB_LEAVES) &&
+                      !(ms.drawstate & MachineState::DRAW_OBB_TREE));
   }
   /*
    * draw collisions
    */
   if(ms.drawstate & MachineState::DRAW_COLLISION_COUPLES)
   {
-    for(std::vector<Falling::Collision *>::iterator coll = ms.colls.begin(); coll != ms.colls.end(); coll++)
+    for(std::vector<Falling::Collision *>::iterator coll = ms.colls.begin();
+        coll != ms.colls.end();
+        coll++)
     {
       Falling::Collision *c = *coll;
-      ms.rwin.Draw(sf::Shape::Line(c->sa->getPos().getX(), c->sa->getPos().getY(),c->sb->getPos().getX(), c->sb->getPos().getY(),1,sf::Color(255,0,0)));
+      drawLine (
+        c->sa->getPos().getX(),
+        c->sa->getPos().getY(),
+        c->sb->getPos().getX(),
+        c->sb->getPos().getY(),
+        sf::Color (255, 0, 0),
+        ms.rwin);
     }
   }
   /*
    */
-  ms.rwin.SetView(wWidget::view);
+  ms.rwin.setView(wWidget::view);
   ui.draw(ms);
-  ms.rwin.Display();
+  ms.rwin.display();
 }

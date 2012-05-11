@@ -21,7 +21,7 @@
 class wLabel : public wWidget
 {
 private:
-  sf::String *dTitle;
+  sf::Text *dTitle;
 public:
   wLabel(int x, int y, const std::string &text, int fontSize);
   ~wLabel();

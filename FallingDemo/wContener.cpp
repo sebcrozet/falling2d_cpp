@@ -51,16 +51,16 @@ wWidget *wContener::getLastChild()
 bool wContener::setSize(float w, float h)
 {
   if(h > 0)// && im == wContener::alignLeftRight)
-    rect.Bottom = rect.Top + h;
+    rect.height = h;
   if(w > 0)// && im == wContener::alignTopBottom)
-    rect.Right = rect.Left + w;
+    rect.width = w;
   //updateSize();
   updatePositions();
   return false;
 }
 bool wContener::setCoords(float x, float y)
 {
-  translate(x - rect.Left, y - rect.Top);
+  translate(x - rect.left, y - rect.top);
   return true;
 }
 bool wContener::translate(float x, float y)
@@ -70,7 +70,8 @@ bool wContener::translate(float x, float y)
       for(unsigned int i = 0; i < fils.size(); i++)
         fils[i]->translate(x, y);
     }
-  rect.Offset(x, y);
+  rect.left += x;
+  rect.top += y;
   return true;
 }
 
@@ -171,24 +172,24 @@ void wContener::updatePositions()
   // updates sub-objects'positions
   if(im == wContener::alignLeftRight)
     {
-      int currx = rect.Left + paddingRL;
+      int currx = rect.left + paddingRL;
       for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           wWidget *ww = filsgrid[i]->w;
           currx += filsgrid[i]->mL;
-          ww->setCoords(currx, rect.Top + paddingUD);
-          currx += ww->getRect().GetWidth() + filsgrid[i]->mR;
+          ww->setCoords(currx, rect.top + paddingUD);
+          currx += ww->getRect().width + filsgrid[i]->mR;
         }
     }
   else if(im == wContener::alignTopBottom)
     {
-      int curry = rect.Top + paddingUD;
+      int curry = rect.top + paddingUD;
       for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
           wWidget *ww = filsgrid[i]->w;
           curry += filsgrid[i]->mU;
-          ww->setCoords(rect.Left + paddingRL, curry);
-          curry += ww->getRect().GetHeight() + filsgrid[i]->mD;
+          ww->setCoords(rect.left + paddingRL, curry);
+          curry += ww->getRect().height + filsgrid[i]->mD;
         }
     }
   // adapt sub objects' size if needed
@@ -198,14 +199,14 @@ void wContener::updatePositions()
         {
           wWidget *wdg = filsgrid[i]->w;
           wdg->setSize(
-            rect.GetWidth() - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL,
+            rect.width - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL,
             -1
           );
           Rect rc = wdg->getRect();
           wdg->setX(
-            rect.Left
-            + (rect.GetWidth() - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL)/2.f
-            - rc.GetWidth()/2.f + paddingRL + filsgrid[i]->mL
+            rect.left
+            + (rect.width - 2 * paddingRL - filsgrid[i]->mR - filsgrid[i]->mL)/2.f
+            - rc.width / 2.f + paddingRL + filsgrid[i]->mL
           );
         }
     }
@@ -216,10 +217,10 @@ void wContener::updatePositions()
           wWidget *wdg = filsgrid[i]->w;
           wdg->setSize(
             -1 ,
-            rect.GetHeight() - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD
+            rect.height - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD
           );
           Rect rc = wdg->getRect();
-          wdg->setY(rect.Top + (rect.GetHeight() - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD) / 2.f - rc.GetHeight() / 2.f + paddingUD + filsgrid[i]->mU);
+          wdg->setY(rect.top + (rect.height - 2 * paddingUD - filsgrid[i]->mU - filsgrid[i]->mD) / 2.f - rc.height / 2.f + paddingUD + filsgrid[i]->mU);
         }
     }
 }
@@ -233,7 +234,7 @@ void wContener::updateSize()
     {
       for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
-          float w = filsgrid[i]->w->getRect().GetWidth()
+          float w = filsgrid[i]->w->getRect().width
                     + filsgrid[i]->mR
                     + filsgrid[i]->mL;
           if(im == wContener::alignLeftRight)
@@ -252,7 +253,7 @@ void wContener::updateSize()
     {
       for(unsigned int i = 0; i < filsgrid.size(); i++)
         {
-          int h = filsgrid[i]->w->getRect().GetHeight()
+          int h = filsgrid[i]->w->getRect().height
                   + filsgrid[i]->mU
                   + filsgrid[i]->mD;
           if(im == wContener::alignTopBottom)
