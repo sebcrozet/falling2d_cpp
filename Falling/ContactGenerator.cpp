@@ -21,14 +21,24 @@
 
 namespace Falling
 {
-    void ContactGenerator::PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx)
+    void ContactGenerator::PrepareContactDatasInMatrix(
+      Real       dt,
+      Collision* c,
+      Real*&     J,
+      Real*&     bounds,
+      Real*&     zeta,
+      Real*&     lambda,
+      int*&      idx)
     {
-        for(std::vector<ContactBackup*>::iterator j = c->c.begin(); j != c->c.end(); j++)
+        for(std::vector<ContactBackup*>::iterator j = c->c.begin();
+            j != c->c.end();
+            j++)
         {
             ContactBackup *cb = *j;
             Shape *a = c->sa;
             Shape *b = c->sb;
-            Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA), b->toGlobal(cb->relPtB));
+            Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA),
+                                                b->toGlobal(cb->relPtB));
             Vector2D norm = cb->normal;
 
 
@@ -44,12 +54,16 @@ namespace Falling
             Vector2D tangeant = Vector2D(-norm.getY(),norm.getX());
             // now calculate relative points of contact.
             Vector2D relp1 = a->toTranslatedInv(middle);
-            Real relative_velocity = -(a->getParent()->getV() * norm - relp1.cross(Vector2D(0,0,a->getParent()->getOmega())) * norm);
+            Real relative_velocity =
+              -(a->getParent()->getV() * norm -
+              relp1.cross(Vector2D(0,0,a->getParent()->getOmega())) * norm);
             Vector2D relp2;
             if(b)
             {
                 relp2 = b->toTranslatedInv(middle);
-                relative_velocity += b->getParent()->getV() * norm - relp2.cross(Vector2D(0,0,b->getParent()->getOmega())) * norm;
+                relative_velocity +=
+                  b->getParent()->getV() * norm -
+                  relp2.cross(Vector2D(0,0,b->getParent()->getOmega())) * norm;
             }
 
             /*
@@ -82,15 +96,24 @@ namespace Falling
              */
             Real extra_v = 0;
             if(cb->depth > 2 * PROXIMITY_AWARENESS)
-                extra_v += 0.8 / dt * cb->depth; // apply an artificial force proportional to the penetration depth
-            if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT) // use a coefficient of restitution of 0 when the closing velocity is too small => better stability in stacks.
-                extra_v += 1 / dt * relative_velocity * 0.5; // 0.5 = coefficient of restitution.
+              // apply an artificial force proportional to the penetration
+              // depth
+                extra_v += 0.8 / dt * cb->depth;
+            // use a coefficient of restitution of 0 when the closing velocity
+            // is too small => better stability in stacks.
+            if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT)
+              // 0.5 = coefficient of restitution.
+                extra_v += 1 / dt * relative_velocity * 0.5;
             *(zeta++) = extra_v;
             *(J++) = -tangeant.getX();
             *(J++) = -tangeant.getY();
-            *(J++) = -relp1.perp(tangeant); // perpendicular product to keep the z component only
+            // perpendicular product to keep the z component only
+            *(J++) = -relp1.perp(tangeant);
 
-            *(bounds++) = -0.5 * (a->getParent()->getM() / a->get_total_number_of_contacts() + (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
+            *(bounds++) =
+              -0.5 *
+              (a->getParent()->getM() / a->get_total_number_of_contacts() +
+               (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
             *(bounds++) = 0.5 * (a->getParent()->getM() / a->get_total_number_of_contacts() + (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
             *(idx++) = a->getParent()->getIslandIndex();
             if(b)
@@ -115,14 +138,24 @@ namespace Falling
 
 
 
-    void ContactGenerator::PrepareContactDatasInMatrix_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx)
+    void ContactGenerator::PrepareContactDatasInMatrix_without_sleeping(
+        Real       dt,
+        Collision* c,
+        Real*&     J,
+        Real*&     bounds,
+        Real*&     zeta,
+        Real*&     lambda,
+        int*&      idx)
     {
-        for(std::vector<ContactBackup*>::iterator j = c->c.begin(); j != c->c.end(); j++)
+        for(std::vector<ContactBackup*>::iterator j = c->c.begin();
+            j != c->c.end();
+            ++j)
         {
             ContactBackup *cb = *j;
             Shape *a = c->sa;
             Shape *b = c->sb;
-            Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA), b->toGlobal(cb->relPtB));
+            Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA),
+                                                b->toGlobal(cb->relPtB));
             Vector2D norm = cb->normal;
 
             if(a->isFixed() || a->getParent()->isFakeSleeping())
@@ -170,8 +203,8 @@ namespace Falling
                 *(J++) = 0;
             }
             /*
-             Coefficient to correct the penetration.
-             Don't correct anything when it's visibly unnoticeable (<= 2 * PROXIMITY_AWARENESS)
+             Coefficient to correct the penetration.  Don't correct anything
+             when it's visibly unnoticeable (<= 2 * PROXIMITY_AWARENESS)
              */
             Real extra_v = 0;
             /*
@@ -179,16 +212,31 @@ namespace Falling
              * removed.
              */
             if(cb->depth > 2 * PROXIMITY_AWARENESS)
-                extra_v += 0.8 / dt * cb->depth; // apply an artificial force proportional to the penetration depth
-            if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT) // use a coefficient of restitution of 0 when the closing velocity is too small => better stability in stacks.
-                extra_v += 1 / dt * relative_velocity * 0.5; // 0.5 = coefficient of restitution.
+              // apply an artificial force proportional to the penetration
+              // depth
+                extra_v += 0.8 / dt * cb->depth;
+            if(relative_velocity * relative_velocity > 2.0f * SLEEPLIMIT)
+              // use a coefficient of restitution of 0 when the closing
+              // velocity is too small => better stability in stacks.
+              // 0.5 = coefficient of restitution.
+              extra_v += 1 / dt * relative_velocity * 0.5;
             *(zeta++) = extra_v;
             *(J++) = -tangeant.getX();
             *(J++) = -tangeant.getY();
-            *(J++) = -relp1.perp(tangeant); // perpendicular product to keep the z component only
+            // perpendicular product to keep the z component only
+            *(J++) = -relp1.perp(tangeant);
 
-            *(bounds++) = -0.5 * (a->getParent()->getM() / a->get_total_number_of_contacts() + (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
-            *(bounds++) = 0.5 * (a->getParent()->getM() / a->get_total_number_of_contacts() + (b ? b->getParent()->getM() / b->get_total_number_of_contacts() : 0.0)) * G;
+            Real b_mass = b ?
+                b->getParent()->getM() / b->get_total_number_of_contacts()
+                : 0.0;
+            *(bounds++) =
+               -0.5 *
+               (a->getParent()->getM() / a->get_total_number_of_contacts() +
+                b_mass) * G;
+            *(bounds++) =
+              0.5 *
+              (a->getParent()->getM() / a->get_total_number_of_contacts() +
+               b_mass) * G;
             *(idx++) = a->getParent()->getIslandIndex();
             if(b)
             {
@@ -210,64 +258,78 @@ namespace Falling
         }
     }
 
-    void ContactGenerator::PrepareContactDatasInMatrix_position_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx)
+    void
+    ContactGenerator::PrepareContactDatasInMatrix_position_without_sleeping(
+        Real       dt,
+        Collision* c,
+        Real*&     J,
+        Real*&     bounds,
+        Real*&     zeta,
+        Real*&     lambda,
+        int*&      idx)
     {
-        for(std::vector<ContactBackup*>::iterator j = c->c.begin(); j != c->c.end(); j++)
+      for(std::vector<ContactBackup*>::iterator j = c->c.begin();
+          j != c->c.end();
+          j++)
+      {
+        ContactBackup *cb = *j;
+        Shape *a = c->sa;
+        Shape *b = c->sb;
+        Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA),
+            b->toGlobal(cb->relPtB));
+        Vector2D norm = cb->normal;
+        std::cout << cb->normal.getX() << " and "
+          << cb->normal.getY() << std::endl;
+
+        if(a->isFixed() || a->getParent()->isFakeSleeping())
         {
-            ContactBackup *cb = *j;
-            Shape *a = c->sa;
-            Shape *b = c->sb;
-            Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA), b->toGlobal(cb->relPtB));
-            Vector2D norm = cb->normal;
-            std::cout << cb->normal.getX() << " and " << cb->normal.getY() << std::endl;
-
-            if(a->isFixed() || a->getParent()->isFakeSleeping())
-            {
-                a = b;
-                b = 0;
-                norm.reflect();
-            }
-            else if(b->isFixed() || b->getParent()->isFakeSleeping())
-                b = 0;
-            // now calculate relative points of contact.
-            Vector2D relp1 = a->toTranslatedInv(middle);
-            Vector2D relp2;
-            if(b)
-                relp2 = b->toTranslatedInv(middle);
-
-            /*
-             Prepare contact for the LCP solver.
-             This is a normal constsraint: J = (-n -(r_1 * n) n (r_2 * n))
-             */
-            *(J++) = norm.getX();
-            *(J++) = norm.getY();
-            *(J++) = relp1.perp(norm); // perpendicular product to keep the z component only
-            *(bounds++) = 0;
-            *(bounds++) = MACHINE_MAX; // infinite
-            *(idx++) = a->getParent()->getIslandIndex();
-            if(b)
-            {
-                *(idx++) = b->getParent()->getIslandIndex();
-                *(J++) = -norm.getX();
-                *(J++) = -norm.getY();
-                *(J++) = -relp2.perp(norm);
-            }
-            else
-            {
-                *(idx++) = -1;
-                *(J++) = 0;
-                *(J++) = 0;
-                *(J++) = 0;
-            }
-            /*
-             Coefficient to correct the penetration.
-             Don't correct anything when it's visibly unnoticeable (<= 2 * PROXIMITY_AWARENESS)
-             */
-            Real extra_v = 0;
-            if(cb->depth > 2 * PROXIMITY_AWARENESS)
-                extra_v = 0.8 * cb->depth;
-            *(zeta++) = extra_v;
-            *(lambda++) = 0;
+          a = b;
+          b = 0;
+          norm.reflect();
         }
+        else if(b->isFixed() || b->getParent()->isFakeSleeping())
+          b = 0;
+        // now calculate relative points of contact.
+        Vector2D relp1 = a->toTranslatedInv(middle);
+        Vector2D relp2;
+        if(b)
+          relp2 = b->toTranslatedInv(middle);
+
+        /*
+           Prepare contact for the LCP solver.
+           This is a normal constsraint: J = (-n -(r_1 * n) n (r_2 * n))
+           */
+        *(J++) = norm.getX();
+        *(J++) = norm.getY();
+        // perpendicular product to keep the z component only
+        *(J++) = relp1.perp(norm);
+        *(bounds++) = 0;
+        *(bounds++) = MACHINE_MAX; // infinite
+        *(idx++) = a->getParent()->getIslandIndex();
+        if(b)
+        {
+          *(idx++) = b->getParent()->getIslandIndex();
+          *(J++) = -norm.getX();
+          *(J++) = -norm.getY();
+          *(J++) = -relp2.perp(norm);
+        }
+        else
+        {
+          *(idx++) = -1;
+          *(J++) = 0;
+          *(J++) = 0;
+          *(J++) = 0;
+        }
+        /*
+           Coefficient to correct the penetration.
+           Don't correct anything when it's visibly unnoticeable (<= 2 *
+           PROXIMITY_AWARENESS)
+           */
+        Real extra_v = 0;
+        if(cb->depth > 2 * PROXIMITY_AWARENESS)
+          extra_v = 0.8 * cb->depth;
+        *(zeta++) = extra_v;
+        *(lambda++) = 0;
+      }
     }
 }

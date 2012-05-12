@@ -159,11 +159,15 @@ namespace Falling
      * contacts.
      */
     std::vector<Collision *> active_collisions;
-    for(std::vector<Collision *>::iterator coll = contacts_involved.begin(); coll != contacts_involved.end(); coll++)
+    for(std::vector<Collision *>::iterator coll = contacts_involved.begin();
+        coll != contacts_involved.end();
+        coll++)
     {
       Collision *ct = *coll;
-      bool sa_concidered_fixed = ct->sa->isFixed() || ct->sa->getParent()->isFakeSleeping(); // FIXME: need to test both?
-      bool sb_concidered_fixed = ct->sb->isFixed() || ct->sb->getParent()->isFakeSleeping(); // FIXME: need to test both?
+      bool sa_concidered_fixed = ct->sa->isFixed() ||
+                                 ct->sa->getParent()->isFakeSleeping(); // FIXME: need to test both?
+      bool sb_concidered_fixed = ct->sb->isFixed() ||
+                                 ct->sb->getParent()->isFakeSleeping(); // FIXME: need to test both?
       if(!sa_concidered_fixed || !sb_concidered_fixed)
         active_collisions.push_back(ct);
     }
@@ -291,23 +295,33 @@ namespace Falling
     Real invdt = 1.0 / dt;
     total_contacts_number *= 2; // normal constraint + friction constraint
     /*
-       build the matrices
-       */
-    Real *J = new Real[2 * 3 * total_contacts_number];   // {vx vy w} * 2 * n 
-    Real *B = new Real[2 * 3 * total_contacts_number];    // {vx vy w} * 2 * n. It's the same matrix as the jacobian's but each term is multiplied by M^-1
-    int *idx = new int[2 * total_contacts_number]; //RigidBody **idx = new RigidBody*[2 * total_contacts_number]; // sparce matrix indices
-    Real *zeta = new Real[total_contacts_number]; // work done by constraints: zeta = JV
-    Real *nu = new Real[total_contacts_number];          // nu = invdt * zeta - J (invdt * V1 + M^-1 * Fext)
-    Real *lambda = new Real[total_contacts_number];      // unknowns' matrix
-    Real *bounds = new Real[total_contacts_number * 2];  // constraints bounds
+     * build matrices
+     */
+    // {vx vy w} * 2 * n 
+    Real *J = new Real[2 * 3 * total_contacts_number];
+    // {vx vy w} * 2 * n. It's the same matrix as the jacobian's but each term
+    // is multiplied by M^-1
+    Real *B = new Real[2 * 3 * total_contacts_number];
+    // sparce matrix indices
+    int *idx = new int[2 * total_contacts_number];
+    // work done by constraints: zeta = JV
+    Real *zeta = new Real[total_contacts_number];
+    // nu = invdt * zeta - J (invdt * V1 + M^-1 * Fext)
+    Real *nu = new Real[total_contacts_number];
+    // unknowns' matrix
+    Real *lambda = new Real[total_contacts_number];
+    // constraints bounds
+    Real *bounds = new Real[total_contacts_number * 2];
     /*
-     * Here, some characteristics are copied off the rigid bodies: v, omega, m, I.
-     * I dont know if it's really faster than accessing these datas using RigidBodies' pointers.
-     * Here, we mais think that copying is better because of porcessor's cash…
-     * So: FIXME: verify that it's true (comparing times).
+     * Here, some characteristics are copied off the rigid bodies: v, omega, m,
+     * I.  I dont know if it's really faster than accessing these datas using
+     * RigidBodies' pointers.  Here, we mais think that copying is better
+     * because of porcessor's cash… So: FIXME: verify that it's true (comparing
+     * times).
      */
     Real *vomega = new Real[bodies_involved.size() * 3];
-    Real *mi = new Real[bodies_involved.size() * 3]; // contains the mass and the inertia
+    // contains the mass and the inertia
+    Real *mi = new Real[bodies_involved.size() * 3];
     /*
      * initialize shapes' indices
      */
@@ -326,7 +340,8 @@ namespace Falling
        */
     //### lambda: FIXME: remove this if the engine is warm-started
     std::fill(lambda, lambda + total_contacts_number, 0);
-    //### J: contact constraints. Assemble the matrix calling the perparation method in each contacts.
+    //### J: contact constraints. Assemble the matrix calling the perparation
+    //method in each contacts.
     //### bounds
     //### idx
     //### zeta
@@ -338,13 +353,22 @@ namespace Falling
     int *i_idx = idx;
     Real *i_zeta = zeta;
     Real *i_lambda = lambda;
-    for(std::vector<Collision*>::iterator  j = contacts_involved.begin(); j != contacts_involved.end(); j++)
+    for(std::vector<Collision*>::iterator  j = contacts_involved.begin();
+        j != contacts_involved.end();
+        j++)
     {
       Collision *curr_col = *j;
-      ContactGenerator::PrepareContactDatasInMatrix(dt, curr_col, i_J, i_bounds, i_zeta, i_lambda, i_idx);
+      ContactGenerator::PrepareContactDatasInMatrix(
+        dt,
+        curr_col,
+        i_J,
+        i_bounds,
+        i_zeta,
+        i_lambda,
+        i_idx);
     }
 
-    //### nu: FIXME: for now, we assume that Fext = mG. 
+    //### nu: FIXME: for now, we assume that Fext = mG.
     // Thus: nu = - J (invdt * {vx vy w, vx' vy' w', …} + {0 G 0, 0 G 0, …})
     //          = - J (invdt * {vx (vy + G) w ; vx' (vy' + G) w' ; …})
     // FIXME: optimize using pointers' arichmetic
@@ -355,11 +379,17 @@ namespace Falling
       Real w1 = vomega[idx[i * 2] * 3 + 2] * invdt;
       unsigned i23 = i * 2 * 3;
       nu[i] = zeta[i] - (J[i23] * vax1 + J[i23 + 1] * vay1 + J[i23 + 2] * w1);
-      if(idx[i*2+1] >= 0)
+      if(idx[i * 2 + 1] >= 0)
       {
-        Real vax2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3] * invdt :0.;
-        Real vay2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 1] * invdt + G:0.;
-        Real w2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 2] * invdt:0.;
+        Real vax2 = idx[i * 2 + 1] >= 0 ?
+                    vomega[idx[i * 2 + 1] * 3] * invdt
+                    : 0.;
+        Real vay2 = idx[i * 2 + 1] >= 0 ?
+                    vomega[idx[i * 2 + 1] * 3 + 1] * invdt + G
+                    : 0.;
+        Real w2 = idx[i * 2 + 1] >= 0 ?
+                  vomega[idx[i * 2 + 1] * 3 + 2] * invdt
+                  : 0.;
 
         unsigned i23p3 = i * 2 * 3 + 3;
         nu[i] -= J[i23p3] * vax2 + J[i23p3 + 1] * vay2 + J[i23p3 + 2] * w2;
@@ -377,14 +407,20 @@ namespace Falling
       B[i * 3 + 1] = J[i * 6 + 1] * im1;
       B[i * 3 + 2] = J[i * 6 + 2] * ii1;
 
-      if(idx[i*2+1] >= 0)
+      if(idx[i * 2 + 1] >= 0)
       {
         Real im2 = mi[idx[i * 2 + 1] * 2];
         Real ii2 = mi[idx[i * 2 + 1] * 2 + 1];
         // go to next line because we work with the transpose matrix
         B[(i + total_contacts_number) * 3] = J[i * 6 + 3] * im2;
         B[(i + total_contacts_number) * 3 + 1] = J[i * 6 + 4] * im2;
-        B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;    
+        B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;
+      }
+      else
+      {
+        B[(i + total_contacts_number) * 3] = 0;
+        B[(i + total_contacts_number) * 3 + 1] = 0;
+        B[(i + total_contacts_number) * 3 + 2] = 0;
       }
 
     }
@@ -393,15 +429,20 @@ namespace Falling
        solve the system
        */
     Real *a = new Real[3 * bodies_involved.size()]; // B * lambda: actually, the lambda buffer is less useful than this one for the integration step!
-    solve(J, B, nu, lambda, bounds, a, idx, total_contacts_number, bodies_involved.size(), iterations_number);
+    solve(J, B, nu, lambda, bounds, a, idx, total_contacts_number,
+          bodies_involved.size(), iterations_number);
 
     /*
        copy back the lambda buffer for warm starting the engine:
        */
     i_lambda = lambda;
-    for(std::vector<Collision*>::iterator  j = contacts_involved.begin(); j != contacts_involved.end(); j++)
+    for(std::vector<Collision*>::iterator  j = contacts_involved.begin();
+        j != contacts_involved.end();
+        j++)
     {
-      for(std::vector<ContactBackup*>::iterator ctct = (*j)->c.begin(); ctct != (*j)->c.end(); ctct++)
+      for(std::vector<ContactBackup*>::iterator ctct = (*j)->c.begin();
+          ctct != (*j)->c.end();
+          ctct++)
       {
         (*ctct)->lambda = *(i_lambda++);
         (*ctct)->frictionlambda = *(i_lambda++);
@@ -419,11 +460,12 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
       Real d_vy = dt * a[i * 3 + 1];// + G;
       Real d_omega = dt * a[i * 3 + 2];
       /*
-         when we compute the energy to determine if the object must be awaken,
-         the effect of gravity (or, actually, any external force) must be removed
-         from the velocity correction since it is the amount of velocity needed to kill
-         the gravity which will be introduced in the next integration!
-         */
+       * when we compute the energy to determine if the object must be awaken,
+       * the effect of gravity (or, actually, any external force) must be
+       * removed from the velocity correction since it is the amount of
+       * velocity needed to kill the gravity which will be introduced in the
+       * next integration!
+       */
       Real d_vy_without_acceleration = d_vy + dt * G;
       /*
          see if we need to awake some bodies
@@ -432,7 +474,8 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
 
       if(rb->isSleeping())
       {
-        if(d_vx * d_vx + d_vy_without_acceleration * d_vy_without_acceleration + d_omega * d_omega > SLEEPLIMIT)
+        if(d_vx * d_vx + d_vy_without_acceleration * d_vy_without_acceleration
+           + d_omega * d_omega > SLEEPLIMIT)
         {
           rb->set_fake_sleep_state(false);
           /*
@@ -492,10 +535,11 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
     Real *lambda = new Real[total_contacts_number];      // unknowns' matrix
     Real *bounds = new Real[total_contacts_number * 2];  // constraints bounds
     /*
-     * Here, some characteristics are copied off the rigid bodies: v, omega, m, I.
-     * I dont know if it's really faster than accessing these datas using RigidBodies' pointers.
-     * Here, we mais think that copying is better because of porcessor's cash…
-     * So: FIXME: verify that it's true (comparing times).
+     * Here, some characteristics are copied off the rigid bodies: v, omega, m,
+     * I.  I dont know if it's really faster than accessing these datas using
+     * RigidBodies' pointers.  Here, we may think that copying is better
+     * because of porcessor's cash… So: FIXME: verify that it's true (comparing
+     * times).
      */
     Real *vomega = new Real[bodies_involved.size() * 3];
     Real *mi = new Real[bodies_involved.size() * 3]; // contains the mass and the inertia
@@ -568,14 +612,20 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
       B[i * 3 + 1] = J[i * 6 + 1] * im1;
       B[i * 3 + 2] = J[i * 6 + 2] * ii1;
 
-      if(idx[i*2+1] >= 0)
+      if(idx[i * 2 + 1] >= 0)
       {
         Real im2 = mi[idx[i * 2 + 1] * 2];
         Real ii2 = mi[idx[i * 2 + 1] * 2 + 1];
         // go to next line because we work with the transpose matrix
         B[(i + total_contacts_number) * 3] = J[i * 6 + 3] * im2;
         B[(i + total_contacts_number) * 3 + 1] = J[i * 6 + 4] * im2;
-        B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;    
+        B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;
+      }
+      else
+      {
+        B[(i + total_contacts_number) * 3] = 0;
+        B[(i + total_contacts_number) * 3 + 1] = 0;
+        B[(i + total_contacts_number) * 3 + 2] = 0;
       }
 
     }
@@ -604,22 +654,22 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
        }
        */
     /*
-       last, integrate:
-       V_2 = V_1 + dt (M^-1 * J^t * lambda + M^-1 * F_ext)
-       = V_1 + dt (a + M^-1 * F_ext)
-FIXME: once again, it is assumed that the only F_ext is the G gravity on the y axis.
-*/
+     * last, integrate: V_2 = V_1 + dt (M^-1 * J^t * lambda + M^-1 * F_ext) =
+     * V_1 + dt (a + M^-1 * F_ext) FIXME: once again, it is assumed that the
+     * only F_ext is the G gravity on the y axis.
+     */
     for (unsigned int i = 0; i < bodies_involved.size(); i++) 
     {
       Real d_vx = dt * a[i * 3];
       Real d_vy = dt * a[i * 3 + 1];// + G;
       Real d_omega = dt * a[i * 3 + 2];
       /*
-         when we compute the energy to determine if the object must be awaken,
-         the effect of gravity (or, actually, any external force) must be removed
-         from the velocity correction since it is the amount of velocity needed to kill
-         the gravity which will be introduced in the next integration!
-         */
+       * when we compute the energy to determine if the object must be awaken,
+       * the effect of gravity (or, actually, any external force) must be
+       * removed from the velocity correction since it is the amount of
+       * velocity needed to kill the gravity which will be introduced in the
+       * next integration!
+       */
       Real d_vy_without_acceleration = d_vy + dt * G;
       /*
          see if we need to awake some bodies
@@ -628,7 +678,9 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
 
       if(rb->isSleeping())
       {
-        if(d_vx * d_vx + d_vy_without_acceleration * d_vy_without_acceleration + d_omega * d_omega > SLEEPLIMIT)
+        if(d_vx * d_vx +
+           d_vy_without_acceleration * d_vy_without_acceleration +
+           d_omega * d_omega > SLEEPLIMIT)
         {
           rb->setAwake(true);
           rb->addV(Vector2D(d_vx, d_vy, 0));
@@ -689,7 +741,8 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
      */
     Real *vomega = new Real[bodies_involved.size() * 3];
     Real *mi = new Real[bodies_involved.size() * 3]; // contains the mass and the inertia
-    std::cout << "nbr " << total_contacts_number << " involv " << bodies_involved.size() << std::endl;
+    std::cout << "nbr " << total_contacts_number
+              << " involv " << bodies_involved.size() << std::endl;
     /*
      * initialize shapes' indices
      */
@@ -708,7 +761,8 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
        */
     //### lambda: FIXME: optimize with lambda cash. For now, fill with zeroes.
     std::fill(lambda, lambda + total_contacts_number, 0);
-    //### J: contact constraints. Assemble the matrix calling the perparation method in each contacts.
+    //### J: contact constraints. Assemble the matrix calling the perparation
+    //method in each contacts.
     //### bounds
     //### idx
     //### zeta
@@ -720,10 +774,19 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
     int *i_idx = idx;
     Real *i_zeta = zeta;
     Real *i_lambda = lambda;
-    for(std::vector<Collision*>::iterator  j = contacts_involved.begin(); j != contacts_involved.end(); j++)
+    for(std::vector<Collision*>::iterator  j = contacts_involved.begin();
+        j != contacts_involved.end();
+        j++)
     {
-      Collision *curr_col = *j;
-      ContactGenerator::PrepareContactDatasInMatrix_position_without_sleeping(dt, curr_col, i_J, i_bounds, i_zeta, i_lambda, i_idx);
+      Collision* curr_col = *j;
+      ContactGenerator::PrepareContactDatasInMatrix_position_without_sleeping(
+        dt,
+        curr_col,
+        i_J,
+        i_bounds,
+        i_zeta,
+        i_lambda,
+        i_idx);
     }
 
     //### nu: FIXME: for now, we assume that Fext = mG. 
@@ -739,9 +802,15 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
       nu[i] = zeta[i] - (J[i23] * vax1 + J[i23 + 1] * vay1 + J[i23 + 2] * w1);
       if(idx[i*2+1] >= 0)
       {
-        Real vax2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3] * invdt :0.;
-        Real vay2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 1] * invdt + G:0.;
-        Real w2 =idx[i*2+1] >= 0 ?  vomega[idx[i * 2 + 1] * 3 + 2] * invdt:0.;
+        Real vax2 = idx[i * 2 + 1] >= 0 ?
+                    vomega[idx[i * 2 + 1] * 3] * invdt
+                    : 0.;
+        Real vay2 = idx[i * 2 + 1] >= 0 ?
+                    vomega[idx[i * 2 + 1] * 3 + 1] * invdt + G
+                    : 0.;
+        Real w2 = idx[i * 2 + 1] >= 0 ?
+                  vomega[idx[i * 2 + 1] * 3 + 2] * invdt
+                  : 0.;
 
         unsigned i23p3 = i * 2 * 3 + 3;
         nu[i] -= J[i23p3] * vax2 + J[i23p3 + 1] * vay2 + J[i23p3 + 2] * w2;
@@ -759,7 +828,7 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
       B[i * 3 + 1] = J[i * 6 + 1] * im1;
       B[i * 3 + 2] = J[i * 6 + 2] * ii1;
 
-      if(idx[i*2+1] >= 0)
+      if (idx[i * 2 + 1] >= 0)
       {
         Real im2 = mi[idx[i * 2 + 1] * 2];
         Real ii2 = mi[idx[i * 2 + 1] * 2 + 1];
@@ -768,14 +837,20 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
         B[(i + total_contacts_number) * 3 + 1] = J[i * 6 + 4] * im2;
         B[(i + total_contacts_number) * 3 + 2] = J[i * 6 + 5] * ii2;
       }
-
+      else
+      {
+        B[(i + total_contacts_number) * 3] = 0;
+        B[(i + total_contacts_number) * 3 + 1] = 0;
+        B[(i + total_contacts_number) * 3 + 2] = 0;
+      }
     }
 
     /*
        solve the system
        */
     Real *a = new Real[3 * bodies_involved.size()]; // B * lambda: actually, the lambda buffer is less useful than this one for the integration step!
-    solve(J, B, zeta, lambda, bounds, a, idx, total_contacts_number, bodies_involved.size(), iterations_number);
+    solve(J, B, zeta, lambda, bounds, a, idx, total_contacts_number,
+          bodies_involved.size(), iterations_number);
 
     /*
        copy back the lambda buffer for warm starting the engine:
@@ -842,7 +917,9 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
      Solve the linear problem using PGS (Projected Gauss Seidel) iterative solver.
 FIXME: move this procedure out of the island file (maybe to a "LCP" file?).
 */
-  void Island::solve(Real *J, Real *B, Real *nu, Real *lambda, Real *bounds, Real *a, int *idx, unsigned int s, unsigned int n, unsigned int iterations_number)
+  void Island::solve(Real *J, Real *B, Real *nu, Real *lambda, Real *bounds,
+                     Real *a, int *idx, unsigned int s, unsigned int n,
+                     unsigned int iterations_number)
   {
     // a = B * lambda
     Real *d = new Real[s];     // JB matrix diagonal.
@@ -856,34 +933,39 @@ FIXME: move this procedure out of the island file (maybe to a "LCP" file?).
       int b2 = idx[i * 2 + 1];
       for(unsigned j = 0; j < 3; j++)
       {
-        a[b1 * 3 + j] += B[i * 3 + j] * lambda[i]; 
+        a[b1 * 3 + j] += B[i * 3 + j] * lambda[i];
         if(b2 >= 0)
-          a[b2 * 3 + j] += B[i * 3 + s * 3 + j] * lambda[i]; 
+          a[b2 * 3 + j] += B[i * 3 + s * 3 + j] * lambda[i];
       }
     }
     /*
-       init JB's diagonal
-       */
+     * init JB's diagonal
+     */
     for(unsigned i = 0; i < s; i++)
     {
       /*
-         we don't use idx here becaues J and B^t have the same sparcity (so, there is no need to use indexing).
-         */
-      d[i] = J[i * 6] * B[i * 3] + J[i * 6 + 3] * B[s * 3 + i * 3]
-        + J[i * 6 + 1] * B[i * 3 + 1] + J[i * 6 + 1 + 3] * B[s * 3 + i * 3 + 1]
-        + J[i * 6 + 2] * B[i * 3 + 2] + J[i * 6 + 2 + 3] * B[s * 3 + i * 3 + 2];
+       * we don't use idx here becaues J and B^t have the same sparcity (so,
+       * there is no need to use indexing).
+       */
+
+      d[i] = J[i * 6] * B[i * 3] +
+             J[i * 6 + 3] * B[s * 3 + i * 3] +
+             J[i * 6 + 1] * B[i * 3 + 1] +
+             J[i * 6 + 1 + 3] * B[s * 3 + i * 3 + 1] +
+             J[i * 6 + 2] * B[i * 3 + 2] +
+             J[i * 6 + 2 + 3] * B[s * 3 + i * 3 + 2];
     }
     /*
-       solve the system
-       */
+     * solve the system
+     */
     unsigned iter;
     for(iter = 0; iter < iterations_number; iter++)
     {
       /*
-         measure the variation of all lambdas over one iteration.
-         allow to exit the solver sooner.
-         Is it worth it?
-         */
+       * measure the variation of all lambdas over one iteration.
+       * allow to exit the solver sooner.
+       * Is it worth it?
+       */
       //Real d_lambda_accu = 0.0;
       for(unsigned i = 0; i < s; i++)
       {
@@ -892,18 +974,19 @@ FIXME: move this procedure out of the island file (maybe to a "LCP" file?).
 
         Real d_lambda_i = nu[i];
         d_lambda_i -= J[6 * i] * a[b1] +
-          + J[6 * i + 1] * a[b1 + 1] +
-          + J[6 * i + 2] * a[b1 + 2];
+                      J[6 * i + 1] * a[b1 + 1] +
+                      J[6 * i + 2] * a[b1 + 2];
         if(b2 >= 0)
           d_lambda_i -= J[6 * i + 3] * a[b2] +
-            + J[6 * i + 3 + 1] * a[b2 + 1] +
-            + J[6 * i + 3 + 2] * a[b2 + 2];
+                        J[6 * i + 3 + 1] * a[b2 + 1] +
+                        J[6 * i + 3 + 2] * a[b2 + 2];
         d_lambda_i /= d[i];
         /*
-           clamp the value such that: lambda- <= lambda <= lambda+
-           */
+         * clamp the value such that: lambda- <= lambda <= lambda+
+         */
         Real lambda_i_0 = lambda[i];
-        lambda[i] = MAX(bounds[i * 2], MIN(lambda_i_0 + d_lambda_i, bounds[i * 2 + 1]));
+        lambda[i] = MAX(bounds[i * 2],
+                        MIN(lambda_i_0 + d_lambda_i, bounds[i * 2 + 1]));
         d_lambda_i = lambda[i] - lambda_i_0;
 
         for(unsigned j = 0; j < 3; j++)

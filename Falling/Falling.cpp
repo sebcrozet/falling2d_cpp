@@ -22,99 +22,98 @@
 
 namespace Falling
 {
-    World::World()
-	: paused(false)
-    { }
-    World::~World()
-    { }
-    
-    void World::addObject(RigidBody *s)
+  World::World()
+    : paused(false)
+  { }
+  World::~World()
+  { }
+
+  void World::addObject(RigidBody *s)
+  {
+    addWaitingQueue.push(s);
+  }
+
+  void World::removeObject(RigidBody *s)
+  {
+    removeWaitingQueue.push(s);
+  }
+
+  void World::dumpAddDelete()
+  {
+    while(!removeWaitingQueue.empty())
     {
-        addWaitingQueue.push(s);
+      RigidBody * r = removeWaitingQueue.top();
+      ca.deleteObject(r->getShape());
+      removeWaitingQueue.pop();
+      objs.erase(std::remove(objs.begin(),objs.end(),r), objs.end());
+      delete r;
     }
-    
-    void World::removeObject(RigidBody *s)
+    while(!addWaitingQueue.empty())
     {
-        removeWaitingQueue.push(s);
+      RigidBody * r = addWaitingQueue.top();
+      ca.addObject(r->getShape());
+      addWaitingQueue.pop();
+      objs.push_back(r);
     }
-    
-    void World::dumpAddDelete()
+  }
+
+  void World::notifyObjectMoved(RigidBody *s)
+  {
+    dumpAddDelete();
+    ca.notifyObjectMoved(s->getShape());
+  }
+
+  void World::checkSleeps(Real dt)
+  {
+    for(unsigned int i = 0; i < objs.size(); i++)
+      if(!objs[i]->isSleeping())
+        objs[i]->updateSleepState(dt);
+  }
+
+
+  // return type should be void
+  std::vector<Collision *> World::solve(Real dt)
+  {
+    // add and remove objects now
+    dumpAddDelete();
+    std::vector<Collision *> colls;
+    if(paused)
     {
-        while(!removeWaitingQueue.empty())
-        {
-            RigidBody * r = removeWaitingQueue.top();
-            ca.deleteObject(r->getShape());
-            removeWaitingQueue.pop();
-            objs.erase(std::remove(objs.begin(),objs.end(),r), objs.end());
-            delete r;
-        }
-        while(!addWaitingQueue.empty())
-        {
-            RigidBody * r = addWaitingQueue.top();
-            ca.addObject(r->getShape());
-            addWaitingQueue.pop();
-            objs.push_back(r);
-        }
+      ca.solve(colls);
+      return colls;
     }
-    
-    void World::notifyObjectMoved(RigidBody *s)
+    return solvePenetrationsAndImpulseWithLCP(dt);
+  }
+
+
+  void World::integrate(Real dt)
+  {
+    VitessSolver::integrate(objs,dt);
+  }
+
+  /*
+   * the return value should be void. Collisions are returned only for debug
+   */
+  std::vector<Collision *> World::solvePenetrationsAndImpulseWithLCP(Real dt)
+  {
+    // solve distances (collision detection)
+    std::vector<Collision *> colls;
+    ca.solve(colls);
+    if(colls.size())
     {
-        dumpAddDelete();
-        ca.notifyObjectMoved(s->getShape());
-    }
-    
-    void World::checkSleeps(Real dt)
-    {
-        for(unsigned int i = 0; i < objs.size(); i++)
-            if(!objs[i]->isSleeping())
-                objs[i]->updateSleepState(dt);
-    }
-    
-    
-    // return type should be void
-    std::vector<Collision *> World::solve(Real dt)
-    {
-      // add and remove objects now
-      dumpAddDelete();
-      std::vector<Collision *> colls;
-      if(paused)
+      std::stack<Island *> isls; // FIXME: use a vector instead.
+      // Build islands
+      Island::batchIslands(colls,isls);
+      while(!isls.empty())
       {
-        ca.solve(colls);
-        return colls;
+        Island *isl = isls.top();
+        isl->doit(dt);
+        isls.pop();
+        delete isl;
       }
-      return solvePenetrationsAndImpulseWithLCP(dt);
     }
-    
-    
-    void World::integrate(Real dt)
-    {
-        VitessSolver::integrate(objs,dt);
-    }
-    
-    /*
-     * the return value should be void. Collisions is returned only for debug
-     */
-    std::vector<Collision *> World::solvePenetrationsAndImpulseWithLCP(Real dt)
-    {
-        // solve distances (collision detection)
-        std::vector<Collision *> colls;
-        ca.solve(colls);
-        if(colls.size())
-        {
-            std::stack<Island *> isls; // FIXME: use a vector instead.
-            // Build islands
-            Island::batchIslands(colls,isls);
-            //printf("NBR ISLS ==>  %i\n",isls.size());
-            while(!isls.empty())
-            {
-                Island *isl = isls.top();
-                isl->doit(dt);
-                delete isl;
-                isls.pop();
-            }
-        }
-        integrate(dt);
-        checkSleeps(dt);
-        return colls;
-    }
+    integrate(dt);
+    checkSleeps(dt);
+    return colls;
+  }
 }

@@ -43,7 +43,14 @@ namespace Falling
     //scalepts(points, nbrPts, 1000.0);
     t = GeometryHelper::Transformation2D(Vector2D(),0);
     // calculate convex decomposition
-    nbrSubShapes = tess.initAndRun(mergetype, points, nbrPts, holespts, nbholes , holesnbrpts, &subpolys, &nbptssubpolys);
+    nbrSubShapes = tess.initAndRun(mergetype,
+                                   points,
+                                   nbrPts,
+                                   holespts,
+                                   nbholes,
+                                   holesnbrpts,
+                                   &subpolys,
+                                   &nbptssubpolys);
     //for(int i = 0; i < nbrSubShapes; i++)
     //	scalepts(subpolys[i], nbptssubpolys[i], 0.001);
     // calculate centroid and surface of all subpolygons
@@ -75,10 +82,10 @@ namespace Falling
     t.setTeta(orientation);
     t.setU((useCentroid)?Vector2D(totalCentroid):position);
 
-    delete []nbptssubpolys;
-    delete []subpolys;
-    delete holesnbrpts;
-      delete []holespts;
+    delete[] nbptssubpolys;
+    delete[] subpolys;
+    delete[] holesnbrpts;
+    delete[] holespts;
   }
 
   Polygon2D::~Polygon2D()
@@ -1099,7 +1106,7 @@ namespace Falling
     else
     {
       Vector2D dl = Vector2D(pts[obbl],pts[obbd]);
-      Real dotp	= ABS(repY * dl);
+      Real dotp = ABS(repY * dl);
       origin = pts[obbl] + (repY * dotp);
     }
     Real m = parent->getMargin();
@@ -1109,7 +1116,8 @@ namespace Falling
     obblon +=  m;
     obblar += m;
     origin =  opp + repY * obblon - repX * obblar;
-    return new OBB(origin, origin - repY * obblon,opp , origin + repX * obblar, parent, minAire, id);
+    return new OBB(origin, origin - repY * obblon,opp , origin + repX * obblar,
+                   parent, minAire, id);
   }
 
   Vector2D ImplicitPolygon2D::getCenter() const
