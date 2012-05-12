@@ -876,30 +876,33 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
       /*
          see if we need to awake some bodies
          */
-      std::cout << "d_vx " << d_vx << " d_vy " << d_vy  << " d_omega " << d_omega << std::endl;
       RigidBody *rb = bodies_involved[i]; 
 
-      std::cout << "vitess: " << rb->getV().getX() << " , " << rb->getV().getY()  << " , " << rb->getOmega() << std::endl;
       if(rb->isSleeping())
       {
-        if(d_vx * d_vx + d_vy_without_acceleration * d_vy_without_acceleration + d_omega * d_omega > SLEEPLIMIT)
+        if(d_vx * d_vx +
+           d_vy_without_acceleration * d_vy_without_acceleration +
+           d_omega * d_omega > SLEEPLIMIT)
         {
           rb->setAwake(true);
-          rb->setPos(rb->getPos() + Vector2D(d_vx * PIX_PER_METTER, d_vy * PIX_PER_METTER, 0));
+          rb->setPos(rb->getPos() +
+                     Vector2D(d_vx * PIX_PER_METTER,
+                              d_vy * PIX_PER_METTER,
+                              0));
           rb->setDeltaTeta(-PIX_PER_METTER*d_omega);
         }
       }
       else
       {
-        rb->setPos(rb->getPos() + Vector2D(d_vx * PIX_PER_METTER, d_vy * PIX_PER_METTER, 0));
-          rb->setDeltaTeta(-PIX_PER_METTER*d_omega);
+        rb->setPos(rb->getPos() +
+                   Vector2D(d_vx * PIX_PER_METTER,
+                            d_vy * PIX_PER_METTER, 0));
+          rb->setDeltaTeta(-PIX_PER_METTER * d_omega);
       }
     }
-    //std::cout << "loop" << std::endl;
-
     /*
-       free memory
-       */
+     * free memory
+     */
     delete[] J;
     delete[] B;
     delete[] idx;
@@ -914,15 +917,16 @@ FIXME: once again, it is assumed that the only F_ext is the G gravity on the y a
 
 
   /*
-     Solve the linear problem using PGS (Projected Gauss Seidel) iterative solver.
-FIXME: move this procedure out of the island file (maybe to a "LCP" file?).
-*/
+   * Solve the linear problem using PGS (Projected Gauss Seidel) iterative
+   * solver.  FIXME: move this procedure out of the island file (maybe to a
+   * "LCP" file?).
+   */
   void Island::solve(Real *J, Real *B, Real *nu, Real *lambda, Real *bounds,
                      Real *a, int *idx, unsigned int s, unsigned int n,
                      unsigned int iterations_number)
   {
     // a = B * lambda
-    Real *d = new Real[s];     // JB matrix diagonal.
+    Real *d = new Real[s];     // JB matrix’s diagonal.
     /*
        compute a = B * lambda_0
        */
@@ -1004,11 +1008,10 @@ FIXME: move this procedure out of the island file (maybe to a "LCP" file?).
         }
       }
       /*
-         if(d_lambda_accu < 6 * s)
-         break;
-         */
+       * if(d_lambda_accu < 6 * s)
+       * break;
+       */
     }
     delete[] d;
   }
-
 }

@@ -23,51 +23,52 @@
 typedef struct pObject pObject;
 struct pObject
 {
-public:
-  enum ObjectType
-  {
-    O_CIRCLE,
-    O_POLY,
-    O_PLANE
-  };
-public:
-  Falling::Vector2D u;
-  Falling::Polygon2D * p;
-  Falling::Disk * d;
-  Falling::RigidBody *rb;
-  Falling::Point2D * pts;
-  int nb, support, r, g, b;
-  ObjectType otype;
-  int drawLimit;
-  Falling::Point2D diskcenter;
-  static sf::RenderWindow *rwin;
-  static int icall;
-  static Real polx,poly;
+  public:
+    static sf::View view;
+    enum ObjectType
+    {
+      O_CIRCLE,
+      O_POLY,
+      O_PLANE
+    };
+  public:
+    Falling::Vector2D u;
+    Falling::Polygon2D * p;
+    Falling::Disk * d;
+    Falling::RigidBody *rb;
+    Falling::Point2D * pts;
+    int nb, support, r, g, b;
+    ObjectType otype;
+    int drawLimit;
+    Falling::Point2D diskcenter;
+    static sf::RenderWindow *rwin;
+    static int icall;
+    static Real polx,poly;
 
-  pObject(
-	  Falling::Point2D * pts,
-	  int n,
-	  bool iscircle, 
-	  Falling::World &coll, 
-	  ObjectType type,
-	  Falling::Point2D center = Falling::Point2D()
-	  );
-  inline ~pObject()
-  {
-	  if(pts)
-		  delete []pts;
-	  //delete rb;
-  }
-  void draw(const MachineState &ms);
-  void toogleFixed();
-  inline void incrementLimit(int inc)
-  {
-    drawLimit += inc;
-    if(drawLimit > nb)
-      drawLimit = nb;
-    else if(drawLimit < 1)
-      drawLimit = 1;
-  }
+    pObject(
+        Falling::Point2D * pts,
+        int n,
+        bool iscircle, 
+        Falling::World &coll, 
+        ObjectType type,
+        Falling::Point2D center = Falling::Point2D()
+        );
+    inline ~pObject()
+    {
+      if(pts)
+        delete []pts;
+      //delete rb;
+    }
+    void draw(const MachineState &ms);
+    void toogleFixed();
+    inline void incrementLimit(int inc)
+    {
+      drawLimit += inc;
+      if(drawLimit > nb)
+        drawLimit = nb;
+      else if(drawLimit < 1)
+        drawLimit = 1;
+    }
 };
 
 #define __FALLING_DEMO_POBJECT

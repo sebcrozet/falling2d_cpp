@@ -19,11 +19,14 @@
 
 #define SCALE 1.0f
 
+sf::View pObject::view = sf::View();
 Real pObject::poly = 0;
 Real pObject::polx = 0;
 int pObject::icall = 0;
 
-pObject::pObject(Falling::Point2D *pts,int n,bool iscircle, Falling::World &w, ObjectType cir,Falling::Point2D center)  : pts(pts), support(0), diskcenter(center)
+pObject::pObject(Falling::Point2D *pts,int n,bool iscircle, Falling::World &w,
+                 ObjectType cir,Falling::Point2D center)
+  : pts(pts), support(0), diskcenter(center)
 {
   otype = cir;
 
@@ -233,17 +236,17 @@ void pObject::draw(const MachineState &ms)
       Falling::Point2D inter2;
 
       cvpt = ms.rwin.convertCoords(sf::Vector2i(0, 0),
-                                   ms.rwin.getDefaultView());
+                                   pObject::view);
       screenpts[0] = Falling::Point2D(cvpt.x, cvpt.y);
       cvpt = ms.rwin.convertCoords(sf::Vector2i(ms.rwin.getSize().x, 0),
-                                   ms.rwin.getDefaultView());
+                                   pObject::view);
       screenpts[1] = Falling::Point2D(cvpt.x, cvpt.y);
       cvpt = ms.rwin.convertCoords(sf::Vector2i(ms.rwin.getSize().x,
                                                 ms.rwin.getSize().y),
-                                   ms.rwin.getDefaultView());
+                                   pObject::view);
       screenpts[2] = Falling::Point2D(cvpt.x, cvpt.y);
       cvpt = ms.rwin.convertCoords(sf::Vector2i(0, ms.rwin.getSize().y),
-                                   ms.rwin.getDefaultView());
+                                   pObject::view);
       screenpts[3] = Falling::Point2D(cvpt.x, cvpt.y);
       screenpts[4] = screenpts[0];
 

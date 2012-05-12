@@ -7,8 +7,8 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+ * General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
@@ -57,7 +57,7 @@ int main(int, char**)
 void mouseMoved(MachineState &ms, float x, float y, float realx, float realy)
 {
   if(ms.rbuttondown)
-    ;// FIXME:ms.rwin.getDefaultView().move(ms.oldx - realx, ms.oldy - realy);
+    pObject::view.move(ms.oldx - realx, ms.oldy - realy);
   else if(ms.selectedObj)
     return;
   else
@@ -282,7 +282,7 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
       ms.rbuttondown = true;
     sf::Vector2f pos =
       ms.rwin.convertCoords(sf::Mouse::getPosition (ms.rwin),
-                            ms.rwin.getDefaultView());
+                            pObject::view);
     ms.oldx = ev.mouseButton.x;
     ms.oldy = ev.mouseButton.y;
     mousePushed(ms, pos.x, pos.y);
@@ -293,7 +293,7 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
     //ms.rbuttondown =  ms.rwin.GetInput().IsmouseButtonDown(sf::Mouse::Right);
     sf::Vector2f pos =
       ms.rwin.convertCoords(sf::Mouse::getPosition (ms.rwin),
-                            ms.rwin.getDefaultView());
+                            pObject::view);
     mouseMoved(ms, pos.x, pos.y, ev.mouseMove.x, ev.mouseMove.y);
     ms.oldx = ev.mouseMove.x;
     ms.oldy = ev.mouseMove.y;
@@ -318,6 +318,8 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
     // FIXME: ms.rwin.getDefaultView().setSize(ev.size.width, ev.size.height);
     wWidget::view.setSize(ev.size.width, ev.size.height);
     wWidget::view.setCenter(ev.size.width / 2.f, ev.size.height / 2.f);
+    pObject::view.setSize(ev.size.width, ev.size.height);
+    pObject::view.setCenter(ev.size.width / 2.f, ev.size.height / 2.f);
   }
 }
 
@@ -338,10 +340,10 @@ void dispatchEvent(sf::Event &ev, MachineState &ms, UserInterface &ui)
      //{
 
      Falling::OBB *o = t->o;
-     Falling::Vector2D obb_pts[] = {csh->toRotated(o->get_pt(0)),
-                                    csh->toRotated(o->get_pt(1)),
-                                    csh->toRotated(o->get_pt(2)),
-                                    csh->toRotated(o->get_pt(3))};
+     Falling::Vector2D obb_pts[] = { csh->toRotated(o->get_pt(0)),
+                                     csh->toRotated(o->get_pt(1)),
+                                     csh->toRotated(o->get_pt(2)),
+                                     csh->toRotated(o->get_pt(3)) };
      sf::Vertex vertices[5];
      if(!leaves_only || (!t->r && !t->l))//t->isLeaf());
      {
@@ -443,7 +445,7 @@ void draw(MachineState &ms, UserInterface &ui)
 {
 
   ms.rwin.clear(sf::Color(200,191,231));
-  ms.rwin.setView(ms.rwin.getDefaultView());
+  ms.rwin.setView(pObject::view);
   if(!ms.selectedObj)
     drawDrawingShape(ms, ui);
 

@@ -101,7 +101,6 @@ namespace Falling
 
   void RigidBody::setAwake(bool awake)
   {
-    return; // FIXME: never sleep
     if(awake)
     {
       sleeping = false;
