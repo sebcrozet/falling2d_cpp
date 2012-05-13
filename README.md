@@ -18,9 +18,7 @@ The demo application requires:
 
     $ git://github.com/sebcrozet/falling2d.git
     $ cd falling2d
-    $ cmake CMakeList.txt -Wno-dev
-    $ make
-    $ ./bin/Release/falling_demo
+    $ sh cmake_release.sh
 
 #Algorithms involved
 
