@@ -1,28 +1,37 @@
-=Compilation=
-==Dependencies==
+Compilation
+===========
+Dependencies
+------------
 The demo application comming with the library needs the sfml rc0,
 cmake, to compile.
-==Steps==
-  # Download sources
-  # Go to the root directory
-  # {{{ cmake CMakeList.txt -Wno-dev }}}
-  # {{{ make }}}
-  # {{{ ./bin/Release/falling_demo }}}
+Steps
+-----
 
-=Algorithms involved=
-==Broad phase==
-  * *Sweep & Prune* detector (so, AABBs) using space/time coherency;
-  * *OBB tree* on non-convex polygon (one OBB by concave polygon of its convex decomposition).
+  $ git://github.com/sebcrozet/falling2d.git
+  $ cd falling2d
+  $ cmake CMakeList.txt -Wno-dev
+  $ make
+  $ ./bin/Release/falling_demo
 
-==Narrow phase==
-  * *GJK-hybrid* for collision detection & ligth penetrations;
-  * *EPA* for bigger penetrations.
+Algorithms involved
+===================
+Broad phase
+----------
+  * Sweep & Prune detector (so, AABBs) using space/time coherency;
+  * OBB tree on non-convex polygon (one OBB by concave polygon of its convex decomposition).
 
-==Contacts solving==
-  * *Impulse* based;
-  * *Projected Gauss-Seidel* LCP solver.
+Narrow phase
+------------
+  * GJK-hybrid for collision detection & ligth penetrations;
+  * EPA for bigger penetrations.
 
-==Misc==
-  * *Islands*
-  * Object/Island *sleeping*;
+Contacts solving
+----------------
+  * Impulse based;
+  * Projected Gauss-Seidel LCP solver.
+
+Misc
+----
+  * Islands;
+  * Object/Island sleeping;
   * Handles any polygons (convex, concave, crossed).
