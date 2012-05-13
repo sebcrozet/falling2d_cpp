@@ -278,8 +278,6 @@ namespace Falling
         Point2D middle = Point2D::getMiddle(a->toGlobal(cb->relPtA),
             b->toGlobal(cb->relPtB));
         Vector2D norm = cb->normal;
-        std::cout << cb->normal.getX() << " and "
-          << cb->normal.getY() << std::endl;
 
         if(a->isFixed() || a->getParent()->isFakeSleeping())
         {
@@ -321,10 +319,10 @@ namespace Falling
           *(J++) = 0;
         }
         /*
-           Coefficient to correct the penetration.
-           Don't correct anything when it's visibly unnoticeable (<= 2 *
-           PROXIMITY_AWARENESS)
-           */
+         * Coefficient to correct the penetration.
+         * Don't correct anything when it's visibly unnoticeable (<= 2 *
+         * PROXIMITY_AWARENESS)
+         */
         Real extra_v = 0;
         if(cb->depth > 2 * PROXIMITY_AWARENESS)
           extra_v = 0.8 * cb->depth;
