@@ -3,7 +3,7 @@ Falling2d
 Falling2d is a basic 2D physics engine aimed to be used in game.
 Since it is still under development, it should not be used by anyone for now.
 If you are hopelessly searching for a new physics engine to try out, follow the
-follow the Compilation guidelines.
+following the Compilation guidelines.
 
 #Compilation
 
