@@ -161,7 +161,7 @@ namespace Falling
      * pre-solve the stack to find the actives sub-stacks
      */
     // solve the stack with only a few iterations!
-    solve_stack(dt, MAX_LCP_ITERATIONS / 4);
+    solve_stack(dt, 2);//MAX_LCP_ITERATIONS / 4);
     std::stack<Island *> sub_isls;
     /*
      * FIXME: if the whole stack is re-atived, we rebuild the whole (same)
