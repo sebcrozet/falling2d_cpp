@@ -6,13 +6,13 @@ If you are hopelessly searching for a new physics engine to try out, follow the
 following the Compilation guidelines.
 
 #Compilation
+The code should be portable but has been tested under ArchLinux only for now.
 
 ## Dependencies ##
 
 The demo application requires:
   * `sfml2.0 RC` - http://www.sfml-dev.org/download.php
   * `cmake`
-The code should be portable but has been tested under ArchLinux only for now.
 
 ## Compilation steps ##
 
@@ -27,7 +27,7 @@ The code should be portable but has been tested under ArchLinux only for now.
 ## Broad phase ##
 
 * Sweep & Prune detector (so, AABBs) using space/time coherency
-* OBB tree on non-convex polygon (one OBB by concave polygon of its convex
+* OBB tree on non-convex polygon (one OBB by polygon on its convex
     decomposition)
 
 ## Narrow phase ##
