@@ -19,6 +19,7 @@ The demo application requires:
     $ git://github.com/sebcrozet/falling2d.git
     $ cd falling2d
     $ sh cmake_release.sh
+    $ ./bin/Release/falling_demo
 
 #Algorithms involved
 
@@ -33,7 +34,7 @@ The demo application requires:
   * GJK-hybrid for collision detection & light penetrations
   * EPA for bigger penetrations
 
-## Contacts solving ##
+## Contacts resolution##
 
   * Impulse based
   * Projected Gauss-Seidel LCP solver
