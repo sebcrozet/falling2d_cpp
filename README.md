@@ -3,7 +3,7 @@ Falling2d
 Falling2d is a basic 2D physics engine aimed to be used in game.
 Since it is still under development, it should not be used by anyone for now.
 If you are hopelessly searching for a new physics engine to try out, follow the
-following the Compilation guidelines.
+following Compilation guidelines.
 
 #Compilation
 The code should be portable but has been tested under ArchLinux only for now.
@@ -25,7 +25,7 @@ The demo application requires:
 
 ## Broad phase ##
 
-* Sweep & Prune detector (so, AABBs) using space/time coherency
+* Sweep & Prune detector (and thus, AABBs) using space/time coherency
 * OBB tree on non-convex polygon (one OBB by polygon on its convex
     decomposition)
 
