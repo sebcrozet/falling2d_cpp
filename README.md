@@ -20,7 +20,7 @@ The demo application requires:
     $ cd falling2d
     $ cmake CMakeList.txt -Wno-dev
     $ make
-    $ ./bin/Release/falling\_demo
+    $ ./bin/Release/falling_demo
 
 #Algorithms involved
 
