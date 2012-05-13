@@ -1,143 +1,143 @@
 commit b0f286b089a11f8f73a6beb1d872bfe1a0368b90
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 21:26:05 2012 +0200
 
     Fixed grammar on readme.
 
 commit 599ecc5e1bea6c36d61934c8e9b97d18a584a5c4
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 21:20:42 2012 +0200
 
     Update command to run the demo.
 
 commit 40ddcdc0ae361aec8c2563319291b6aff25e2172
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 21:19:08 2012 +0200
 
     Changed compilation instructions.
 
 commit 60739c1abee5e50d88187e3db5b35b9b49fa95de
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 21:17:57 2012 +0200
 
     Fixed cmake warning. Added compile files.
 
 commit a088de5dc2d571975c649dc41b2470bca0247cae
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:33:09 2012 +0200
 
     Added name on licence.
 
 commit 7550261100ab34ae3135054fa7fdbba4106d0cf7
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:31:20 2012 +0200
 
     Removed escaped underscore.
 
 commit 79664b8831311d36e3825b36b8e1d9f567fd070e
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:28:59 2012 +0200
 
     Fixed error on algorithm description.
 
 commit 0aa3ba799e62cf061ba8590dff7117fa30bbda9e
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:27:09 2012 +0200
 
     Update email adress on AUTHORS. Removed xcode files.
 
 commit 45c8715dd29706d53f734ab84fc4d4513d6347ee
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:13:50 2012 +0200
 
     Fix readme typo.
 
 commit e45be5a682d145fd600d9195b7c9d6413bf079b3
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:08:57 2012 +0200
 
     Fixed .hh renaming problems for includes.
 
 commit dc2ff0181fc76bee8aad710409b052b184b9b1cd
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 20:01:00 2012 +0200
 
     Added link to sfml.
 
 commit 84406d74a5b4711accaa786868fb06612d289f3d
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:58:04 2012 +0200
 
     Added gitignore. Use more precise version for required libraries.
 
 commit b0b1e3d869ece21d6ceda17f1f32cd6691fe27d5
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:49:58 2012 +0200
 
     Improved README for command lines.
 
 commit fb5e88e3b863f9bfdc5edcf031a929eee2695af8
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:41:49 2012 +0200
 
     Improved README.
 
 commit 1c1058c24cf0f55d0ca55d5c88e2d3fa0f99230e
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:29:30 2012 +0200
 
     Renamed README
 
 commit 90cb142918a072c31c57dc7d6fe03997f9a8c952
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:28:27 2012 +0200
 
     Improved README formatting for github.
 
 commit 837a17cbd0a2f9fe04664caac41593948db7bdab
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:20:21 2012 +0200
 
     Updated README.
 
 commit 76880b506cd4c85dd7ab17a26671a3d1502e0cd0
-Author: Sébastien Crozet <sebastien.crozet@epita.fr>
+Author: Sébastien Crozet
 Date:   Sun May 13 19:17:14 2012 +0200
 
     Removed vs project files and autotools files. Renamed .h and .cpp to .hh and .cc
 
 commit 02d330f5a2cc1ac2af4ac0e35e50dfdf6d0c1ff6
-Author: Sébastien Crozet <lord_azryel@gmail.com>
+Author: Sébastien Crozet
 Date:   Sun May 13 18:38:28 2012 +0200
 
     Removed some junk files.
 
 commit f6078aa937ae51534071e8a3d393fed675529dde
-Author: Sébastien Crozet <lord_azryel@gmail.com>
+Author: Sébastien Crozet
 Date:   Sun May 13 00:51:21 2012 +0200
 
     Fixed UI viewport resizing when the window is resized. Reactivated sleeping.
 
 commit 7904973fded64e42aba32a0498878736e90a7742
-Author: Sébastien Crozet <lord_azryel@gmail.com>
+Author: Sébastien Crozet
 Date:   Sat May 12 23:58:07 2012 +0200
 
     Fixed valgrind error on B matrix initializaton on LCP problem modelization.
 
 commit 8639fd0d06c5b6b5f8a5ba78d5428eb34a1583d9
-Author: sebcrozet <lord_azryel@gmail.com>
+Author: sebcrozet
 Date:   Fri May 11 02:15:42 2012 +0200
 
     UI now works with the SFML v2.0 rc0.
 
 commit 9333ecc9858f9bbbbe4c94b9d815862b24248226
-Author: azryel <lord_azryel@gmail.com>
+Author: azryel
 Date:   Sun Jan 8 21:51:53 2012 +0100
 
     Fixed compilations problems.
 
 commit 347d846a453ae039a92861e2e96bd23bd24a5913
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Sep 6 13:26:14 2011 +0200
 
     Added the stack-not-fully-awaken optimization (sometimes not really an
@@ -145,19 +145,19 @@ Date:   Tue Sep 6 13:26:14 2011 +0200
     Improved user interface with new debug informations drawing facilities.
 
 commit b2a8f2c5d87941266391eeee13fb8babddfb141a
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Mon Aug 29 15:01:14 2011 +0200
 
     Removed files and datas useful for the old solver only.
 
 commit c1e049117ae90269362b0d22f85e81b2be96fc21
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Mon Aug 29 14:20:46 2011 +0200
 
     Fixed objects not waking up when another object in contact is deleted.
 
 commit 34008f7008289770007426dc5a1e4b283af4ee6e
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Mon Aug 29 03:39:55 2011 +0200
 
     Added CMake list file (easier and cleaner than autotools).
@@ -165,156 +165,156 @@ Date:   Mon Aug 29 03:39:55 2011 +0200
     Fixed some "memory freed twice" errors.
 
 commit b7d7cc5ef8166d9ae8bf80cd80d5e4208dc9e811
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun Aug 28 03:02:32 2011 +0200
 
     Added xcode project file.
 
 commit 98ccda54e84a93c3c1ab718ef9a45f90b7d0add8
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun Aug 28 03:01:31 2011 +0200
 
     Changed to a constraint based system.
     Use the Projected Gauss Seidel (PGS) solver.
 
 commit 4c8d23f93dc934d386138b929a09c1e0773efa96
-Author: azryel <lord_azryel@gmail.com>
+Author: azryel
 Date:   Thu Aug 25 18:45:16 2011 +0200
 
     Stability tests.
     Commit before switching to LCP method.
 
 commit 5ed3d7a29744ab001499b501b9f0300ae4911c44
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun May 1 18:54:07 2011 +0100
 
     Fixed severall memory leak issues in ui and tesselator/objects deletions.
 
 commit c1aaf1f998c1a8a625f2e6bf5f7209e27fa2c03c
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Apr 12 19:20:00 2011 +0200
 
     Added infinite planes support.
 
 commit 48ccd137e96912d7ea5d3910117f963d55580eb9
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Apr 12 14:42:11 2011 +0200
 
     Removed size limitation for disks in FallingDemo.
     Removed some debug printf.
 
 commit ae5d542e4dca786cf637baa2837df634a2538663
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Apr 12 14:13:37 2011 +0200
 
     Deletion of the old Falling_Demo test project.
     Note: use the FallingDemo (without underscore) project instead.
 
 commit 3a47dc32a259864c6edeb90c63a8a53ef71ec85e
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Apr 12 14:09:54 2011 +0200
 
     Wrapped everything in the namespace Falling.
     FIXED comment error in CollisionArbiter (line 138 - introduced with the last commit) which resulted in systematic segmentation faults.
 
 commit 5673ef5d783cdcc5caad6f6a68f5b97a3254489b
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Apr 12 04:43:36 2011 +0200
 
     Removed useless directory.
     Traked files necessary for autoreconf.
 
 commit a16f58357454e43ebe61e6f42fd66c205e232f8a
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Apr 12 04:28:06 2011 +0200
 
     Added licency informations at the beginning of all source file.
     Added assertions for debug.
 
 commit 8ddd731a1da4daac514c1831ceef74bb03caabf8
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Fri Apr 8 16:08:53 2011 +0100
 
     Fixed severall memory issues.
     Deleted non-used pieces of code (like QuarterSpaces structure and related functions).
 
 commit e4f9525fd1e7b9fa054f6ad78011ab210acaf383
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Thu Mar 31 15:41:46 2011 +0200
 
     Auto-indented all files.
 
 commit 990c753c43c2ee7711a5408666cde22d0e1c2c3a
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Thu Mar 31 15:34:51 2011 +0200
 
     Modifications to compile on Linux.
 
 commit c2c3097bcd72485bede0ceb0453afc2eee47cd3d
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Wed Mar 30 17:15:46 2011 +0100
 
     Added infinite plane support.
     Added contacts bashing.
 
 commit 1f0f2106027acd92072e0ef9cf5a578e6cf161ff
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun Mar 20 17:42:30 2011 +0100
 
     Improved user interface.
     Basic implementation of contact points batching.
 
 commit 8c5e84cce974afbd3ff2d3d5a61ab85c161e5ee3
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Mar 15 12:18:36 2011 +0100
 
     Added GUI (not stable).
 
 commit eb3be37eca3049ffd90277886e5658d0a0fca9f1
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun Mar 6 15:26:10 2011 +0100
 
     Corrected triangulation on linux (bad compilation macro for mathematical functions).
     Corrected bad polygon intersections determination (don't ignore last edge any more).
 
 commit 6eb5b08b7168b4d447c2825bd22fde581ee9e1e4
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun Mar 6 00:33:42 2011 +0000
 
     Slight modifications to make it work again with VC2010
 
 commit 7d723bddd14a4f797866e7bacd3593dc91b0cbd3
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sat Mar 5 23:23:50 2011 +0100
 
     Added modifications to compile with -Wextra.
 
 commit 69bdaf8cb32bfcf000bed00b52f7e1f7846694b0
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sat Mar 5 19:02:15 2011 +0100
 
     Compile with -Wall -Werror.
 
 commit b650d67ec3688f9f75f97b6cfee2aa2cac98fd55
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sat Mar 5 15:46:42 2011 +0100
 
     Added autotools file for linux compilation.
 
 commit 705ef8ac8eab29de58c73aa91e347d5242096e7e
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Mon Feb 28 13:19:12 2011 +0000
 
     Try to correct Delauney triangulation precision.
 
 commit 27afc423be1e3de25a06daea134d58548e8391d1
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sat Feb 26 08:46:02 2011 +0000
 
     Pre-adding flip-flop stack resolution.
 
 commit 07088f727c6fdcb588a807cb703d400d7d577ff4
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Wed Feb 23 01:47:33 2011 +0000
 
     Added Constrained Delauney Triangulation.
@@ -322,46 +322,46 @@ Date:   Wed Feb 23 01:47:33 2011 +0000
         |-> Binary search of extrem points fails
 
 commit a409f8c41c8ee2de971c1838684e607b457c5c05
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Fri Feb 4 12:51:56 2011 +0000
 
     (Do not comdile)
     Beginning of Delaunay triangulation implenentation.
 
 commit 350d1a3dbf53cf5d1125b3a2f30067c58776ad97
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sun Jan 30 17:38:03 2011 +0000
 
     Add CW polygon support.
 
 commit 0bb552fc36b0e7a96cf44fe1d291946a6abe5f0f
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Jan 18 13:31:16 2011 +0100
 
     Contact groups calculation and collision graph's edges' stacks level determination.
 
 commit 66af6827b2d8d8a5fa0c2818d8817b41a8d8dcb5
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Tue Jan 11 11:52:45 2011 +0100
 
     (Do not compile).
     Addition of islands and per-level penetration resolver.
 
 commit ebc2618a821f06ed70cae0db7c9fe33d11da7fdf
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Fri Jan 7 15:13:48 2011 +0100
 
     Ajouts de tests dans le code (à détruire plus tard).
 
 commit 3c6f2c2be6ddb80386639e4d4ca3db112b7cf249
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Fri Dec 31 22:02:54 2010 +0100
 
     Meilleure correction des interpénétrations
     (supporte des stacks raisonnables -> mais performences (temps d´exécution du solveur d´interpénétrations et d´impulsions) trop faible pour l´instant.
 
 commit ed89286bc1b0651c21de1e79b693bee4bec19940
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Wed Dec 29 10:31:59 2010 +0100
 
     Optimisation GJK.
@@ -369,19 +369,19 @@ Date:   Wed Dec 29 10:31:59 2010 +0100
     Ajout des impulsions sans rotations.
 
 commit a7a91237dcb87de4e1715b9d368eb68970cd1056
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Mon Dec 27 20:01:42 2010 +0100
 
     Ajout de début de solver de pénétration.
 
 commit 8f4adbc56afd1605f33de69c4930c2800154beea
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sat Nov 13 17:33:22 2010 +0100
 
     Corrections diverses et test des rotations.
 
 commit e583e4bfb4b52db3f4d8a7298b302b9723d78745
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Mon Sep 13 01:25:30 2010 +0200
 
     Collision detection implementation finished (but not fully tested).
@@ -397,7 +397,7 @@ Date:   Mon Sep 13 01:25:30 2010 +0200
     TODO: complete test of collision detection engine
 
 commit 4a250e09b62c7655d612aaddb84fed6cab081b03
-Author: AzrYel <lord_azryel@gmail.com>
+Author: AzrYel
 Date:   Sat Sep 4 09:39:09 2010 +0200
 
     Project base.
