@@ -1,11 +1,21 @@
+Falling2d
+=========
+Falling2d is a basic 2D physics engine aimed to be used in game.
+Since it is still under development, it should not be used by anyone for now.
+If you are hopelessly searching for a new physics engine to try out, follow the
+follow the Compilation guidelines.
+
 Compilation
 ===========
-Dependencies
-------------
-The demo application comming with the library needs the sfml rc0,
-cmake, to compile.
-Steps
------
+
+# Dependencies
+
+The demo application requires:
+  * sfml rc0,
+  * cmake
+The code should be portable but has been tested under ArchLinux only for now.
+
+# Compilation steps
 
   $ git://github.com/sebcrozet/falling2d.git
   $ cd falling2d
@@ -15,23 +25,20 @@ Steps
 
 Algorithms involved
 ===================
-Broad phase
-----------
+# Broad phase
   * Sweep & Prune detector (so, AABBs) using space/time coherency;
-  * OBB tree on non-convex polygon (one OBB by concave polygon of its convex decomposition).
+  * OBB tree on non-convex polygon (one OBB by concave polygon of its convex
+    decomposition).
 
-Narrow phase
-------------
-  * GJK-hybrid for collision detection & ligth penetrations;
+# Narrow phase
+  * GJK-hybrid for collision detection & light penetrations;
   * EPA for bigger penetrations.
 
-Contacts solving
-----------------
+# Contacts solving
   * Impulse based;
   * Projected Gauss-Seidel LCP solver.
 
-Misc
-----
+# Misc
   * Islands;
   * Object/Island sleeping;
   * Handles any polygons (convex, concave, crossed).
