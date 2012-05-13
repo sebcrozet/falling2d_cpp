@@ -15,10 +15,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _SAPSOLVER_H
-#include "TunningConstants.h"
-#include "PairManager.h"
-#include "Shapes.h"
-#include "AABB.h"
+#include "TunningConstants.hh"
+#include "PairManager.hh"
+#include "Shapes.hh"
+#include "AABB.hh"
 #include <stack>
 
 namespace Falling

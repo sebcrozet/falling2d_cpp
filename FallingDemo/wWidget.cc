@@ -14,8 +14,8 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "stdafx.h"
-#include "wWidget.h"
+#include "stdafx.hh"
+#include "wWidget.hh"
 
 sf::View wWidget::view = sf::View(sf::FloatRect(0,0,800,600));
 wWidget::wWidget(int x, int y, int w, int h, bool visible, int order)

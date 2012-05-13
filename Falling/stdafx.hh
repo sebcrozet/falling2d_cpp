@@ -16,7 +16,7 @@
  */
 #pragma once
 
-#include "targetver.h"
+#include "targetver.hh"
 // #define _GLIBCXX_FULLY_DYNAMIC_STRING 1
 #define WIN32_LEAN_AND_MEAN             // Exclure les en-têtes Windows rarement utilisés
 #define _USE_MATH_DEFINES

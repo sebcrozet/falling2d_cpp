@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _OBB
-#include "TunningConstants.h"
-#include "Shapes.h"
-#include "InfinitePlane.h"
+#include "TunningConstants.hh"
+#include "Shapes.hh"
+#include "InfinitePlane.hh"
 
 namespace Falling
 {

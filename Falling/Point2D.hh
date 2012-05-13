@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef POINT
-#include "TunningConstants.h"
-#include "floatTests.h"
-#include "Vector2D.h"
+#include "TunningConstants.hh"
+#include "floatTests.hh"
+#include "Vector2D.hh"
 
 namespace Falling
 {

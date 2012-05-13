@@ -15,11 +15,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_CONTACT_BATCH
-#include "stdafx.h"
-#include "TunningConstants.h"
-#include "floatTests.h"
-#include "SubCollision.h"
-#include "FakeShape.h"
+#include "stdafx.hh"
+#include "TunningConstants.hh"
+#include "floatTests.hh"
+#include "SubCollision.hh"
+#include "FakeShape.hh"
 #include <vector>
 
 namespace Falling

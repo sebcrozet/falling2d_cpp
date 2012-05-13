@@ -15,10 +15,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "stdafx.h"
-#include "ContactGenerator.h"
-#include "CollisionArbiter.h"
-#include "Island.h"
+#include "stdafx.hh"
+#include "ContactGenerator.hh"
+#include "CollisionArbiter.hh"
+#include "Island.hh"
 
 namespace Falling
 {

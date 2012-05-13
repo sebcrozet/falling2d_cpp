@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_FLOAT_TESTS
-#include "stdafx.h"
-#include "TunningConstants.h"
+#include "stdafx.hh"
+#include "TunningConstants.hh"
 #include <stdarg.h>
 #define ZERO_EPSILON Float::sqFloatEps
 

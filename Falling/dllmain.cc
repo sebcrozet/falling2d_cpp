@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 // dllmain.cpp : Définit le point d'entrée pour l'application DLL.
-#include "stdafx.h"
-#include "TunningConstants.h"
+#include "stdafx.hh"
+#include "TunningConstants.hh"
 
 #ifdef Falling_WINDOWS
 BOOL APIENTRY DllMain( HMODULE hModule,

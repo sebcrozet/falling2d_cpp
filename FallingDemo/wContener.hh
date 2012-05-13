@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __WCONTENER
-#include "stdafx.h"
+#include "stdafx.hh"
 #include <vector>
-#include "wWidget.h"
+#include "wWidget.hh"
 #define AND(var,mask) ((var & mask) != 0)
 struct PositionWrapper
 {

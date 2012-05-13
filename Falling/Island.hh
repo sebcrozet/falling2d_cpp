@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __ISLANDS__
-#include "CollisionArbiter.h"
-#include "ContactGenerator.h"
+#include "CollisionArbiter.hh"
+#include "ContactGenerator.hh"
 
 namespace Falling
 {

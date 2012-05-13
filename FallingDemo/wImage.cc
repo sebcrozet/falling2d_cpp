@@ -14,8 +14,8 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "stdafx.h"
-#include "wImage.h"
+#include "stdafx.hh"
+#include "wImage.hh"
 
 wImage::wImage(int x, int y, int w, int h,
                const std::string& path,

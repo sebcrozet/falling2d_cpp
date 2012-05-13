@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #define LCP
-#include "stdafx.h"
+#include "stdafx.hh"
 // TODO: remove include (usefull only for debug)
-#include "Island.h"
+#include "Island.hh"
 #include <iostream>
 // end TODO
 

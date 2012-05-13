@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _OBBtree
-#include "TunningConstants.h"
-#include "OBB.h"
+#include "TunningConstants.hh"
+#include "OBB.hh"
 #include <vector>
 #include <stack>
 

@@ -18,11 +18,11 @@
 // Compute obb-tree intersection, and then apply hybrid distance solver to every sub-shape
 //
 #ifndef __GENERIC_SOLVER__
-#include "CollisionDetector.h"
-#include "PairManager.h"
-#include "OBBtree.h"
-#include "DistanceSolver.h"
-#include "ContactBatch.h"
+#include "CollisionDetector.hh"
+#include "PairManager.hh"
+#include "OBBtree.hh"
+#include "DistanceSolver.hh"
+#include "ContactBatch.hh"
 #define GS_IDBIGOFFSET 2063 // il ne devrait pas y avoir plus de GS_IDBIGOFFET OBB dans un arbre. GS_IDBIGOFFET est un nombre premier (réduction de collisions dans le pm?). 
 
 namespace Falling

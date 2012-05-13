@@ -15,10 +15,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _GJKSOLVER_H
-#include "Shapes.h"
+#include "Shapes.hh"
 #include "queue"
-#include "CollisionDetector.h"
-#include "ContactBatch.h"
+#include "CollisionDetector.hh"
+#include "ContactBatch.hh"
 #define GJK_DESTROYLIMIT 20
 #define EPSILON_ MACHINE_EPSILON    // * 1000
 #define EPSILON_1 (1 + EPSILON_)  * (1 + EPSILON_)

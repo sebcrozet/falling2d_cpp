@@ -15,11 +15,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_WORLD
-#include "TunningConstants.h"
-#include "math.h"
-#include "Polygon2D.h"
-#include "VitessSolver.h"
-#include "Island.h"
+#include "TunningConstants.hh"
+#include <math.h>
+#include "Polygon2D.hh"
+#include "VitessSolver.hh"
+#include "Island.hh"
 
 namespace Falling
 {

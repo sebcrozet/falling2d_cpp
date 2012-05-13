@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_DEMO_POBJECT
-#include "stdafx.h"
-#include "State.h"
+#include "stdafx.hh"
+#include "State.hh"
 
 #define SCALE 1.0f
 

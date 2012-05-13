@@ -17,8 +17,8 @@
 // Specific solver for simple shapes (more efficient than always using GJK-EPA)
 // ( Handle center-coincident disks special case (very poor performances whith EPA) )
 #ifndef __DISK_DISK_SOLVER__
-#include "CollisionDetector.h"
-#include "Disk.h"
+#include "CollisionDetector.hh"
+#include "Disk.hh"
 
 namespace Falling
 {

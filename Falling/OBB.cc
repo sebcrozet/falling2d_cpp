@@ -14,8 +14,8 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "stdafx.h"
-#include "OBB.h"
+#include "stdafx.hh"
+#include "OBB.hh"
 
 namespace Falling
 {
@@ -33,7 +33,7 @@ namespace Falling
       axis[i] /= axis[i] * axis[i];
       origin[i] = pts[0] * axis[i];
     }
-    assert(id < 2000); // CF GS_IDBIGOFFSET int GenericSolver.h
+    assert(id < 2000); // CF GS_IDBIGOFFSET int GenericSolver.hh
   }
 
   void OBB::translate(const Vector2D &u)

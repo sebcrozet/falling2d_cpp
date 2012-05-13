@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __WLABEL
-#include "stdafx.h"
-#include "wWidget.h"
+#include "stdafx.hh"
+#include "wWidget.hh"
 
 class wLabel : public wWidget
 {

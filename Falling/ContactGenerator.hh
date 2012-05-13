@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef CGEN
-#include "CollisionArbiter.h"
-#include "RigidBody.h"
+#include "CollisionArbiter.hh"
+#include "RigidBody.hh"
 #include <vector>
 
 namespace Falling

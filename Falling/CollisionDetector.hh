@@ -15,10 +15,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _COLLISIONDETECTORS
-#include "Shapes.h"
-#include "SAPsolver.h"
-#include "SubCollision.h"
-#include "ContactBatch.h"
+#include "Shapes.hh"
+#include "SAPsolver.hh"
+#include "SubCollision.hh"
+#include "ContactBatch.hh"
 #include <vector>
 
 namespace Falling

@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _INFINITEPLANE_H
-#include "Shapes.h"
+#include "Shapes.hh"
 
 namespace Falling
 {

@@ -15,14 +15,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __COLLISION_ARBITER__
-#include "TunningConstants.h"
-#include "CollisionDetector.h"
-#include "DiskDiskSolver.h"
-#include "GenericSolver.h"
-#include "PlaneShapeSolver.h"
-#include "FakeShape.h"
-#include "RigidBody.h"
-#include "ContactBatch.h"
+#include "TunningConstants.hh"
+#include "CollisionDetector.hh"
+#include "DiskDiskSolver.hh"
+#include "GenericSolver.hh"
+#include "PlaneShapeSolver.hh"
+#include "FakeShape.hh"
+#include "RigidBody.hh"
+#include "ContactBatch.hh"
 
 namespace Falling
 {

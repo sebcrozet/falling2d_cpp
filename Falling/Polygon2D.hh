@@ -15,12 +15,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef POLYGON
-#include "Primitives.h"
-#include "Shapes.h"
-#include "GeometryHelper.h"
-#include "OBBtree.h"
-#include "AABB.h"
-#include "Tesselator.h"
+#include "Primitives.hh"
+#include "Shapes.hh"
+#include "GeometryHelper.hh"
+#include "OBBtree.hh"
+#include "AABB.hh"
+#include "Tesselator.hh"
 #include <vector>
 
 namespace Falling

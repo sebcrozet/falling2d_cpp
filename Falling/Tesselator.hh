@@ -14,8 +14,8 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "Point2D.h"
-#include "DoubleLinkedList.h"
+#include "Point2D.hh"
+#include "DoubleLinkedList.hh"
 #include <stack>
 #include <queue>
 #ifndef __TESSELATOR_DEFINED__

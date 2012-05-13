@@ -15,11 +15,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_DEMO_WMENUITEM
-#include "stdafx.h"
+#include "stdafx.hh"
 #include <stack>
-#include "wContener.h"
-#include "wLabel.h"
-#include "wImage.h"
+#include "wContener.hh"
+#include "wLabel.hh"
+#include "wImage.hh"
 #define _B(mask) (1 << (mask - ':'))
 #define AND_LETTER(var,mask) ((var & (_B(mask))) != 0)
 

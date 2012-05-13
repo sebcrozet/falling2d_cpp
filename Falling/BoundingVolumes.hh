@@ -1,2 +1,2 @@
-#include "AABB.h"
-#include "OBB.h"
+#include "AABB.hh"
+#include "OBB.hh"

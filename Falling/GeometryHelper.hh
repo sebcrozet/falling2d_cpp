@@ -15,8 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef GHELP
-#include "TunningConstants.h"
-#include "Primitives.h"
+#include "TunningConstants.hh"
+#include "Primitives.hh"
 
 namespace Falling
 {

@@ -15,16 +15,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_USER_INTERFACE_
-#include "stdafx.h"
-#include "wMenu.h"
+#include "stdafx.hh"
+#include "wMenu.hh"
 #ifdef _USE_BOX_2D_
-#include "State_box2d.h"
-#include "pObject_box2d.h"
+#include "State_box2d.hh"
+#include "pObject_box2d.hh"
 #else
-#include "State.h"
-#include "pObject.h"
+#include "State.hh"
+#include "pObject.hh"
 #endif
-#include "wDialog.h"
+#include "wDialog.hh"
 
 
 class UserInterface

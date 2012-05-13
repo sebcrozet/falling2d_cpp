@@ -16,9 +16,9 @@
  */
 // Falling.cpp : définit les fonctions exportées pour l'application DLL.
 //
-#include "stdafx.h"
-#include "Falling.h"
-#include "DoubleLinkedList.h"
+#include "stdafx.hh"
+#include "Falling.hh"
+#include "DoubleLinkedList.hh"
 
 namespace Falling
 {

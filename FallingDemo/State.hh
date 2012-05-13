@@ -15,12 +15,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_DEMO_STATE
-#include "stdafx.h"
-#include "Falling.h"
-#include "DistanceSolver.h"
-#include "Disk.h"
-#include "PairManager.h"
-#include "Tesselator.h"
+#include "stdafx.hh"
+#include "Falling.hh"
+#include "DistanceSolver.hh"
+#include "Disk.hh"
+#include "PairManager.hh"
+#include "Tesselator.hh"
 #include <ctime>
 #include <cstdlib>
 

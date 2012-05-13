@@ -14,11 +14,11 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "stdafx.h"
-#include "pObject.h"
-#include "State.h"
-#include "UserInterface.h"
-#include "wMenu.h"
+#include "stdafx.hh"
+#include "pObject.hh"
+#include "State.hh"
+#include "UserInterface.hh"
+#include "wMenu.hh"
 
 void draw(MachineState &st, UserInterface &ui);
 void dispatchEvent(sf::Event &ev, MachineState &st, UserInterface &ui);

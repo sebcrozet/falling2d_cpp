@@ -15,11 +15,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __PLANE_IMPLICIT_DIST_SOLVER__
-#include "CollisionDetector.h"
-#include "PairManager.h"
-#include "Shapes.h"
-#include "InfinitePlane.h"
-#include "OBBtree.h"
+#include "CollisionDetector.hh"
+#include "PairManager.hh"
+#include "Shapes.hh"
+#include "InfinitePlane.hh"
+#include "OBBtree.hh"
 #include <stack>
 #define PS_DESTROYLIMIT 100
 

@@ -14,8 +14,8 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "stdafx.h"
-#include "wLabel.h"
+#include "stdafx.hh"
+#include "wLabel.hh"
 
 wLabel::wLabel(int x, int y, const std::string &text, int fontSize)
   : wWidget(x, y, 0,0 , true, -2)

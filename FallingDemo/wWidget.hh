@@ -16,7 +16,7 @@
  */
 #ifndef __WWIDGET
 
-#include "stdafx.h"
+#include "stdafx.hh"
 #include <vector>
 typedef sf::Rect<float> Rect;
 

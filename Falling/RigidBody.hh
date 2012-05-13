@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef RBODY
-#include "TunningConstants.h"
-#include "Polygon2D.h"
-#include "Disk.h"
+#include "TunningConstants.hh"
+#include "Polygon2D.hh"
+#include "Disk.hh"
 #define SLEEPLIMIT 4.0
 #define BIAS 0.8
 #define NBRLOOPSTABILISATION 50

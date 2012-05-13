@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _DISK_H
-#include "Shapes.h"
-#include "AABB.h"
-#include "OBBtree.h"
+#include "Shapes.hh"
+#include "AABB.hh"
+#include "OBBtree.hh"
 
 namespace Falling
 {

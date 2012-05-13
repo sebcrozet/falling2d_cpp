@@ -16,7 +16,7 @@
  */
 #pragma once
 //#define _GLIBCXX_FULLY_DYNAMIC_STRING 1
-#include "targetver.h"
+#include "targetver.hh"
 
 #include <stdio.h>
 #include <vector>
@@ -26,5 +26,5 @@
 
 //#define _USE_BOX_2D_
 #ifdef _USE_BOX_2D_
-#include "Box2D/Box2D.h"
+#include "Box2D/Box2D.hh"
 #endif

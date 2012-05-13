@@ -14,10 +14,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include "wContener.h"
-#include "wLabel.h"
-#include "wImage.h"
-#include "wMenu.h"
+#include "wContener.hh"
+#include "wLabel.hh"
+#include "wImage.hh"
+#include "wMenu.hh"
 #define TITLEBARSIZE 20
 
 /* Dialog box with title bar, optionnal buttons

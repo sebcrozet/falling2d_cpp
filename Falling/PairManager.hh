@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _PAIRMANAGER_H
-#include "TunningConstants.h"
+#include "TunningConstants.hh"
 #include <vector>
 typedef unsigned short ushort;
 typedef unsigned int uint;
@@ -98,7 +98,7 @@ namespace Falling
     inline uint PairManager::hash(uint id)
     {
 	// Thomas Wang's hash
-	// http://www.concentric.net/~Ttwang/tech/inthash.htm
+	// http://www.concentric.net/~Ttwang/tech/inthash.hhtm
 	id = ~id + (id << 15);
 	id ^= id >> 12;
 	id += id << 2;
