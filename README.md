@@ -10,7 +10,7 @@ follow the Compilation guidelines.
 ## Dependencies ##
 
 The demo application requires:
-  * `sfml2.0 RC`
+  * `sfml2.0 RC` - http://www.sfml-dev.org/download.php
   * `cmake`
 The code should be portable but has been tested under ArchLinux only for now.
 
