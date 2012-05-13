@@ -10,3 +10,16 @@
 *.lai
 *.la
 *.a
+
+# Temp files
+*.swo
+*.swa
+*.swp
+
+# CMake temp files
+*.txt
+*.cmake
+CMakeFiles
+bin
+Makefile
+
