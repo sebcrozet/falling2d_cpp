@@ -34,10 +34,10 @@ namespace Falling
     bodies_involved.clear();
   }
 
-  void Island::batchIsland(Island *isl,Shape *coll) // coll must not be fixed
+  void Island::batchIsland(Island* isl,Shape* coll) // coll must not be fixed
   {
     assert(!coll->isFixed());
-    Collision *next;
+    Collision* next;
     bool insertToOneLevel = false;
     next = coll->getCollisionList();
     assert(next->sa == coll); // ==> always true in the first sentinel
@@ -47,8 +47,8 @@ namespace Falling
     {
       assert(!next->sa->isdeleting() && !next->sb->isdeleting());
       assert(next->sa == coll ^ next->sb == coll);
-      Shape *ssh;
-      Collision *next_to_view;
+      Shape* ssh;
+      Collision* next_to_view;
       if (next->sa == coll)
       {
         ssh = next->sb; // ssh contains the node not equal to coll
@@ -99,7 +99,7 @@ namespace Falling
         i != colls.end();
         ++i)
     {
-      Collision *c = *i;
+      Collision* c = *i;
       c->collisionStackLevel = -1;
       /*
        * FIXME:
@@ -113,18 +113,18 @@ namespace Falling
       c->sb->set_number_of_contacts(0);
     }
     // Make a depth first search in the collision graph
-    for (std::vector<Collision *>::iterator coll_ = colls.begin();
+    for (std::vector<Collision*>::iterator coll_ = colls.begin();
         coll_ != colls.end();
         coll_++)
     {
-      Collision *coll = *coll_;
+      Collision* coll = *coll_;
       /*
          if not already pushed to another island
          */
       if (coll->collisionStackLevel == -1)
       {
         // new island detected
-        Island *isl = new Island();
+        Island* isl = new Island();
         // recursive call with fixed object
         if (coll->sa->isFixed())
         {
@@ -162,7 +162,7 @@ namespace Falling
      */
     // solve the stack with only a few iterations!
     solve_stack(dt, 2);//MAX_LCP_ITERATIONS / 4);
-    std::stack<Island *> sub_isls;
+    std::stack<Island*> sub_isls;
     /*
      * FIXME: if the whole stack is re-atived, we rebuild the whole (same)
      * stack… Find a way to avoid that!
@@ -171,12 +171,12 @@ namespace Falling
      * change the contact list, excluding fixed/sleeping and sleeping/sleeping
      * contacts.
      */
-    std::vector<Collision *> active_collisions;
-    for (std::vector<Collision *>::iterator coll = contacts_involved.begin();
+    std::vector<Collision*> active_collisions;
+    for (std::vector<Collision*>::iterator coll = contacts_involved.begin();
         coll != contacts_involved.end();
         coll++)
     {
-      Collision *ct = *coll;
+      Collision* ct = *coll;
       bool sa_concidered_fixed = ct->sa->isFixed() ||
                                  ct->sa->getParent()->isFakeSleeping(); // FIXME: need to test both?
       bool sb_concidered_fixed = ct->sb->isFixed() ||
@@ -184,12 +184,13 @@ namespace Falling
       if (!sa_concidered_fixed || !sb_concidered_fixed)
         active_collisions.push_back(ct);
     }
-    if (active_collisions.size()) // FIXME: is it really needed to test the non-zero-ness of the size?
+    // FIXME: is it really needed to test the non-zero-ness of the size?
+    if (active_collisions.size())
     {
       Island::batchIslands_without_sleeping(active_collisions, sub_isls);
       while (!sub_isls.empty())
       {
-        Island *sub_isl = sub_isls.top();
+        Island* sub_isl = sub_isls.top();
         sub_isl->solve_stack_without_sleeping(dt, MAX_LCP_ITERATIONS);
         // FIXME: how to use that?
         // sub_isl->solve_positions_without_sleeping(dt, MAX_LCP_ITERATIONS);
@@ -203,11 +204,11 @@ namespace Falling
   /*
    * Batching with fixed sleeping objects
    */
-  void Island::batchIsland_without_sleeping(Island *isl,Shape *coll)
+  void Island::batchIsland_without_sleeping(Island* isl,Shape* coll)
   {
     // coll must not be fixed
     assert(!coll->isFixed() && !coll->getParent()->isFakeSleeping());
-    Collision *next;
+    Collision* next;
     bool insertToOneLevel = false;
     next = coll->getCollisionList();
     assert(next->sa == coll); // ==> always true in the first sentinel
@@ -217,8 +218,8 @@ namespace Falling
     {
       assert(!next->sa->isdeleting() && !next->sb->isdeleting());
       assert(next->sa == coll ^ next->sb == coll);
-      Shape *ssh;
-      Collision *next_to_view;
+      Shape* ssh;
+      Collision* next_to_view;
       if (next->sa == coll)
       {
         ssh = next->sb; // ssh contains the node not equal to coll
@@ -271,7 +272,7 @@ namespace Falling
         i != colls.end();
         ++i)
     {
-      Collision *c = *i;
+      Collision* c = *i;
       c->collisionStackLevel = -1;
       /*
        * FIXME:
@@ -285,18 +286,18 @@ namespace Falling
       c->sb->set_number_of_contacts(0);
     }
     // Make a depth first search in the collision graph
-    for (std::vector<Collision *>::iterator coll_ = colls.begin();
+    for (std::vector<Collision*>::iterator coll_ = colls.begin();
         coll_ != colls.end();
         coll_++)
     {
-      Collision *coll = *coll_;
+      Collision* coll = *coll_;
       /*
          if not already pushed to another island
          */
       if (coll->collisionStackLevel == -1)
       {
         // new island detected
-        Island *isl = new Island();
+        Island* isl = new Island();
         // recursive call with fixed object
         if (coll->sa->isFixed() || coll->sa->getParent()->isFakeSleeping())
         {
@@ -327,14 +328,14 @@ namespace Falling
      * build matrices
      */
     // {vx vy w} * 2 * n 
-    Real *J = new Real[2 * 3 * total_contacts_number];
+    Real* J = new Real[2 * 3 * total_contacts_number];
     // {vx vy w} * 2 * n. It's the same matrix as the jacobian's but each term
     // is multiplied by M^-1
-    Real *B = new Real[2 * 3 * total_contacts_number];
+    Real* B = new Real[2 * 3 * total_contacts_number];
     // sparce matrix indices
-    int *idx = new int[2 * total_contacts_number];
+    int* idx = new int[2 * total_contacts_number];
     // work done by constraints: zeta = JV
-    Real *zeta = new Real[total_contacts_number];
+    Real* zeta = new Real[total_contacts_number];
     // nu = invdt * zeta - J (invdt * V1 + M^-1 * Fext)
     Real *nu = new Real[total_contacts_number];
     // unknowns' matrix
@@ -377,16 +378,16 @@ namespace Falling
     /*
      *  indexes
      */
-    Real *i_bounds = bounds;
-    Real *i_J = J;
-    int *i_idx = idx;
-    Real *i_zeta = zeta;
-    Real *i_lambda = lambda;
+    Real* i_bounds = bounds;
+    Real* i_J = J;
+    int*  i_idx = idx;
+    Real* i_zeta = zeta;
+    Real* i_lambda = lambda;
     for (std::vector<Collision*>::iterator  j = contacts_involved.begin();
         j != contacts_involved.end();
         j++)
     {
-      Collision *curr_col = *j;
+      Collision* curr_col = *j;
       ContactGenerator::PrepareContactDatasInMatrix(
         dt,
         curr_col,
@@ -459,7 +460,7 @@ namespace Falling
      */
     // B * lambda: actually, the lambda buffer is less useful than this one for
     // the integration step!
-    Real *a = new Real[3 * bodies_involved.size()];
+    Real* a = new Real[3 * bodies_involved.size()];
     solve(J, B, nu, lambda, bounds, a, idx, total_contacts_number,
           bodies_involved.size(), iterations_number);
 
@@ -558,21 +559,21 @@ namespace Falling
      * build the matrices
      */
     // {vx vy w} * 2 * n 
-    Real *J = new Real[2 * 3 * total_contacts_number];
+    Real* J = new Real[2 * 3 * total_contacts_number];
     // {vx vy w} * 2 * n. It's the same matrix as the jacobian's but each term
     // is multiplied by M^-1
-    Real *B = new Real[2 * 3 * total_contacts_number];
+    Real* B = new Real[2 * 3 * total_contacts_number];
     //RigidBody **idx = new RigidBody*[2 * total_contacts_number]; // sparce
     //matrix indices
-    int *idx = new int[2 * total_contacts_number];
+    int* idx = new int[2 * total_contacts_number];
     // work done by constraints: zeta = JV
-    Real *zeta = new Real[total_contacts_number];
+    Real* zeta = new Real[total_contacts_number];
     // nu = invdt * zeta - J (invdt * V1 + M^-1 * Fext)
-    Real *nu = new Real[total_contacts_number];
+    Real* nu = new Real[total_contacts_number];
     // unknowns' matrix
-    Real *lambda = new Real[total_contacts_number];
+    Real* lambda = new Real[total_contacts_number];
     // constraints bounds
-    Real *bounds = new Real[total_contacts_number * 2];
+    Real* bounds = new Real[total_contacts_number * 2];
     /*
      * Here, some characteristics are copied off the rigid bodies: v, omega, m,
      * I.  I dont know if it's really faster than accessing these datas using
@@ -580,15 +581,15 @@ namespace Falling
      * because of porcessor's cash… So: FIXME: verify that it's true (comparing
      * times).
      */
-    Real *vomega = new Real[bodies_involved.size() * 3];
+    Real* vomega = new Real[bodies_involved.size() * 3];
     // contains the mass and the inertia
-    Real *mi = new Real[bodies_involved.size() * 3];
+    Real* mi = new Real[bodies_involved.size() * 3];
     /*
      * initialize shapes' indices
      */
     for (unsigned int i = 0; i < bodies_involved.size(); i++)
     {
-      RigidBody *rb = bodies_involved[i];
+      RigidBody* rb = bodies_involved[i];
       vomega[i * 3] = rb->getV().getX();
       vomega[i * 3 + 1] = rb->getV().getY();
       vomega[i * 3 + 2] = rb->getOmega();

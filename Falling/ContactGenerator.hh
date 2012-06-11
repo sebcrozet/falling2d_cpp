@@ -15,17 +15,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef CGEN
-#include "CollisionArbiter.hh"
-#include "RigidBody.hh"
-#include <vector>
+# include "CollisionArbiter.hh"
+# include "RigidBody.hh"
+# include <vector>
 
 namespace Falling
 {
   struct Contact
   {
     /*
-       Datas for LCP solving (jacobian).
-       */
+     * Datas for LCP solving (jacobian).
+     */
     Real jacobian[6]; // v1.x v1.y w1 v2.x v2.y w2
     Real jacobian_indices[6]; // indices of objects
     Real bounds[2]; // bounds for lambda
@@ -35,10 +35,18 @@ namespace Falling
   {
     private:
     public:
-      static void PrepareContactDatasInMatrix(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
-      static void PrepareContactDatasInMatrix_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
-      static void PrepareContactDatasInMatrix_position_without_sleeping(Real dt, Collision *c, Real *&J, Real *&bounds, Real *&zeta, Real *&lambda, int *&idx);
+      static void PrepareContactDatasInMatrix(
+          Real dt, Collision* c, Real*& J, Real*& bounds, Real*& zeta,
+          Real*& lambda, int*& idx);
+
+      static void PrepareContactDatasInMatrix_without_sleeping(
+          Real dt, Collision* c, Real*& J, Real*& bounds, Real*& zeta,
+          Real*& lambda, int*& idx);
+
+      static void PrepareContactDatasInMatrix_position_without_sleeping(
+          Real dt, Collision* c, Real*& J, Real*& bounds, Real*& zeta,
+          Real*& lambda, int*& idx);
   };
 }
-#define CGEN
+# define CGEN
 #endif

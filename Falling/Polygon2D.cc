@@ -21,8 +21,16 @@
 
 namespace Falling
 {
-  //#pragma region Polygon2D
-  Polygon2D::Polygon2D(Point2D p[], int nbpts, Point2D *hpts[], int nbholes, int hnbrpts[], int mergetype, Vector2D position, bool useCentroid, Real orientation, bool fixed)
+  Polygon2D::Polygon2D(Point2D  p[],
+                       int      nbpts,
+                       Point2D* hpts[],
+                       int      nbholes,
+                       int      hnbrpts[],
+                       int      mergetype,
+                       Vector2D position,
+                       bool     useCentroid,
+                       Real     orientation,
+                       bool     fixed)
     : ixm(0), ixM(0), iym(0), iyM(0)
   {
     // TODO: remove
@@ -65,9 +73,12 @@ namespace Falling
       Point2D centr= subShapes[i]->getCentroid();
       totalCentroid += subShapes[i]->getCentroid() * subShapes[i]->getSurface();
     }
-    totalCentroid = Point2D(totalCentroid.getX() / totalSurface, totalCentroid.getY() / totalSurface);
+    totalCentroid = Point2D(totalCentroid.getX() / totalSurface,
+                            totalCentroid.getY() / totalSurface);
     for(int i = 0; i < nbrSubShapes; i++)
-      subShapes[i]->translateCentroid(Vector2D(-totalCentroid.getX(), -totalCentroid.getY(), 0));
+      subShapes[i]->translateCentroid(Vector2D(-totalCentroid.getX(),
+                                               -totalCentroid.getY(),
+                                               0));
     // translate points
     for(int i = 0; i < nbrSubShapes; i++)
     {
@@ -109,7 +120,6 @@ namespace Falling
 
   bool Polygon2D::containsPoint(const Point2D &pt) const
   {
-    //printf("%f ... %f\n", t.transforminv(pt).getX(), t.transforminv(pt).getY());
     return Point2D::pointInPolygon(t.transforminv(pt), points, nbrPts);
   }
 
@@ -140,7 +150,9 @@ namespace Falling
     buildOBBtree(&otree, set, id);
   }
 
-  void Polygon2D::buildOBBtree(OBBtree **o, std::vector<ImplicitPolygon2D*> &polyset, int &id)
+  void Polygon2D::buildOBBtree(OBBtree**                        o,
+                               std::vector<ImplicitPolygon2D*>& polyset,
+                               int&                             id)
   {
     id++;
     int s = (int)polyset.size();
@@ -157,7 +169,6 @@ namespace Falling
       polyset.clear();
       return;
     }
-    printf("%i\n", s);
     Vector2D ya(0,-1);
     std::vector<Point2D> chpts;
     // calc subshapes' convex hull
@@ -1124,5 +1135,4 @@ namespace Falling
   {
     return toGlobal(center);
   }
-  //#pragma endregion
 }

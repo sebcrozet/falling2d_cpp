@@ -15,23 +15,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _OBB
-#include "TunningConstants.hh"
-#include "Shapes.hh"
-#include "InfinitePlane.hh"
+# include "TunningConstants.hh"
+# include "Shapes.hh"
+# include "InfinitePlane.hh"
 
 namespace Falling
 {
   class OBB
   {
     private:
-      ImplicitShape *parent;
+      ImplicitShape* parent;
       Vector2D pts[4];
       Vector2D axis[2];
       Real origin[2];
       Real aire;
       int obbid;
 
-      bool intersects2axis(OBB *o);
+      bool intersects2axis(OBB* o);
     public:
       /*
        * FIXME: to remove: for debug (display)
@@ -41,15 +41,16 @@ namespace Falling
       /*
        * end to remove
        */
-      OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape *parent, Real aire, int obbid);
-      bool intersects(OBB *o);
-      bool intersectsPlane(InfinitePlane *p);
-      void getMedialAxis(Point2D *center, Point2D *refpt);
+      OBB(Point2D a,Point2D b,Point2D c,Point2D d,ImplicitShape* parent,
+          Real aire, int obbid);
+      bool intersects(OBB* o);
+      bool intersectsPlane(InfinitePlane* p);
+      void getMedialAxis(Point2D* center, Point2D* refpt);
       Point2D getCenter() const;
       void translate(const Vector2D &);
       inline Real getAire() const;
       inline int getID() const;
-      inline ImplicitShape *getParent() const;
+      inline ImplicitShape* getParent() const;
   };
   inline Real OBB::getAire() const
   {
@@ -59,12 +60,12 @@ namespace Falling
   {
     return obbid;
   }
-  inline ImplicitShape *OBB::getParent() const
+  inline ImplicitShape* OBB::getParent() const
   {
     return parent;
   }
 }
 
-#define _OBB
+# define _OBB
 #endif
 

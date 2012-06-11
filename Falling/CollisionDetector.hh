@@ -15,11 +15,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _COLLISIONDETECTORS
-#include "Shapes.hh"
-#include "SAPsolver.hh"
-#include "SubCollision.hh"
-#include "ContactBatch.hh"
-#include <vector>
+# include "Shapes.hh"
+# include "SAPsolver.hh"
+# include "SubCollision.hh"
+# include "ContactBatch.hh"
+# include <vector>
 
 namespace Falling
 {
@@ -28,14 +28,16 @@ namespace Falling
     private :
       bool  isInactive;
 
-      virtual bool _solve(std::vector<ContactBackup *> &res) = 0; // returns whether current class should be destroyed
+      // returns whether current class should be destroyed
+      virtual bool _solve(std::vector<ContactBackup*> &res) = 0;
     public:
       CollisionDetector();
       virtual inline ~CollisionDetector()
       {
-        // printf("removing...\n");
+        // std::cout << "removing...\n";
       }
-      bool solve(std::vector<ContactBackup *> &res); // returns whether current class should be destroyed
+      // returns whether current class should be destroyed
+      bool solve(std::vector<ContactBackup*> &res);
       inline void setInactive(bool inactive);
       inline bool getIsInactive();
       virtual bool canDestroy() = 0;
@@ -49,5 +51,5 @@ namespace Falling
     isInactive = inactive;
   }
 }
-#define _COLLISIONDETECTORS
+# define _COLLISIONDETECTORS
 #endif

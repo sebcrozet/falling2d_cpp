@@ -15,34 +15,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FALLING_FLOAT_TESTS
-#include "stdafx.hh"
-#include "TunningConstants.hh"
-#include <stdarg.h>
-#define ZERO_EPSILON Float::sqFloatEps
+# include "stdafx.hh"
+# include "TunningConstants.hh"
+# include <stdarg.h>
+# define ZERO_EPSILON Float::sqFloatEps
 
 namespace Falling
 {
-    struct Float
+  struct Float
+  {
+    static Real sqFloatEps;
+    static inline bool equal(Real a, Real b)
     {
-	static Real sqFloatEps;
-	static inline bool equal(Real a, Real b)
-	{
-	    Real aa = ABS(a), bb =  ABS(b);
-	    return ABS(a - b) <= MAX(aa, MAX(bb, 1.0)) * ZERO_EPSILON;
-	}
+      Real aa = ABS(a), bb =  ABS(b);
+      return ABS(a - b) <= MAX(aa, MAX(bb, 1.0)) * ZERO_EPSILON;
+    }
 
-	static inline bool negativeOrZero(Real a)
-	{
-	    return a < MAX(a, 1.0) * ZERO_EPSILON;
-	}
+    static inline bool negativeOrZero(Real a)
+    {
+      return a < MAX(a, 1.0) * ZERO_EPSILON;
+    }
 
-	static inline bool zero(Real a)
-	{
-	    return negativeOrZero(ABS(a));
-	}
+    static inline bool zero(Real a)
+    {
+      return negativeOrZero(ABS(a));
+    }
 
-	static int sumSign(int n, ...);
-    };
+    static int sumSign(int n, ...);
+  };
 }
-#define __FALLING_FLOAT_TESTS
+# define __FALLING_FLOAT_TESTS
 #endif

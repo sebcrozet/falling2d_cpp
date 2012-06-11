@@ -16,7 +16,7 @@
 *.swa
 *.swp
 
-# CMake temp files
+# CMake Tmp Files
 *.txt
 *.cmake
 CMakeFiles

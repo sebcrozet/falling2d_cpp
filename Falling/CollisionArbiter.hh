@@ -15,14 +15,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __COLLISION_ARBITER__
-#include "TunningConstants.hh"
-#include "CollisionDetector.hh"
-#include "DiskDiskSolver.hh"
-#include "GenericSolver.hh"
-#include "PlaneShapeSolver.hh"
-#include "FakeShape.hh"
-#include "RigidBody.hh"
-#include "ContactBatch.hh"
+# include "TunningConstants.hh"
+# include "CollisionDetector.hh"
+# include "DiskDiskSolver.hh"
+# include "GenericSolver.hh"
+# include "PlaneShapeSolver.hh"
+# include "FakeShape.hh"
+# include "RigidBody.hh"
+# include "ContactBatch.hh"
 
 namespace Falling
 {
@@ -30,15 +30,19 @@ namespace Falling
   struct QuarterSpace;
   struct Collision
   {
-    Shape *sa, *sb;
-    std::vector<ContactBackup *> c;
-    Contact **cnts; // Contact *[]
-    CollisionDetector *cd;	 // Specific collision solver
-    Collision *preva,*prevb,*nexta,*nextb;
-    int collisionStackLevel;
+    Shape*                       sa;
+    Shape*                       sb;
+    std::vector<ContactBackup*>  c;
+    Contact**                    cnts; // Contact *[]
+    CollisionDetector*           cd; // Specific collision solver
+    Collision*                   preva;
+    Collision*                   prevb;
+    Collision*                   nexta;
+    Collision*                   nextb;
+    int                          collisionStackLevel;
 
-    Collision(Shape *sa, Shape *sb);
-    Collision(Shape *s);
+    Collision(Shape* sa, Shape* sb);
+    Collision(Shape* s);
     ~Collision();
     void removeFromList();
     void autoInsert();
@@ -49,20 +53,21 @@ namespace Falling
   class CollisionArbiter
   {
     private:
-      std::vector<Shape *> s;
+      std::vector<Shape*> s;
       SAPsolver sap;
 
-      static void addP(Pair *p, Shape *s, Shape *s2);
-      static void deleteP(Pair &p);
-      static bool removeP(Pair *p);
+      static void addP(Pair* p, Shape* s, Shape* s2);
+      static void deleteP(Pair& p);
+      static bool removeP(Pair* p);
+
     public:
       CollisionArbiter();
       ~CollisionArbiter();
-      void addObject(Shape *s);
-      void deleteObject(Shape *s);
-      void solve(std::vector<Collision *> &res);
-      void notifyObjectMoved(Shape *s);
+      void addObject(Shape* s);
+      void deleteObject(Shape* s);
+      void solve(std::vector<Collision* > &res);
+      void notifyObjectMoved(Shape* s);
   };
 }
-#define __COLLISION_ARBITER__
+# define __COLLISION_ARBITER__
 #endif

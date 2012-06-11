@@ -19,7 +19,7 @@
 
 namespace Falling
 {
-  InfinitePlane::InfinitePlane(const Point2D &p, const Vector2D &normal)
+  InfinitePlane::InfinitePlane(const Point2D& p, const Vector2D& normal)
   {
     otree = 0;
     deleting = false;
@@ -40,12 +40,12 @@ namespace Falling
   {
     return pt;
   }
-  int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res) const
+  int InfinitePlane::getSupportPoint(const Vector2D& , Point2D* res) const
   {
     *res = pt;
     return 0;
   }
-  int InfinitePlane::getSupportPoint(const Vector2D &, Point2D *res, int) const
+  int InfinitePlane::getSupportPoint(const Vector2D& , Point2D* res, int) const
   {
     *res = pt;
     return 0;
@@ -117,7 +117,7 @@ namespace Falling
     }
   }
 
-  bool InfinitePlane::containsPoint(const Point2D &testpt) const
+  bool InfinitePlane::containsPoint(const Point2D& testpt) const
   {
     return testpt.isLeftTo(pt, spt) >= 0;
   }

@@ -20,22 +20,23 @@
 
 namespace Falling
 {
-  GenericSolver::GenericSolver(Shape *s1, Shape *s2) : s1(s1), s2(s2), pm(deletePair)
+  GenericSolver::GenericSolver(Shape* s1, Shape* s2)
+    : s1(s1), s2(s2), pm(deletePair)
   { }
 
-  void GenericSolver::deletePair(Pair &p)
+  void GenericSolver::deletePair(Pair& p)
   {
-    delete ((GJKsolver *)p.e);
+    delete ((GJKsolver*)p.e);
   }
 
   bool GenericSolver::canDestroy()
   {
-    std::stack<Pair *> todel;
-    Pair *ap = pm.getActivePairs();
+    std::stack<Pair*> todel;
+    Pair* ap = pm.getActivePairs();
     int n = pm.getNbActivePairs();
     for(int i = 0; i < n; i++)
     {
-      if(((GJKsolver *)ap[i].e)->canDestroy())
+      if(((GJKsolver*)ap[i].e)->canDestroy())
         todel.push(ap);
     }
     while(!todel.empty())
@@ -46,33 +47,33 @@ namespace Falling
     return pm.getNbActivePairs() == 0; // no valid cash datas
   }
 
-  bool GenericSolver::_solve(std::vector<ContactBackup *> &res)
+  bool GenericSolver::_solve(std::vector<ContactBackup*>& res)
   {
-    std::vector<OBBIntersection *> oi;
+    std::vector<OBBIntersection*> oi;
     OBBtree::traverseTree(s1->getOtree(), s2->getOtree(), oi);
     int s = (int)oi.size();
     for(int i = 0; i < s; i++)
     {
-      OBBIntersection *oin = oi[i];
+      OBBIntersection* oin = oi[i];
       Pair* p = pm.addPair(oin->o1->getID(), oin->o2->getID() + GS_IDBIGOFFSET);
       // add GS_IDBIGOFFET to ensure id unicity
       if(p->e) // pair already exists. Mark as still active
-        ((GJKsolver *)p->e)->setInactive(false);
+        ((GJKsolver*)p->e)->setInactive(false);
       else // new pair
         p->e = new GJKsolver(*oin->o1->getParent(), *oin->o2->getParent());
       delete oin;
       oi[i] = 0;
     }
     oi.clear();
-    Pair *ap = pm.getActivePairs();
+    Pair* ap = pm.getActivePairs();
     int n = pm.getNbActivePairs();
-    std::stack<Pair *> todel;
+    std::stack<Pair*> todel;
     for(int i = 0; i < n; i++)
     {
-      if(((GJKsolver *)ap[i].e)->solve(res))
+      if(((GJKsolver*)ap[i].e)->solve(res))
         todel.push(&ap[i]);
       else
-        ((GJKsolver *)ap[i].e)->setInactive(true); // mark as inactive
+        ((GJKsolver*)ap[i].e)->setInactive(true); // mark as inactive
     }
     while(!todel.empty())
     {

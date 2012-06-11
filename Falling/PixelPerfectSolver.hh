@@ -20,15 +20,15 @@
 
 namespace Falling
 {
-    class PixelPerfectSolver : CollisionDetector
-    {
-	private:
-	    PixelPerfectShape *pps;
-	    Shape * s;
+  class PixelPerfectSolver : CollisionDetector
+  {
+    private:
+      PixelPerfectShape* pps;
+      Shape* s;
 
-	    bool _solve(std::vector<ContactBackup *> &res);
-	public:
-	    PixelPerfectSolver(PixelPerfectShape *ps, Shape *s);
-	    bool canDestroy();
-    };
+      bool _solve(std::vector<ContactBackup* > &res);
+    public:
+      PixelPerfectSolver(PixelPerfectShape* ps, Shape* s);
+      bool canDestroy();
+  };
 }

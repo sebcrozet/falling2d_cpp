@@ -22,7 +22,7 @@
 
 namespace Falling
 {
-  Collision::Collision(Shape *s)
+  Collision::Collision(Shape* s)
   {
     sa = s;
     sb = s;
@@ -33,7 +33,7 @@ namespace Falling
     prevb = 0;
   }
 
-  Collision::Collision(Shape *s, Shape *s2)
+  Collision::Collision(Shape* s, Shape* s2)
   {
     nexta = 0;
     nextb = 0;
@@ -44,7 +44,7 @@ namespace Falling
     if(idsum == 2)
     {
       // disk-disk
-      cd = new DiskDiskSolver((Disk *)s, (Disk *)s2);
+      cd = new DiskDiskSolver((Disk* )s, (Disk* )s2);
       sa = s;
       sb = s2;
     }
@@ -53,13 +53,13 @@ namespace Falling
       // plane-shape
       if(s->getShapeTypeID() == 100)
       {
-        cd = new PlaneShapeSolver((InfinitePlane *)s, (Shape *)s2);
+        cd = new PlaneShapeSolver((InfinitePlane* )s, (Shape* )s2);
         sa = s;
         sb = s2;
       }
       else
       {
-        cd = new PlaneShapeSolver((InfinitePlane *)s2, (Shape *)s);
+        cd = new PlaneShapeSolver((InfinitePlane* )s2, (Shape* )s);
         sa = s2;
         sb = s;
       }
@@ -82,7 +82,7 @@ namespace Falling
 
   void Collision::clearContacts()
   {
-      c.clear();
+    c.clear();
   }
 
   void Collision::removeFromList()
@@ -134,8 +134,8 @@ namespace Falling
   void Collision::autoInsert()
   {
     assert(nexta == 0);
-    Collision *ca = sa->getCollisionList();
-    Collision *cb = sb->getCollisionList();
+    Collision* ca = sa->getCollisionList();
+    Collision* cb = sb->getCollisionList();
     assert(ca);
     assert(cb);
     assert(ca->nexta == ca->nextb || !ca->nextb);
@@ -195,13 +195,13 @@ namespace Falling
     s.clear();
   }
 
-  bool CollisionArbiter::removeP(Pair *p)
+  bool CollisionArbiter::removeP(Pair* p)
   {
-    if(!((Collision *)p->e)->cd->getIsInactive()) //To avoid deletion redondency problems
-      ((Collision *)p->e)->removeFromList(); // Remove this from collision graph
-    if(!((Collision *)p->e)->cd->canDestroy())
+    if(!((Collision*)p->e)->cd->getIsInactive()) //To avoid deletion redondency problems
+      ((Collision*)p->e)->removeFromList(); // Remove this from collision graph
+    if(!((Collision*)p->e)->cd->canDestroy())
     {
-      ((Collision *)p->e)->cd->setInactive(true); // mark as inactive but keep it in cash
+      ((Collision*)p->e)->cd->setInactive(true); // mark as inactive but keep it in cash
       return false;
     }
     return true;
@@ -209,7 +209,7 @@ namespace Falling
 
   void CollisionArbiter::deleteP(Pair &p)
   {
-    Collision *coll = (Collision *)p.e;
+    Collision* coll = (Collision*)p.e;
     if(coll->nexta) // if still in the list remove it
     {
       //printf("Removing an in-list pair!\n");
@@ -222,25 +222,25 @@ namespace Falling
     delete coll;
   }
 
-  void CollisionArbiter::addP(Pair *p, Shape *s, Shape *s2)
+  void CollisionArbiter::addP(Pair* p, Shape* s, Shape* s2)
   {
     if(p->e)
     {
-      if(((Collision *)p->e)->cd->getIsInactive())
-        ((Collision *)p->e)->cd->setInactive(false); // mark as active
+      if(((Collision*)p->e)->cd->getIsInactive())
+        ((Collision*)p->e)->cd->setInactive(false); // mark as active
       else
         return; // avoid redundency in collision deletion
     }
     else
       p->e = new Collision(s, s2);
-    ((Collision *)p->e)->autoInsert(); // Auto instert in collision graph
+    ((Collision*)p->e)->autoInsert(); // Auto instert in collision graph
   }
 
-  void CollisionArbiter::addObject(Shape *s)
+  void CollisionArbiter::addObject(Shape* s)
   {
     // Prepare object's collision list sentinels
-    Collision *head = new Collision(s);
-    Collision *tail = new Collision(s);
+    Collision* head = new Collision(s);
+    Collision* tail = new Collision(s);
     head->nexta = tail;
     tail->preva = head;
     // other pointers are useless for sentinels, so don't initialize them
@@ -249,12 +249,12 @@ namespace Falling
     sap.addObject(s);
   }
 
-  void CollisionArbiter::deleteObject(Shape *s)
+  void CollisionArbiter::deleteObject(Shape* s)
   {
     /*
      * first, awake every objects in contact with this one
      */
-    Collision *c = s->getCollisionList()->nexta;
+    Collision* c = s->getCollisionList()->nexta;
     while(c->sa != c->sb) // sentinel not reached
     {
       if(c->sa == s)
@@ -291,16 +291,16 @@ namespace Falling
     delete c;
   }
 
-  void CollisionArbiter::notifyObjectMoved(Shape *s)
+  void CollisionArbiter::notifyObjectMoved(Shape* s)
   {
     sap.notifyBoxMoved(s);
   }
 
   void CollisionArbiter::solve(std::vector<Collision*> &res)
   {
-    int n;
-    Pair *p;
-    std::stack<Pair *> todel;
+    int   n;
+    Pair* p;
+    std::stack<Pair* > todel;
 
     n = 0;
     p = sap.solve(&n);
@@ -315,10 +315,10 @@ namespace Falling
           || !((Collision*)p[i].e)->sb->getParent()->isSleeping()
         )
       {
-        collisionLost = ((Collision *)p[i].e)->c.size() > 0;
-        ((Collision *)p[i].e)->clearContacts();
+        collisionLost = ((Collision*)p[i].e)->c.size() > 0;
+        ((Collision*)p[i].e)->clearContacts();
         /*if(*/
-        ((Collision*)p[i].e)->cd->solve(((Collision *)p[i].e)->c);//)
+        ((Collision*)p[i].e)->cd->solve(((Collision*)p[i].e)->c);//)
         //	;//todel.push(&p[i]);
         //else
       }
@@ -327,11 +327,11 @@ namespace Falling
       else if(collisionLost)
       {
         // Wake up objects
-          
+
         //printf("Collision lost!\n");
         ((Collision*)p[i].e)->sa->getParent()->setAwake(true);
         ((Collision*)p[i].e)->sb->getParent()->setAwake(true);
-           
+
       }
     }
     /*while(!todel.empty())

@@ -22,14 +22,14 @@
 
 namespace Falling
 {
-    CollisionDetector::CollisionDetector() : isInactive(false)
-    { }
+  CollisionDetector::CollisionDetector() : isInactive(false)
+  { }
 
-    bool CollisionDetector::solve(std::vector<ContactBackup *> &res)
-    {
-	if(!isInactive)
-	    return _solve(res);
-	else
-	    return canDestroy();
-    }
+  bool CollisionDetector::solve(std::vector<ContactBackup*> &res)
+  {
+    if(!isInactive)
+      return _solve(res);
+    else
+      return canDestroy();
+  }
 }

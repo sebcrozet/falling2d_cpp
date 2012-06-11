@@ -15,19 +15,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef __FAKE_SHAPE__
-#include "Shapes.hh"
+# include "Shapes.hh"
 
 namespace Falling
 {
-    // Fake shape for optimization purpose (to create shape-based linked lists' sentinels
-    class FakeShape : public Shape
-    {
-	// Every function do not do anything
-	Real getSurface();
-	Real getInertiaMomentum(Real m);
-	int getShapeTypeID();
-	void updateAABB();
-    };
+  // Fake shape for optimization purpose (to create shape-based linked lists'
+  // sentinels
+  class FakeShape : public Shape
+  {
+    // Every function do not do anything
+    Real getSurface();
+    Real getInertiaMomentum(Real m);
+    int getShapeTypeID();
+    void updateAABB();
+  };
 }
-#define __FAKE_SHAPE__
+# define __FAKE_SHAPE__
 #endif

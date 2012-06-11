@@ -1,5 +1,5 @@
 /* Copyright (C) 2011 CROZET Sébastien
- 
+
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -28,12 +28,12 @@ namespace Falling
   World::~World()
   { }
 
-  void World::addObject(RigidBody *s)
+  void World::addObject(RigidBody* s)
   {
     addWaitingQueue.push(s);
   }
 
-  void World::removeObject(RigidBody *s)
+  void World::removeObject(RigidBody* s)
   {
     removeWaitingQueue.push(s);
   }
@@ -42,7 +42,7 @@ namespace Falling
   {
     while(!removeWaitingQueue.empty())
     {
-      RigidBody * r = removeWaitingQueue.top();
+      RigidBody* r = removeWaitingQueue.top();
       ca.deleteObject(r->getShape());
       removeWaitingQueue.pop();
       objs.erase(std::remove(objs.begin(),objs.end(),r), objs.end());
@@ -50,14 +50,14 @@ namespace Falling
     }
     while(!addWaitingQueue.empty())
     {
-      RigidBody * r = addWaitingQueue.top();
+      RigidBody* r = addWaitingQueue.top();
       ca.addObject(r->getShape());
       addWaitingQueue.pop();
       objs.push_back(r);
     }
   }
 
-  void World::notifyObjectMoved(RigidBody *s)
+  void World::notifyObjectMoved(RigidBody* s)
   {
     dumpAddDelete();
     ca.notifyObjectMoved(s->getShape());
@@ -72,11 +72,11 @@ namespace Falling
 
 
   // return type should be void
-  std::vector<Collision *> World::solve(Real dt)
+  std::vector<Collision*> World::solve(Real dt)
   {
     // add and remove objects now
     dumpAddDelete();
-    std::vector<Collision *> colls;
+    std::vector<Collision*> colls;
     if(paused)
     {
       ca.solve(colls);
@@ -94,19 +94,19 @@ namespace Falling
   /*
    * the return value should be void. Collisions are returned only for debug
    */
-  std::vector<Collision *> World::solvePenetrationsAndImpulseWithLCP(Real dt)
+  std::vector<Collision*> World::solvePenetrationsAndImpulseWithLCP(Real dt)
   {
     // solve distances (collision detection)
-    std::vector<Collision *> colls;
+    std::vector<Collision*> colls;
     ca.solve(colls);
     if(colls.size())
     {
-      std::stack<Island *> isls; // FIXME: use a vector instead.
+      std::stack<Island*> isls; // FIXME: use a vector instead.
       // Build islands
       Island::batchIslands(colls,isls);
       while(!isls.empty())
       {
-        Island *isl = isls.top();
+        Island* isl = isls.top();
         isl->doit(dt);
         isls.pop();
         delete isl;

@@ -15,7 +15,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #ifndef _INFINITEPLANE_H
-#include "Shapes.hh"
+# include "Shapes.hh"
 
 namespace Falling
 {
@@ -37,12 +37,14 @@ namespace Falling
       // Implicit shape methods
       virtual Real getBoundingSphereRadius() const;
       virtual Vector2D getCenter() const;
-      virtual int getSupportPoint(const Vector2D &d, Point2D *res, int optimisationId) const;
+      virtual int getSupportPoint(const Vector2D& d,
+                                  Point2D*        res,
+                                  int             optimisationId) const;
       virtual int getSupportPoint(const Vector2D &d, Point2D *res) const;
       /*
-      void getContinuousSupportPoint(const Vector2D &, Point2D *res, int *, int *);
-      void getContinuousSupportPoint_with_opt_values(const Vector2D &, Point2D *res, int *, int *);
-      */
+         void getContinuousSupportPoint(const Vector2D &, Point2D *res, int *, int *);
+         void getContinuousSupportPoint_with_opt_values(const Vector2D &, Point2D *res, int *, int *);
+         */
 
       // Shape methods
       virtual inline int getShapeTypeID() const;
@@ -58,7 +60,8 @@ namespace Falling
   inline Point2D InfinitePlane::getProjectedPt(const Point2D &p) const
   {
     Vector2D ao(pt, p);
-    return pt + (dir * (PROXIMITY_AWARENESS + 0.5)) + (perpdir * (ao * perpdir));
+    return pt + (dir * (PROXIMITY_AWARENESS + 0.5)) +
+                 (perpdir * (ao * perpdir));
   }
   inline Real InfinitePlane::sqDistToPlane(const Point2D &p) const
   {
@@ -71,5 +74,5 @@ namespace Falling
     return dir;
   }
 }
-#define _INFINITEPLANE_H
+# define _INFINITEPLANE_H
 #endif
