@@ -16,7 +16,7 @@ The demo application requires:
 
 ## Compilation steps ##
 
-    $ git://github.com/sebcrozet/falling2d.git
+    $ git clone git://github.com/sebcrozet/falling2d.git
     $ cd falling2d
     $ sh cmake_release.sh
     $ ./bin/Release/falling_demo
