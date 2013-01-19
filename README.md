@@ -1,6 +1,6 @@
 Falling2d
 =========
-*Warning:* this project is discontinued to be rewritten in D.
+*Warning:* this project is discontinued to be rewritten in Haskell.
 See https://github.com/sebcrozet/falling2d.
 
 
